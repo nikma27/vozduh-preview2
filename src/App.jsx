@@ -93,7 +93,7 @@ const fetchGeminiResponse = async (userQuery, customSystemPrompt = null) => {
 
 /**
  * 1) Data
- * (картинки — прямые ссылки на unsplash; без google-search-URL)
+ * (картинки — локальные файлы из папки /public)
  */
 const complexSolutions = [
   // LIFE
@@ -104,26 +104,22 @@ const complexSolutions = [
     title: "Кондиционирование жилья",
     description:
       "Комфортная прохлада без сквозняков: тихие инверторные системы и аккуратная интеграция в интерьер.",
-    image:
-      "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1600&q=80",
+    image: "/ac-living.jpg",
     details: [
       {
         title: "Инверторные системы",
         desc: "Тихие решения для спален: плавное охлаждение без ледяного потока.",
-        subImage:
-          "https://images.unsplash.com/photo-1617103996702-96ff29b1c467?auto=format&fit=crop&w=800&q=80",
+        subImage: "/ac-inverter.jpg",
       },
       {
         title: "Мульти-сплит",
         desc: "Один внешний блок — до 5 комнат. Удобно для фасадных ограничений.",
-        subImage:
-          "https://images.unsplash.com/photo-1627236585127-18c72807e335?auto=format&fit=crop&w=800&q=80",
+        subImage: "/ac-multisplit.jpg",
       },
       {
         title: "Канальные системы",
         desc: "Скрытый монтаж: видны только решётки/диффузоры. Максимальная эстетика.",
-        subImage:
-          "https://images.unsplash.com/photo-1596238612140-52cb23214b2d?auto=format&fit=crop&w=800&q=80",
+        subImage: "/ac-ducted.jpg",
       },
     ],
   },
@@ -134,26 +130,22 @@ const complexSolutions = [
     title: "Вентиляция квартиры и дома",
     description:
       "Свежий воздух 24/7 при закрытых окнах. Фильтрация пыли, аллергенов и контроль CO₂.",
-    image:
-      "https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?auto=format&fit=crop&w=1600&q=80",
+    image: "/vent-home.jpg",
     details: [
       {
         title: "Бризеры",
         desc: "Приток в одну комнату: подогрев, фильтрация, тихая работа.",
-        subImage:
-          "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80",
+        subImage: "/vent-breezer.jpg",
       },
       {
         title: "ПВУ с рекуперацией",
         desc: "Экономия тепла до 80%: приток нагревается вытяжным воздухом.",
-        subImage:
-          "https://images.unsplash.com/photo-1581093583449-8255a6d338ce?auto=format&fit=crop&w=800&q=80",
+        subImage: "/vent-recuperator.jpg",
       },
       {
         title: "Умные режимы",
         desc: "Автоматическая подача по датчикам (CO₂/влажность/присутствие).",
-        subImage:
-          "https://images.unsplash.com/photo-1558002038-1091a1661116?auto=format&fit=crop&w=800&q=80",
+        subImage: "/vent-smart.jpg",
       },
     ],
   },
@@ -164,20 +156,17 @@ const complexSolutions = [
     title: "Увлажнение воздуха",
     description:
       "Здоровый микроклимат и сохранность отделки. Автоподдержание 40–60% зимой.",
-    image:
-      "https://images.unsplash.com/photo-1512918760513-95f1929757cd?auto=format&fit=crop&w=1600&q=80",
+    image: "/humid-main.jpg",
     details: [
       {
         title: "Форсуночное увлажнение",
         desc: "Микрораспыление воды: эффективно и гигиенично при правильной подготовке.",
-        subImage:
-          "https://images.unsplash.com/photo-1534127003460-6b6070a319f0?auto=format&fit=crop&w=800&q=80",
+        subImage: "/humid-spray.jpg",
       },
       {
         title: "Адиабатическое",
         desc: "Естественное испарение через канальные блоки вентиляции.",
-        subImage:
-          "https://images.unsplash.com/photo-1585776245991-cf79dd8fc78b?auto=format&fit=crop&w=800&q=80",
+        subImage: "/humid-adiabatic.jpg",
       },
     ],
   },
@@ -188,20 +177,17 @@ const complexSolutions = [
     title: "Осушение (бассейны)",
     description:
       "Защита от плесени и конденсата в зонах бассейнов/саун. Контроль точки росы.",
-    image:
-      "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=1600&q=80",
+    image: "/pool-main.jpg",
     details: [
       {
         title: "Настенные осушители",
         desc: "Компактные решения для небольших бассейнов и купелей.",
-        subImage:
-          "https://images.unsplash.com/photo-1563456073177-380d381b83d8?auto=format&fit=crop&w=800&q=80",
+        subImage: "/pool-dehumidifier.jpg",
       },
       {
         title: "Канальные системы",
         desc: "Скрытый монтаж + подмес свежего воздуха: полный климат-контроль.",
-        subImage:
-          "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80",
+        subImage: "/pool-ducted.jpg",
       },
     ],
   },
@@ -214,26 +200,22 @@ const complexSolutions = [
     title: "Коммерческий холод",
     description:
       "Офисы, отели, торговые залы: энергоэффективность и централизованное управление.",
-    image:
-      "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1600&q=80",
+    image: "/biz-ac-main.jpg",
     details: [
       {
         title: "VRF/VRV",
         desc: "Многозональное управление климатом здания с одной точкой подключения.",
-        subImage:
-          "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&w=800&q=80",
+        subImage: "/industry-cooling.jpg",
       },
       {
         title: "Кассетные блоки",
         desc: "Равномерная подача 360° — идеальна для Open Space.",
-        subImage:
-          "https://images.unsplash.com/photo-1510520434124-5bc7e642b61d?auto=format&fit=crop&w=800&q=80",
+        subImage: "/biz-cassette.jpg",
       },
       {
         title: "Прецизионные",
         desc: "Точное поддержание температуры/влажности для серверных и ЦОД.",
-        subImage:
-          "https://images.unsplash.com/photo-1558494949-ef526b0042a0?auto=format&fit=crop&w=800&q=80",
+        subImage: "/biz-precision.jpg",
       },
     ],
   },
@@ -244,20 +226,17 @@ const complexSolutions = [
     title: "Вентиляция HoReCa",
     description:
       "Ресторанные и кухонные зоны: удаление запахов, жира и избыточного тепла.",
-    image:
-      "https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1600&q=80",
+    image: "/horeca-main.jpg",
     details: [
       {
         title: "Вытяжные зонты",
         desc: "Эффективное удаление жира и жара, лабиринтные фильтры.",
-        subImage:
-          "https://images.unsplash.com/photo-1621871908119-28a5b35c03eb?auto=format&fit=crop&w=800&q=80",
+        subImage: "/horeca-hood.jpg",
       },
       {
         title: "Общеобменная",
         desc: "Подготовка и подача свежего воздуха в залы для гостей.",
-        subImage:
-          "https://images.unsplash.com/photo-1599407357322-92df91866782?auto=format&fit=crop&w=800&q=80",
+        subImage: "/horeca-general.jpg",
       },
     ],
   },
@@ -270,26 +249,22 @@ const complexSolutions = [
     title: "Промышленный холод",
     description:
       "Технологическое охлаждение оборудования и складов. Мегаваттные мощности.",
-    image:
-      "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&w=1600&q=80",
+    image: "/industry-cooling.jpg",
     details: [
       {
         title: "Модульные чиллеры",
         desc: "Высокая мощность для систем вода–воздух и охлаждения станков.",
-        subImage:
-          "https://images.unsplash.com/photo-1590636735492-36c997321a0f?auto=format&fit=crop&w=800&q=80",
+        subImage: "/ind-chiller.jpg",
       },
       {
         title: "Градирни",
         desc: "Охлаждение технической воды для производственных циклов.",
-        subImage:
-          "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80",
+        subImage: "/ind-tower.jpg",
       },
       {
         title: "ККБ",
         desc: "Компрессорно-конденсаторные блоки для интеграции в приточные установки.",
-        subImage:
-          "https://images.unsplash.com/photo-1565193566173-0923d5a633f3?auto=format&fit=crop&w=800&q=80",
+        subImage: "/ind-ventilation.jpg",
       },
     ],
   },
@@ -300,20 +275,17 @@ const complexSolutions = [
     title: "Пром. вентиляция",
     description:
       "Аспирация и очистка воздуха в цехах. Работа с агрессивными средами и температурами.",
-    image:
-      "https://images.unsplash.com/photo-1565193566173-0923d5a633f3?auto=format&fit=crop&w=1600&q=80",
+    image: "/ind-ventilation.jpg",
     details: [
       {
         title: "Аспирация",
         desc: "Удаление пыли, стружки, сварочных аэрозолей и выбросов.",
-        subImage:
-          "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80",
+        subImage: "/ind-aspiration.jpg",
       },
       {
         title: "Дымоудаление",
         desc: "Противопожарная безопасность: удаление дыма и подпор воздуха.",
-        subImage:
-          "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=800&q=80",
+        subImage: "/ind-smoke.jpg",
       },
     ],
   },
@@ -976,7 +948,7 @@ const Hero = ({ onOpenLead }) => (
   <section className="relative h-[100vh] flex items-center overflow-hidden bg-slate-900 text-white">
     <div className="absolute inset-0 opacity-40">
       <img
-        src="https://images.unsplash.com/photo-1620646146430-6d33939f6027?auto=format&fit=crop&w=2400&q=80"
+        src="/hero-bg.jpg"
         className="w-full h-full object-cover"
         alt="Background"
       />
@@ -1043,7 +1015,7 @@ const CloudPromo = ({ onOpenLead }) => (
       </div>
       <div className="lg:w-1/2">
         <img
-          src="https://images.unsplash.com/photo-1516961642265-531546e84af2?auto=format&fit=crop&w=1600&q=80"
+          src="/cloud-promo.jpg"
           className="rounded-[3rem] shadow-2xl"
           alt="Cloud"
         />
