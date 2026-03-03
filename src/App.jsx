@@ -115,18 +115,21 @@ const complexSolutions = [
       {
         title: "Инверторные системы",
         desc: "Тихие решения для спален: плавное охлаждение без ледяного потока.",
+        icon: "/icons/inverter.svg",
         subImage:
           "https://images.unsplash.com/photo-1617103996702-96ff29b1c467?auto=format&fit=crop&w=800&q=80",
       },
       {
         title: "Мульти-сплит",
         desc: "Один внешний блок — до 5 комнат. Удобно для фасадных ограничений.",
+        icon: "/icons/multi-split.svg",
         subImage:
           "https://images.unsplash.com/photo-1627236585127-18c72807e335?auto=format&fit=crop&w=800&q=80",
       },
       {
         title: "Канальные системы",
         desc: "Скрытый монтаж: видны только решётки/диффузоры. Максимальная эстетика.",
+        icon: "/icons/duct.svg",
         subImage:
           "https://images.unsplash.com/photo-1596238612140-52cb23214b2d?auto=format&fit=crop&w=800&q=80",
       },
@@ -145,18 +148,21 @@ const complexSolutions = [
       {
         title: "Бризеры",
         desc: "Приток в одну комнату: подогрев, фильтрация, тихая работа.",
+        icon: "/icons/breezer.svg",
         subImage:
           "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80",
       },
       {
         title: "ПВУ с рекуперацией",
         desc: "Экономия тепла до 80%: приток нагревается вытяжным воздухом.",
+        icon: "/icons/recuperation.svg",
         subImage:
           "https://images.unsplash.com/photo-1581093583449-8255a6d338ce?auto=format&fit=crop&w=800&q=80",
       },
       {
         title: "Умные режимы",
         desc: "Автоматическая подача по датчикам (CO₂/влажность/присутствие).",
+        icon: "/icons/smart-modes.svg",
         subImage:
           "https://images.unsplash.com/photo-1558002038-1091a1661116?auto=format&fit=crop&w=800&q=80",
       },
@@ -175,12 +181,14 @@ const complexSolutions = [
       {
         title: "Форсуночное увлажнение",
         desc: "Микрораспыление воды: эффективно и гигиенично при правильной подготовке.",
+        icon: "/icons/spray-humid.svg",
         subImage:
           "https://images.unsplash.com/photo-1534127003460-6b6070a319f0?auto=format&fit=crop&w=800&q=80",
       },
       {
         title: "Адиабатическое",
         desc: "Естественное испарение через канальные блоки вентиляции.",
+        icon: "/icons/adiabatic.svg",
         subImage:
           "https://images.unsplash.com/photo-1585776245991-cf79dd8fc78b?auto=format&fit=crop&w=800&q=80",
       },
@@ -199,12 +207,14 @@ const complexSolutions = [
       {
         title: "Настенные осушители",
         desc: "Компактные решения для небольших бассейнов и купелей.",
+        icon: "/icons/wall-dehumidifier.svg",
         subImage:
           "https://images.unsplash.com/photo-1563456073177-380d381b83d8?auto=format&fit=crop&w=800&q=80",
       },
       {
         title: "Канальные системы",
         desc: "Скрытый монтаж + подмес свежего воздуха: полный климат-контроль.",
+        icon: "/icons/duct.svg",
         subImage:
           "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80",
       },
@@ -306,7 +316,7 @@ const complexSolutions = [
     description:
       "Аспирация и очистка воздуха в цехах. Работа с агрессивными средами и температурами.",
     image:
-      "https://images.unsplash.com/photo-1565193566173-0923d5a633f3?auto=format&fit=crop&w=1600&q=80",
+      "/photos/photo_5_2026-03-02_12-38-04.jpg",
     details: [
       {
         title: "Аспирация",
@@ -801,13 +811,19 @@ const SolutionDetailModal = ({ solution, onClose, onOpenLead }) => {
           <div className="space-y-8 mb-8">
             {solution.details.map((item, idx) => (
               <div key={idx} className="group flex gap-6 items-start">
-                <div className="w-24 h-24 rounded-2xl overflow-hidden shrink-0 hidden sm:block shadow-sm">
-                  <img
-                    src={item.subImage}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform"
-                    alt={item.title}
-                  />
-                </div>
+                {item.icon ? (
+                  <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center shrink-0 transition-colors group-hover:bg-blue-600">
+                    <img src={item.icon} alt="" className="w-8 h-8 opacity-80 transition-[filter,opacity] group-hover:opacity-100 group-hover:brightness-0 group-hover:invert" />
+                  </div>
+                ) : (
+                  <div className="w-24 h-24 rounded-2xl overflow-hidden shrink-0 hidden sm:block shadow-sm">
+                    <img
+                      src={item.subImage}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform"
+                      alt={item.title}
+                    />
+                  </div>
+                )}
 
                 <div className="flex-1">
                   <h3 className="text-xl font-bold text-slate-900 mb-2">{item.title}</h3>
@@ -884,46 +900,46 @@ const Navbar = ({ onOpenContact }) => {
     <nav
       className={[
         "fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b bg-white/95 md:bg-white/80 md:backdrop-blur-md border-white/20 shadow-sm",
-        isScrolled ? "py-4" : "py-6",
+        isScrolled ? "py-0.5 lg:py-2 xl:py-4" : "py-1 lg:py-3 xl:py-6",
       ].join(" ")}
     >
-      <div className="container mx-auto px-6 flex justify-between items-center">
+      <div className="container mx-auto px-4 xl:px-6 flex justify-between items-center">
         <a href="#" className="flex items-center gap-2 group z-50 relative">
-          <div className="p-2 rounded-full transition-colors bg-blue-600 text-white">
-            <Wind size={24} />
+          <div className="p-1 lg:p-1.5 xl:p-2 rounded-full transition-colors bg-blue-600 text-white shrink-0">
+            <Wind size={24} className="shrink-0 w-5 h-5 lg:w-5 lg:h-5 xl:w-6 xl:h-6" />
           </div>
-          <span className="font-heading text-xl font-bold tracking-tighter uppercase text-slate-900">
+          <span className="font-heading text-sm lg:text-base xl:text-xl font-bold tracking-tighter uppercase text-slate-900">
             Воздух<span className="text-blue-600">НСК</span>
           </span>
         </a>
 
-        <div className="hidden lg:flex items-center gap-6 xl:gap-8">
+        <div className="hidden lg:flex items-center gap-3 xl:gap-8">
           {navLinks.map((link) => (
             <a
               key={link.name}
               href={link.href}
-              className="text-sm font-bold hover:text-blue-500 transition-colors text-slate-800"
+              className="text-xs xl:text-sm font-bold hover:text-blue-500 transition-colors text-slate-800"
             >
               {link.name}
             </a>
           ))}
         </div>
 
-        <div className="hidden lg:flex items-center gap-6">
-          <div className="flex flex-col items-end text-sm text-slate-900">
+        <div className="hidden lg:flex items-center gap-3 xl:gap-6">
+          <div className="flex flex-col items-end text-xs xl:text-sm text-slate-900">
             <span className="font-bold">+7 (383) 263-15-51</span>
             <span className="text-xs text-slate-600 font-medium">Пн–Пт 9:00–18:00</span>
           </div>
           <button
             onClick={onOpenContact}
-            className="px-6 py-2.5 rounded-full text-sm font-bold transition-all hover:shadow-lg hover:-translate-y-0.5 whitespace-nowrap bg-blue-600 text-white hover:bg-blue-700"
+            className="px-4 xl:px-6 py-2 xl:py-2.5 rounded-full text-xs xl:text-sm font-bold transition-all hover:shadow-lg hover:-translate-y-0.5 whitespace-nowrap bg-blue-600 text-white hover:bg-blue-700"
           >
             Оставить заявку
           </button>
         </div>
 
         <button
-          className="lg:hidden text-2xl transition-colors z-50 relative text-slate-900"
+          className="lg:hidden text-xl lg:text-2xl transition-colors z-50 relative text-slate-900 p-1"
           onClick={() => setMobileMenuOpen((v) => !v)}
           type="button"
         >
@@ -938,9 +954,9 @@ const Navbar = ({ onOpenContact }) => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed inset-0 bg-white/95 backdrop-blur-xl z-40 flex flex-col p-8 lg:hidden border-l border-white/20 h-screen overflow-y-auto"
+            className="fixed inset-0 bg-white/95 backdrop-blur-xl z-40 flex flex-col p-6 lg:hidden border-l border-white/20 h-screen overflow-y-auto"
           >
-            <div className="flex flex-col gap-8 text-2xl font-bold text-slate-800 flex-1 justify-center items-center text-center">
+            <div className="flex flex-col gap-3 text-xl font-bold text-slate-800 flex-1 justify-center items-center text-center">
               {navLinks.map((link) => (
                 <a
                   key={link.name}
@@ -954,7 +970,7 @@ const Navbar = ({ onOpenContact }) => {
                 </a>
               ))}
             </div>
-            <div className="mt-auto pt-8 border-t border-slate-200 text-center shrink-0 pb-8">
+            <div className="mt-auto pt-6 border-t border-slate-200 text-center shrink-0 pb-6">
               <a
                 href="tel:+73832631551"
                 className="block text-2xl font-bold mb-2 text-slate-900"
@@ -2328,7 +2344,7 @@ const ArticleModal = ({ article, onClose }) => {
               <div className="mt-8 p-6 rounded-3xl bg-slate-50 border border-slate-100">
                 <div className="text-sm font-bold text-slate-900 mb-2">Нужен расчёт под ваш объект?</div>
                 <p className="text-slate-500 font-medium text-sm">
-                  Оставьте заявку — инженер подскажет по воздухообмену, подбору оборудования и монтажу.
+                  Оставьте заявку — наши специалисты свяжутся с вами и проконсультируют по всем интересующим вас вопросам.
                 </p>
               </div>
             </div>
