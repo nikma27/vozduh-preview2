@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400&family=Manrope:wght@100;200;300;400;600&display=swap');
+/* Roboto (основной текст) + Roboto Mono (код) */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Roboto+Mono:wght@400&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -10,16 +11,96 @@ html { scroll-behavior: smooth; }
 ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-body { font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+:root {
+  /* Блок сообщения / ответа: 16px, 400, 1.5, 0 */
+  --font-sans: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-mono: 'Roboto Mono', 'Consolas', monospace;
+  --text-base: 16px;
+  --text-base-lh: 24px;        /* 1.5 = 24px при 16px */
+  --text-body-lh: 26px;       /* для длинных текстов */
+  --tracking-body: 0;
+  --tracking-body-alt: 0.25px;
+  --leading-body: 24px;
+  --leading-body-relaxed: 26px;
+  --space-paragraph: 16px;
+  /* H2: 20–22px, 500–600, 28px */
+  --text-h2: 21px;
+  --text-h2-lh: 28px;
+  --weight-h2: 500;
+  /* H3: 18px, 400, 24px */
+  --text-h3: 18px;
+  --text-h3-lh: 24px;
+  --weight-h3: 400;
+  /* Код: 14px, 400, 20px */
+  --text-code: 14px;
+  --text-code-lh: 20px;
+  /* Sidebar/нав: 14px, 400/500, 20px */
+  --text-nav: 14px;
+  --text-nav-lh: 20px;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: 400;
+  line-height: var(--text-base-lh);
+  letter-spacing: var(--tracking-body);
+}
 
 @layer base {
-  h1, h2, h3, h4, h5, h6 { font-family: 'Manrope', ui-sans-serif, system-ui, sans-serif; }
+  h1 { font-size: 1.75rem; font-weight: 500; line-height: 28px; letter-spacing: 0; }
+  h2 { font-size: var(--text-h2); font-weight: var(--weight-h2); line-height: var(--text-h2-lh); letter-spacing: 0; }
+  h3 { font-size: var(--text-h3); font-weight: var(--weight-h3); line-height: var(--text-h3-lh); letter-spacing: 0; }
+  h4, h5, h6 { font-size: 1rem; font-weight: 400; line-height: 24px; letter-spacing: 0; }
+  p { margin-bottom: var(--space-paragraph); line-height: var(--leading-body-relaxed); }
+  p:last-child { margin-bottom: 0; }
+  code, pre {
+    font-family: var(--font-mono);
+    font-size: var(--text-code);
+    font-weight: 400;
+    line-height: var(--text-code-lh);
+  }
+}
+
+/* Блок сообщения пользователя: 16px, 400, 24px, 0 */
+.text-user-msg {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0;
+}
+
+/* Блок ответа нейросети: 16px, 400, 26px, 0, 16px между абзацами */
+.text-ai-response {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 26px;
+  letter-spacing: 0;
+}
+.text-ai-response p + p { margin-top: 16px; }
+
+/* Sidebar / нав: 14px, 400/500, 20px */
+.text-nav { font-size: 14px; line-height: 20px; font-weight: 400; }
+.text-nav-active { font-weight: 500; }
+
+/* Подсветка раздела при появлении в viewport */
+.section-reveal {
+  transition: box-shadow 0.6s ease;
+}
+.section-reveal.is-visible {
+  box-shadow: inset 0 1px 0 0 rgba(59, 130, 246, 0.06);
 }
 
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
 body { font-weight: 300; }
+
+/* Логотип: название «выдувает» из значка ветром */
+@keyframes logoFlow {
+  0% { opacity: 0.7; transform: translateX(-4px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
 
 /* Бегущая строка брендов — CSS-анимация вместо JS для плавности на мобильных */
 @keyframes marquee {

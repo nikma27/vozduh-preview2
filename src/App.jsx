@@ -30,7 +30,7 @@ import {
   ArrowUp,
   BookOpen,
 } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useInView } from "framer-motion";
 import BrandMarquee from "./components/BrandMarquee";
 
 /**
@@ -379,16 +379,16 @@ const ContactModal = ({ onClose, title = "Оставить заявку" }) => {
       >
         <div className="p-8">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-xl font-bold text-slate-900">{title}</h3>
+            <h3 className="text-xl font-normal text-slate-900">{title}</h3>
             <button onClick={onClose} type="button">
-              <X size={24} className="text-slate-400" />
+              <X size={24} className="text-slate-500" />
             </button>
           </div>
 
           {submitted ? (
             <div className="text-center py-10">
               <CheckCircle2 size={48} className="text-green-500 mx-auto mb-4" />
-              <p className="text-lg font-medium text-slate-900">
+              <p className="text-lg font-normal text-slate-900">
                 Спасибо! Мы скоро свяжемся.
               </p>
             </div>
@@ -400,7 +400,7 @@ const ContactModal = ({ onClose, title = "Оставить заявку" }) => {
                 type="text"
                 required
                 placeholder="Ваше имя"
-                className="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 font-light"
+                className="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 font-normal text-user-msg"
               />
               <input
                 value={phone}
@@ -408,15 +408,15 @@ const ContactModal = ({ onClose, title = "Оставить заявку" }) => {
                 type="tel"
                 required
                 placeholder="+7 (___) ___-__-__"
-                className="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 font-light"
+                className="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 font-normal text-user-msg"
               />
               <button
                 disabled={loading}
-                className="w-full py-4 bg-slate-900 text-white rounded-xl font-bold disabled:opacity-60"
+                className="w-full py-4 bg-slate-900 text-white rounded-xl font-normal disabled:opacity-60"
               >
                 {loading ? "Отправляем..." : "Жду звонка"}
               </button>
-              <p className="text-[10px] text-center text-slate-400">
+              <p className="text-[10px] text-center text-slate-500">
                 Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности
               </p>
             </form>
@@ -481,13 +481,13 @@ const PartnerModal = ({ onClose }) => {
         <div className="p-8">
           <div className="flex justify-between items-start mb-6">
             <div>
-              <h3 className="text-2xl font-bold text-slate-900">Анкета партнера</h3>
-              <p className="text-sm text-slate-500 mt-1">
+              <h3 className="text-2xl font-normal text-slate-900">Анкета партнера</h3>
+              <p className="text-sm text-slate-600 mt-1">
                 Для архитекторов и дизайнеров
               </p>
             </div>
             <button onClick={onClose} type="button">
-              <X size={24} className="text-slate-400" />
+              <X size={24} className="text-slate-500" />
             </button>
           </div>
 
@@ -496,8 +496,8 @@ const PartnerModal = ({ onClose }) => {
               <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4">
                 <CheckCircle2 size={32} />
               </div>
-              <h4 className="text-xl font-bold text-slate-900">Анкета получена!</h4>
-              <p className="text-slate-500">Мы свяжемся с вами сегодня.</p>
+              <h4 className="text-xl font-normal text-slate-900">Анкета получена!</h4>
+              <p className="text-slate-600">Мы свяжемся с вами сегодня.</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -508,7 +508,7 @@ const PartnerModal = ({ onClose }) => {
                     key={key}
                     onClick={() => setField("role", key)}
                     className={[
-                      "p-3 rounded-xl border text-sm font-medium transition-all",
+                      "p-3 rounded-xl border text-sm font-normal transition-all",
                       form.role === key
                         ? "bg-slate-900 text-white border-slate-900 shadow-lg"
                         : "bg-white text-slate-600 border-slate-200",
@@ -523,7 +523,7 @@ const PartnerModal = ({ onClose }) => {
                 type="text"
                 required
                 placeholder="Ваше ФИО"
-                className="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 text-user-msg"
                 value={form.fio}
                 onChange={(e) => setField("fio", e.target.value)}
               />
@@ -531,7 +531,7 @@ const PartnerModal = ({ onClose }) => {
                 type="text"
                 required
                 placeholder="Город"
-                className="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 text-user-msg"
                 value={form.city}
                 onChange={(e) => setField("city", e.target.value)}
               />
@@ -539,14 +539,14 @@ const PartnerModal = ({ onClose }) => {
                 type="tel"
                 required
                 placeholder="Телефон"
-                className="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 text-user-msg"
                 value={form.phone}
                 onChange={(e) => setField("phone", e.target.value)}
               />
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 bg-blue-600 text-white rounded-xl font-bold text-lg shadow-lg disabled:opacity-60"
+                className="w-full py-4 bg-blue-600 text-white rounded-xl font-normal text-lg shadow-lg disabled:opacity-60"
               >
                 {loading ? "Отправляем..." : "Отправить анкету"}
               </button>
@@ -608,7 +608,7 @@ const BriefGeneratorModal = ({ onClose }) => {
         <div className="bg-slate-900 p-6 flex justify-between items-center text-white">
           <div className="flex items-center gap-3">
             <Sparkles size={20} className="text-blue-400" />
-            <h3 className="font-bold text-lg">AI Генератор ТЗ</h3>
+            <h3 className="font-normal text-lg">AI Генератор ТЗ</h3>
           </div>
           <button type="button" onClick={onClose} className="p-2 hover:bg-white/10 rounded-xl">
             <X size={20} />
@@ -618,32 +618,32 @@ const BriefGeneratorModal = ({ onClose }) => {
         <div className="p-8 overflow-y-auto">
           {step === 1 ? (
             <div className="space-y-4">
-              <p className="text-sm text-slate-500 mb-4">
+              <p className="text-slate-600 mb-4 text-user-msg">
                 Заполните данные для мгновенного формирования чернового технического задания.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <input
                   type="text"
-                  className="p-4 bg-slate-50 rounded-xl border-none outline-none focus:ring-2 focus:ring-blue-500"
+                  className="p-4 bg-slate-50 rounded-xl border-none outline-none focus:ring-2 focus:ring-blue-500 text-user-msg"
                   placeholder="Тип объекта (Кафе, офис...)"
                   onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                 />
                 <input
                   type="number"
-                  className="p-4 bg-slate-50 rounded-xl border-none outline-none focus:ring-2 focus:ring-blue-500"
+                  className="p-4 bg-slate-50 rounded-xl border-none outline-none focus:ring-2 focus:ring-blue-500 text-user-msg"
                   placeholder="Площадь (м2)"
                   onChange={(e) => setFormData({ ...formData, area: e.target.value })}
                 />
                 <input
                   type="number"
-                  className="p-4 bg-slate-50 rounded-xl border-none outline-none focus:ring-2 focus:ring-blue-500"
+                  className="p-4 bg-slate-50 rounded-xl border-none outline-none focus:ring-2 focus:ring-blue-500 text-user-msg"
                   placeholder="Высота потолков (м)"
                   onChange={(e) => setFormData({ ...formData, height: e.target.value })}
                 />
                 <input
                   type="number"
-                  className="p-4 bg-slate-50 rounded-xl border-none outline-none focus:ring-2 focus:ring-blue-500"
+                  className="p-4 bg-slate-50 rounded-xl border-none outline-none focus:ring-2 focus:ring-blue-500 text-user-msg"
                   placeholder="Кол-во людей"
                   onChange={(e) => setFormData({ ...formData, people: e.target.value })}
                 />
@@ -653,21 +653,21 @@ const BriefGeneratorModal = ({ onClose }) => {
                 type="button"
                 onClick={handleGenerate}
                 disabled={isLoading || !formData.type}
-                className="w-full py-4 bg-blue-600 text-white rounded-xl font-bold flex justify-center items-center gap-2 mt-4 transition-all hover:bg-blue-700 disabled:opacity-50"
+                className="w-full py-4 bg-blue-600 text-white rounded-xl font-normal flex justify-center items-center gap-2 mt-4 transition-all hover:bg-blue-700 disabled:opacity-50"
               >
                 {isLoading ? <Loader2 className="animate-spin" /> : "Сформировать черновик ТЗ"}
               </button>
             </div>
           ) : (
             <div className="space-y-6">
-              <div className="bg-slate-50 p-6 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap border border-slate-100 font-mono">
+              <div className="bg-slate-50 p-6 rounded-2xl whitespace-pre-wrap border border-slate-100 font-mono text-[14px] leading-[20px]">
                 {generatedBrief}
               </div>
               <div className="flex gap-4">
-                <button type="button" onClick={() => setStep(1)} className="flex-1 py-4 border border-slate-200 rounded-xl font-medium text-slate-600">
+                <button type="button" onClick={() => setStep(1)} className="flex-1 py-4 border border-slate-200 rounded-xl font-normal text-slate-600">
                   Изменить данные
                 </button>
-                <button type="button" onClick={onClose} className="flex-1 py-4 bg-slate-900 text-white rounded-xl font-bold">
+                <button type="button" onClick={onClose} className="flex-1 py-4 bg-slate-900 text-white rounded-xl font-normal">
                   Готово
                 </button>
               </div>
@@ -718,10 +718,10 @@ const LeadModal = ({ onClose, context }) => {
       >
         <div className="flex justify-between items-start mb-6">
           <div>
-            <div className="text-[10px] font-bold text-blue-600 uppercase tracking-widest mb-1">
+            <div className="text-[10px] font-normal text-blue-600 uppercase tracking-widest mb-1">
               Раздел:
             </div>
-            <h3 className="text-lg font-bold leading-tight text-slate-900">{context}</h3>
+            <h3 className="text-lg font-normal leading-tight text-slate-900">{context}</h3>
           </div>
           <button
             onClick={onClose}
@@ -735,8 +735,8 @@ const LeadModal = ({ onClose, context }) => {
         {submitted ? (
           <div className="py-10 text-center">
             <CheckCircle2 size={56} className="text-green-500 mx-auto mb-4" />
-            <h4 className="text-2xl font-bold text-slate-900">Заявка принята</h4>
-            <p className="text-slate-500 mt-2 font-medium text-sm">
+            <h4 className="text-2xl font-normal text-slate-900">Заявка принята</h4>
+            <p className="text-slate-600 mt-2 font-normal text-sm">
               Инженер скоро свяжется с вами.
             </p>
           </div>
@@ -748,7 +748,7 @@ const LeadModal = ({ onClose, context }) => {
               type="text"
               required
               placeholder="Ваше имя"
-              className="w-full p-4 bg-slate-50 rounded-xl border border-slate-100 outline-none focus:ring-2 focus:ring-blue-500 font-medium transition-all"
+              className="w-full p-4 bg-slate-50 rounded-xl border border-slate-100 outline-none focus:ring-2 focus:ring-blue-500 font-normal text-user-msg transition-all"
             />
             <input
               value={phone}
@@ -756,15 +756,15 @@ const LeadModal = ({ onClose, context }) => {
               type="tel"
               required
               placeholder="+7 (___) ___-__-__"
-              className="w-full p-4 bg-slate-50 rounded-xl border border-slate-100 outline-none focus:ring-2 focus:ring-blue-500 font-medium transition-all"
+              className="w-full p-4 bg-slate-50 rounded-xl border border-slate-100 outline-none focus:ring-2 focus:ring-blue-500 font-normal text-user-msg transition-all"
             />
             <button
               disabled={loading}
-              className="w-full py-4 bg-slate-900 text-white rounded-xl font-bold hover:bg-blue-600 transition-all disabled:opacity-60"
+              className="w-full py-4 bg-slate-900 text-white rounded-xl font-normal hover:bg-blue-600 transition-all disabled:opacity-60"
             >
               {loading ? "Отправляем..." : "Запросить подбор"}
             </button>
-            <p className="text-[10px] text-center text-slate-400">
+            <p className="text-[10px] text-center text-slate-500">
               Нажимая кнопку, вы подтверждаете отправку данных
             </p>
           </form>
@@ -786,7 +786,6 @@ const SolutionDetailModal = ({ solution, onClose, onOpenLead }) => {
         className="absolute inset-0 bg-slate-900/60 backdrop-blur-xl"
       />
       <motion.div
-        layoutId={solution.id}
         className="bg-white w-full max-w-5xl md:rounded-[2.5rem] relative z-10 overflow-hidden shadow-2xl flex flex-col md:flex-row h-full md:h-[80vh] max-h-[900px]"
       >
         <div className="md:w-5/12 relative h-64 md:h-auto overflow-hidden flex-shrink-0">
@@ -794,13 +793,13 @@ const SolutionDetailModal = ({ solution, onClose, onOpenLead }) => {
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent" />
           <div className="absolute bottom-10 left-10 text-white">
             <Icon size={40} className="mb-4 opacity-50" />
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">{solution.title}</h2>
+            <h2 className="text-3xl md:text-4xl font-normal tracking-tight">{solution.title}</h2>
           </div>
         </div>
 
         <div className="md:w-7/12 p-8 md:p-12 overflow-y-auto bg-white flex flex-col h-full">
           <div className="flex justify-between items-center mb-10">
-            <span className="text-xs font-bold text-blue-600 uppercase tracking-widest">
+            <span className="text-xs font-normal text-blue-600 uppercase tracking-widest">
               Инженерное решение
             </span>
             <button onClick={onClose} type="button" className="p-2 hover:bg-slate-50 rounded-full">
@@ -826,20 +825,20 @@ const SolutionDetailModal = ({ solution, onClose, onOpenLead }) => {
                 )}
 
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold text-slate-900 mb-2">{item.title}</h3>
-                  <p className="text-slate-500 font-medium mb-4 leading-relaxed text-sm">
+                  <h3 className="text-xl font-normal text-slate-900 mb-2">{item.title}</h3>
+                  <p className="text-slate-600 font-normal mb-4 leading-relaxed text-sm">
                     {item.desc}
                   </p>
                   <div className="flex gap-3 flex-wrap">
                     <button
                       onClick={() => onOpenLead(`${solution.title} → ${item.title} (Подбор)`)}
-                      className="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg font-bold text-xs hover:bg-blue-600 hover:text-white transition-all uppercase tracking-wide"
+                      className="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg font-normal text-xs hover:bg-blue-600 hover:text-white transition-all uppercase tracking-wide"
                     >
                       Подобрать
                     </button>
                     <button
                       onClick={() => onOpenLead(`${solution.title} → ${item.title} (Смета)`)}
-                      className="px-4 py-2 border border-slate-200 text-slate-500 rounded-lg font-bold text-xs hover:border-blue-600 hover:text-blue-600 transition-all uppercase tracking-wide"
+                      className="px-4 py-2 border border-slate-200 text-slate-600 rounded-lg font-normal text-xs hover:border-blue-600 hover:text-blue-600 transition-all uppercase tracking-wide"
                     >
                       Получить смету
                     </button>
@@ -852,7 +851,7 @@ const SolutionDetailModal = ({ solution, onClose, onOpenLead }) => {
           <div className="mt-auto pt-6 border-t border-slate-100">
             <button
               onClick={() => onOpenLead(`${solution.title} (Общий запрос)`)}
-              className="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-blue-600 transition-all"
+              className="w-full py-4 bg-slate-900 text-white rounded-2xl font-normal hover:bg-blue-600 transition-all"
             >
               Запросить консультацию по решению
             </button>
@@ -900,46 +899,49 @@ const Navbar = ({ onOpenContact }) => {
     <nav
       className={[
         "fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b bg-white/95 md:bg-white/80 md:backdrop-blur-md border-white/20 shadow-sm",
-        isScrolled ? "py-0.5 lg:py-2 xl:py-4" : "py-1 lg:py-3 xl:py-6",
+        isScrolled ? "py-1 sm:py-1.5 md:py-1.5 lg:py-2 xl:py-2 2xl:py-2.5" : "py-1.5 sm:py-2 md:py-2 lg:py-2.5 xl:py-3 2xl:py-4",
       ].join(" ")}
     >
-      <div className="container mx-auto px-4 xl:px-6 flex justify-between items-center">
-        <a href="#" className="flex items-center gap-2 group z-50 relative">
-          <div className="p-1 lg:p-1.5 xl:p-2 rounded-full transition-colors bg-blue-600 text-white shrink-0">
-            <Wind size={24} className="shrink-0 w-5 h-5 lg:w-5 lg:h-5 xl:w-6 xl:h-6" />
+      <div className="container mx-auto px-4 sm:px-5 md:px-6 flex justify-between items-center">
+        <a href="#" className="flex items-center gap-2 sm:gap-3 group z-50 relative overflow-visible">
+          <div className="relative shrink-0">
+            <div className="p-2 sm:p-2.5 md:p-3 rounded-full transition-all duration-300 bg-blue-600 text-white group-hover:scale-105">
+              <Wind className="shrink-0 w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-8 lg:h-8 xl:w-9 xl:h-9 2xl:w-10 2xl:h-10" size={24} />
+            </div>
+            <div className="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-px bg-gradient-to-r from-blue-600/60 to-transparent rounded-full opacity-80" aria-hidden="true" />
           </div>
-          <span className="font-heading text-sm lg:text-base xl:text-xl font-bold tracking-tighter uppercase text-slate-900">
-            Воздух<span className="text-blue-600">НСК</span>
+          <span className="font-heading text-lg sm:text-xl md:text-xl lg:text-2xl xl:text-2xl 2xl:text-3xl font-normal tracking-tight uppercase text-slate-900 origin-left transform skew-x-[-1deg] group-hover:skew-x-0 transition-transform duration-300">
+            <span className="inline-block animate-[logoFlow_0.5s_ease-out_forwards]">Воздух</span><span className="text-blue-600 inline-block animate-[logoFlow_0.5s_ease-out_0.03s_forwards]">НСК</span>
           </span>
         </a>
 
-        <div className="hidden lg:flex items-center gap-3 xl:gap-8">
+        <div className="hidden xl:flex items-center gap-4 xl:gap-5 2xl:gap-8">
           {navLinks.map((link) => (
             <a
               key={link.name}
               href={link.href}
-              className="text-xs xl:text-sm font-bold hover:text-blue-500 transition-colors text-slate-800"
+              className="text-nav font-normal hover:text-blue-500 hover:font-normal transition-colors text-slate-800 whitespace-nowrap"
             >
               {link.name}
             </a>
           ))}
         </div>
 
-        <div className="hidden lg:flex items-center gap-3 xl:gap-6">
-          <div className="flex flex-col items-end text-xs xl:text-sm text-slate-900">
-            <span className="font-bold">+7 (383) 263-15-51</span>
-            <span className="text-xs text-slate-600 font-medium">Пн–Пт 9:00–18:00</span>
+        <div className="hidden xl:flex items-center gap-3 xl:gap-4 2xl:gap-6">
+          <div className="flex flex-col items-end text-nav text-slate-900">
+            <span className="font-normal">+7 (383) 263-15-51</span>
+            <span className="text-slate-600 font-normal">Пн–Пт 9:00–18:00</span>
           </div>
           <button
             onClick={onOpenContact}
-            className="px-4 xl:px-6 py-2 xl:py-2.5 rounded-full text-xs xl:text-sm font-bold transition-all hover:shadow-lg hover:-translate-y-0.5 whitespace-nowrap bg-blue-600 text-white hover:bg-blue-700"
+            className="text-nav px-3 sm:px-4 lg:px-4 xl:px-5 py-1.5 rounded-full font-normal transition-all hover:shadow-lg hover:-translate-y-0.5 whitespace-nowrap bg-blue-600 text-white hover:bg-blue-700"
           >
             Оставить заявку
           </button>
         </div>
 
         <button
-          className="lg:hidden text-xl lg:text-2xl transition-colors z-50 relative text-slate-900 p-1"
+          className="xl:hidden text-xl sm:text-2xl transition-colors z-50 relative text-slate-900 p-1.5"
           onClick={() => setMobileMenuOpen((v) => !v)}
           type="button"
         >
@@ -954,9 +956,9 @@ const Navbar = ({ onOpenContact }) => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed inset-0 bg-white/95 backdrop-blur-xl z-40 flex flex-col p-6 lg:hidden border-l border-white/20 h-screen overflow-y-auto"
+            className="fixed inset-0 bg-white/95 backdrop-blur-xl z-40 flex flex-col p-6 xl:hidden border-l border-white/20 h-screen overflow-y-auto"
           >
-            <div className="flex flex-col gap-3 text-xl font-bold text-slate-800 flex-1 justify-center items-center text-center">
+            <div className="flex flex-col gap-3 text-xl font-normal text-slate-800 flex-1 justify-center items-center text-center">
               {navLinks.map((link) => (
                 <a
                   key={link.name}
@@ -973,17 +975,17 @@ const Navbar = ({ onOpenContact }) => {
             <div className="mt-auto pt-6 border-t border-slate-200 text-center shrink-0 pb-6">
               <a
                 href="tel:+73832631551"
-                className="block text-2xl font-bold mb-2 text-slate-900"
+                className="block text-2xl font-normal mb-2 text-slate-900"
               >
                 +7 (383) 263-15-51
               </a>
-              <p className="text-slate-500 mb-4 font-medium">Новосибирск, ул. Королева 40</p>
+              <p className="text-slate-600 mb-4 font-normal">Новосибирск, ул. Королева 40</p>
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
                   onOpenContact();
                 }}
-                className="w-full py-4 bg-blue-600 text-white rounded-xl font-bold"
+                className="w-full py-4 bg-blue-600 text-white rounded-xl font-normal"
                 type="button"
               >
                 Оставить заявку
@@ -1010,33 +1012,33 @@ const Hero = ({ onOpenCalc }) => (
     <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/70 to-transparent" />
     <div className="container mx-auto px-6 relative z-10">
       <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
-        <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-blue-600/20 border border-blue-500/30 text-blue-300 text-[10px] font-bold uppercase tracking-[0.3em] mb-10 backdrop-blur-sm">
+        <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-blue-600/20 border border-blue-500/30 text-blue-300 text-[10px] font-normal uppercase tracking-[0.3em] mb-10 backdrop-blur-sm">
           <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
           Проектирование • Поставка • Монтаж • Сервис
         </div>
 
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.95] tracking-tight mb-10">
+        <h1 className="text-5xl md:text-7xl lg:text-8xl font-normal leading-[0.95] tracking-tight mb-10">
           Климат{" "}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
             как искусство
           </span>
         </h1>
 
-        <p className="max-w-2xl text-lg md:text-xl font-medium text-slate-400 mb-12 leading-relaxed">
+        <p className="max-w-2xl text-lg md:text-xl font-normal text-slate-500 mb-12 leading-relaxed">
           Проектирование, монтаж и сервис систем вентиляции, кондиционирования, дымоудаления, автоматизации для жилых, коммерческих и промышленных объектов.
         </p>
 
         <div className="flex flex-wrap gap-5">
           <button
             onClick={() => onOpenCalc("vent")}
-            className="px-10 py-5 bg-blue-600 rounded-full font-bold text-lg flex items-center gap-3 hover:bg-blue-500 transition-all shadow-2xl shadow-blue-600/30"
+            className="px-10 py-5 bg-blue-600 rounded-full font-normal text-lg flex items-center gap-3 hover:bg-blue-500 transition-all shadow-2xl shadow-blue-600/30"
             type="button"
           >
             Начать расчет <ArrowRight size={20} />
           </button>
           <a
             href="#catalog"
-            className="px-10 py-5 bg-white/5 border border-white/20 backdrop-blur-md rounded-full font-bold text-lg hover:bg-white/10 transition-all text-center flex items-center justify-center"
+            className="px-10 py-5 bg-white/5 border border-white/20 backdrop-blur-md rounded-full font-normal text-lg hover:bg-white/10 transition-all text-center flex items-center justify-center"
           >
             Наши решения
           </a>
@@ -1046,125 +1048,216 @@ const Hero = ({ onOpenCalc }) => (
   </section>
 );
 
-const CloudPromo = ({ onOpenLead }) => (
-  <section id="cloud" className="py-12 md:py-20 bg-slate-50 relative overflow-hidden">
-    <div className="container mx-auto px-6 relative z-10">
-      {/* Hero блок в стиле daichi.cloud */}
-      <div className="flex flex-col lg:flex-row items-center gap-6 md:gap-10 mb-8 md:mb-12">
-        <div className="lg:w-1/2">
-          <span className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-4 md:mb-6 block">Daichi Cloud</span>
-          <h2 className="text-4xl md:text-6xl font-bold text-slate-900 mb-3 md:mb-4 leading-tight uppercase tracking-tighter">
-            Это. Облачный. Кондиционер.
-          </h2>
-          <p className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-emerald-500 mb-4 md:mb-6">
-            Сердце твоего климата
-          </p>
-          <p className="text-slate-500 text-lg font-medium mb-4 md:mb-6 leading-relaxed">
-            Умный кондиционер со встроенным Wi-Fi модулем, подключенными онлайн-сервисами и выгодными условиями оплаты.
-          </p>
-          <div className="flex items-center gap-4 mb-6 md:mb-8">
-            <span className="text-2xl font-bold text-slate-900">от 3 990 ₽</span>
-            <button
-              onClick={() => onOpenLead("Облачный кондиционер")}
-              className="px-8 py-4 bg-slate-900 text-white rounded-full font-bold text-sm uppercase tracking-widest hover:bg-blue-600 transition-all"
-              type="button"
-            >
-              Узнать подробнее
-            </button>
-          </div>
-        </div>
-        <div className="lg:w-1/2 w-full">
-          <div className="relative aspect-[16/10] w-full overflow-hidden rounded-3xl shadow-2xl">
-            <img
-              src="/photos/ac-apartment-wide.jpg"
-              alt="Облачный кондиционер"
-              className="absolute inset-0 h-full w-full object-cover"
-              loading="lazy"
-            />
-          </div>
+/** Данные категорий TURKOV по turkov.ru */
+const turkovCategories = [
+  {
+    id: "turkov-pvu",
+    icon: "/icons/recuperation.svg",
+    title: "Приточно-вытяжные установки",
+    description: "Энергоэффективные ПВУ с пластинчатым или роторным рекуператором для квартир и промышленности.",
+    details: [
+      { title: "С роторным рекуператором", desc: "Бытовые, полупромышленные и промышленные установки от 400 до 30 000 м³/ч.", icon: "/icons/recuperation.svg" },
+      { title: "С пластинчатым рекуператором", desc: "2–4 ступени рекуперации, работа до −45 °C. Энтальпийные теплообменники.", icon: "/icons/recuperation.svg" },
+    ],
+  },
+  {
+    id: "turkov-pritoch",
+    icon: "/icons/duct.svg",
+    title: "Приточные установки",
+    description: "Нагрев и подача очищенного воздуха для объектов от 20 до 20 000 м².",
+    details: [
+      { title: "Компактные и бытовые", desc: "Приточки для квартир и небольших объектов.", icon: "/icons/duct.svg" },
+      { title: "Промышленные", desc: "Мощные приточные системы для коммерческих и производственных зданий.", icon: "/icons/factory.svg" },
+      { title: "С HEPA фильтром", desc: "Высокая степень очистки воздуха для медицинских и чистых помещений.", icon: "/icons/filter.svg" },
+    ],
+  },
+  {
+    id: "turkov-pool",
+    icon: "/icons/waves.svg",
+    title: "Вентиляция для бассейна",
+    description: "Осушение, воздухообмен, рекуперация и фильтрация для бассейнов.",
+    details: [
+      { title: "ПВУ с рециркуляцией", desc: "Приточно-вытяжные установки с рециркуляцией воздуха.", icon: "/icons/recuperation.svg" },
+      { title: "Климатические комплексы", desc: "С рекуперацией, опционально со встроенным осушителем.", icon: "/icons/waves.svg" },
+      { title: "Фреоновые осушители", desc: "Осушители с подмесом до 480 л/сутки.", icon: "/icons/wind.svg" },
+    ],
+  },
+  {
+    id: "turkov-vytyazh",
+    icon: "/icons/wind.svg",
+    title: "Вытяжные установки",
+    description: "Профессиональные решения для удаления отработанного воздуха.",
+    details: [
+      { title: "Бытовые вытяжные", desc: "Для квартир и частных домов.", icon: "/icons/wind.svg" },
+      { title: "Промышленные вытяжные", desc: "Мощные вытяжные системы для производства и складов.", icon: "/icons/factory.svg" },
+    ],
+  },
+  {
+    id: "turkov-filter",
+    icon: "/icons/filter.svg",
+    title: "Оборудование с высокой фильтрацией",
+    description: "Приточные установки и канальные очистители с HEPA и повышенной степенью очистки.",
+    details: [
+      { title: "Приточные с HEPA", desc: "Оборудование с фильтрами тонкой очистки F5 и выше.", icon: "/icons/filter.svg" },
+      { title: "Канальные очистители воздуха", desc: "Встраиваемые модули для доочистки в существующих системах.", icon: "/icons/duct.svg" },
+    ],
+  },
+  {
+    id: "turkov-okhl-uvl",
+    icon: "/icons/droplets.svg",
+    title: "Охладители, увлажнители, очистители",
+    description: "Дополнительные модули для идеального микроклимата.",
+    details: [
+      { title: "Канальные охладители", desc: "Охлаждение приточного воздуха в тёплый сезон.", icon: "/icons/snowflake.svg" },
+      { title: "Адиабатические увлажнители", desc: "Естественное испарение через канальные блоки.", icon: "/icons/droplets.svg" },
+      { title: "Канальные очистители", desc: "Доочистка воздуха в вентканалах.", icon: "/icons/filter.svg" },
+    ],
+  },
+  {
+    id: "turkov-osush",
+    icon: "/icons/wind.svg",
+    title: "Конденсационные осушители",
+    description: "Снижение влажности в бассейнах и складских помещениях.",
+    details: [
+      { title: "Конденсационные осушители", desc: "Эффективное осушение для влажных помещений.", icon: "/icons/wind.svg" },
+    ],
+  },
+  {
+    id: "turkov-auto",
+    icon: "/icons/smart-modes.svg",
+    title: "Датчики и автоматика",
+    description: "Датчики, пульты, контроллеры и модули для управления вентиляцией.",
+    details: [
+      { title: "Датчики", desc: "CO₂, влажности, температуры, присутствия.", icon: "/icons/sensors.svg" },
+      { title: "Пульты и регуляторы", desc: "Управление и настройка режимов работы.", icon: "/icons/smart-modes.svg" },
+      { title: "Контроллеры и модули", desc: "Интеграция с умным домом (Яндекс, TURKOV Wi-Fi).", icon: "/icons/smart-modes.svg" },
+    ],
+  },
+];
+
+const TurkovCategoryModal = ({ category, onClose, onOpenLead }) => (
+  <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 md:p-6 font-sans">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+      className="absolute inset-0 bg-slate-900/60 backdrop-blur-xl"
+    />
+    <motion.div
+      className="bg-white w-full max-w-2xl md:rounded-[2.5rem] relative z-10 overflow-hidden shadow-2xl"
+    >
+      <div className="relative h-40 md:h-48 overflow-hidden bg-gradient-to-br from-slate-800 to-slate-600 flex items-center justify-center">
+        <img src={category.icon} alt="" className="w-20 h-20 md:w-24 md:h-24 opacity-60" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
+        <div className="absolute bottom-6 left-8 right-8 text-white">
+          <h2 className="text-2xl md:text-3xl font-normal tracking-tight">{category.title}</h2>
         </div>
       </div>
 
-      {/* Преимущества */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8 md:mb-12">
-        {[
-          { text: "Его пульт не потеряется — он всегда в твоём смартфоне" },
-          { text: "Можно купить при ограниченном бюджете" },
-          { text: "Расскажет заранее о своём состоянии — онлайн-диагностика" },
-          { text: "Больше возможностей, чем у кондиционеров с Wi-Fi" },
-        ].map((item, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.4, delay: i * 0.08 }}
-            className="p-5 rounded-2xl bg-white border border-slate-100 shadow-sm"
-          >
-            <p className="text-slate-700 font-medium text-sm leading-relaxed">{item.text}</p>
-          </motion.div>
-        ))}
-      </div>
-
-      {/* Тарифы (модель daichi.cloud) */}
-      <div className="mb-8 md:mb-12">
-        <h3 className="text-2xl md:text-3xl font-bold text-slate-900 mb-3 md:mb-4">
-          Самый доступный кондиционер
-        </h3>
-        <p className="text-slate-500 max-w-2xl mb-6 md:mb-10">
-          Облачный кондиционер можно приобрести по разумной цене. Независимо от выбранного способа оплаты вы получите устройство, мобильное управление и онлайн-диагностику.
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-          {[
-            { title: "Тарификация по дням", price: "3 990 ₽", desc: "10 дней в год, докупай по необходимости", badge: null },
-            { title: "Годовая подписка", price: "17 490 ₽", desc: "Выгодная цена, без доплат в течение года", badge: "Новинка" },
-            { title: "Бессрочный доступ", price: "24 990 ₽", desc: "Кондиционер в собственность, управление на весь срок службы", badge: null },
-          ].map((t, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.4, delay: i * 0.1 }}
-              className="relative p-6 rounded-2xl bg-white border-2 border-slate-200 hover:border-blue-300 transition-colors shadow-sm"
-            >
-              {t.badge && (
-                <span className="absolute -top-2 right-4 px-3 py-0.5 bg-blue-600 text-white text-xs font-bold rounded-full">{t.badge}</span>
-              )}
-              <h4 className="text-lg font-bold text-slate-900 mb-2">{t.title}</h4>
-              <p className="text-2xl font-bold text-slate-900 mb-3">от {t.price}</p>
-              <p className="text-slate-500 text-sm mb-4">{t.desc}</p>
-              <button
-                onClick={() => onOpenLead(`Облачный кондиционер: ${t.title}`)}
-                className="w-full py-3 rounded-xl bg-slate-900 text-white font-bold text-sm hover:bg-blue-600 transition-all"
-                type="button"
-              >
-                Подробнее
-              </button>
-            </motion.div>
-          ))}
+      <div className="p-6 md:p-10 overflow-y-auto max-h-[60vh]">
+        <div className="flex justify-between items-center mb-8">
+          <span className="text-xs font-normal text-blue-600 uppercase tracking-widest">TURKOV</span>
+          <button onClick={onClose} type="button" className="p-2 hover:bg-slate-50 rounded-full">
+            <X size={24} />
+          </button>
         </div>
-      </div>
 
-      {/* Приложение Daichi Comfort */}
-      <div className="p-5 md:p-8 rounded-3xl bg-white border border-slate-200">
-        <h3 className="text-2xl font-bold text-slate-900 mb-4 md:mb-6">
-          Управляй климатом в приложении Daichi Comfort
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[
-            "Управление со смартфона, планшета или ПК",
-            "Быстрые команды и любимые режимы",
-            "Расписание и таймер",
-            "Геолокация: включение при приближении к дому",
-          ].map((s, i) => (
-            <div key={i} className="flex items-start gap-3">
-              <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
-              <span className="text-slate-600 text-sm">{s}</span>
+        <p className="text-slate-600 font-normal mb-8 leading-relaxed">{category.description}</p>
+
+        <div className="space-y-6">
+          {category.details.map((item, idx) => (
+            <div key={idx} className="group flex gap-4 items-start">
+              <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 transition-colors group-hover:bg-blue-600">
+                <img src={item.icon} alt="" className="w-6 h-6 opacity-80 transition-[filter,opacity] group-hover:opacity-100 group-hover:brightness-0 group-hover:invert" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-normal text-slate-900 mb-1">{item.title}</h3>
+                <p className="text-slate-600 font-normal text-sm leading-relaxed mb-3">{item.desc}</p>
+                <div className="flex gap-2 flex-wrap">
+                  <button
+                    onClick={() => onOpenLead(`TURKOV ${category.title} → ${item.title} (Подбор)`)}
+                    className="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg font-normal text-xs hover:bg-blue-600 hover:text-white transition-all uppercase tracking-wide"
+                  >
+                    Подобрать
+                  </button>
+                  <button
+                    onClick={() => onOpenLead(`TURKOV ${category.title} → ${item.title} (Смета)`)}
+                    className="px-4 py-2 border border-slate-200 text-slate-600 rounded-lg font-normal text-xs hover:border-blue-600 hover:text-blue-600 transition-all uppercase tracking-wide"
+                  >
+                    Получить смету
+                  </button>
+                </div>
+              </div>
             </div>
           ))}
         </div>
+
+        <div className="mt-8 pt-6 border-t border-slate-100">
+          <button
+            onClick={() => onOpenLead(`TURKOV ${category.title} (Общий запрос)`)}
+            className="w-full py-4 bg-slate-900 text-white rounded-2xl font-normal hover:bg-blue-600 transition-all"
+          >
+            Запросить консультацию по категории
+          </button>
+        </div>
       </div>
+    </motion.div>
+  </div>
+);
+
+const TurkovPromo = ({ onOpenCategory, onOpenLead }) => (
+  <section id="turkov" className="py-12 md:py-20 bg-slate-50 relative overflow-hidden">
+    <div className="container mx-auto px-6 relative z-10">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-8 md:mb-12">
+        <div className="max-w-2xl">
+          <span className="text-xs font-normal text-blue-600 uppercase tracking-widest mb-3 block">Официальный дилер</span>
+          <h2 className="text-3xl md:text-5xl font-normal text-slate-900 mb-4 leading-tight uppercase tracking-tight">
+            TURKOV
+          </h2>
+          <p className="text-slate-600 font-normal leading-relaxed mb-4">
+            TURKOV — российский производитель энергоэффективных климатических систем, ведущий свою деятельность с 2012 года.
+            Специализация: разработка и изготовление оборудования для объектов любого масштаба — от квартир до промышленных предприятий.
+          </p>
+          <p className="text-slate-800 font-medium text-sm">
+            Воздух НСК является официальным дилером производителя TURKOV.
+          </p>
+        </div>
+        <button
+          onClick={() => onOpenLead("TURKOV — общий запрос")}
+          className="shrink-0 px-8 py-4 bg-slate-900 text-white rounded-full font-normal text-sm uppercase tracking-widest hover:bg-blue-600 transition-all"
+          type="button"
+        >
+          Запросить консультацию
+        </button>
+      </div>
+
+      <motion.div
+        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={{ visible: { transition: { staggerChildren: 0.05 } } }}
+      >
+        {turkovCategories.map((item, i) => (
+          <motion.div
+            key={item.id}
+            variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            onClick={() => onOpenCategory(item)}
+            className="group p-5 md:p-6 rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-lg hover:border-blue-200 transition-all cursor-pointer"
+          >
+            <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center mb-4 group-hover:bg-blue-600 transition-colors">
+              <img src={item.icon} alt="" className="w-6 h-6 opacity-80 group-hover:opacity-100 group-hover:brightness-0 group-hover:invert" />
+            </div>
+            <h3 className="text-sm md:text-base font-normal text-slate-900 mb-1 uppercase tracking-wide">{item.title}</h3>
+            <p className="text-slate-600 text-xs font-normal line-clamp-2 leading-relaxed">{item.description}</p>
+            <span className="inline-flex items-center gap-1 text-xs font-normal text-blue-600 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              Подробнее <ArrowRight size={12} />
+            </span>
+          </motion.div>
+        ))}
+      </motion.div>
     </div>
   </section>
 );
@@ -1178,10 +1271,10 @@ const Catalog = ({ onOpenSolution }) => {
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between items-end mb-10 md:mb-20 gap-6 md:gap-10">
           <div className="max-w-xl">
-            <h2 className="text-4xl md:text-6xl font-bold text-slate-900 mb-4 md:mb-6 uppercase tracking-tight leading-none">
+            <h2 className="font-heading text-4xl md:text-6xl font-normal text-slate-900 mb-4 md:mb-6 uppercase tracking-tight leading-tight">
               Комплексный подход
             </h2>
-            <p className="text-slate-500 font-medium text-lg">
+            <p className="font-sans text-slate-600 font-normal text-lg leading-relaxed tracking-body">
               Мы проектируем и реализуем системы, которые создают идеальную среду для жизни и работы.
             </p>
           </div>
@@ -1196,8 +1289,8 @@ const Catalog = ({ onOpenSolution }) => {
                 key={key}
                 onClick={() => setSegment(key)}
                 className={[
-                  "px-6 md:px-8 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all",
-                  segment === key ? "bg-slate-900 text-white shadow-xl" : "text-slate-400 hover:text-slate-900",
+                  "px-6 md:px-8 py-3 rounded-xl text-xs font-normal uppercase tracking-widest transition-all",
+                  segment === key ? "bg-slate-900 text-white shadow-xl" : "text-slate-500 hover:text-slate-900",
                 ].join(" ")}
                 type="button"
               >
@@ -1207,11 +1300,19 @@ const Catalog = ({ onOpenSolution }) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-8">
+        <motion.div
+          key={segment}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-8"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
+          variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
+        >
           {items.map((item) => (
             <motion.div
-              layoutId={item.id}
               key={item.id}
+              variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               onClick={() => onOpenSolution(item)}
               className="group relative h-[360px] md:h-[480px] rounded-[2.5rem] overflow-hidden cursor-pointer bg-slate-100 shadow-sm hover:shadow-2xl transition-all border border-slate-100"
             >
@@ -1226,17 +1327,17 @@ const Catalog = ({ onOpenSolution }) => {
                 <div className="w-12 h-12 rounded-2xl bg-white/30 md:bg-white/20 md:backdrop-blur-md flex items-center justify-center mb-4 md:mb-6 group-hover:bg-blue-600 transition-colors">
                   <item.icon size={24} />
                 </div>
-                <h3 className="text-xl font-bold uppercase tracking-widest mb-2 md:mb-3">{item.title}</h3>
+                <h3 className="text-xl font-normal uppercase tracking-widest mb-2 md:mb-3">{item.title}</h3>
                 <div className="h-0 group-hover:h-auto opacity-0 group-hover:opacity-100 transition-all duration-500 overflow-hidden">
-                  <p className="text-sm text-slate-300 font-medium mb-6 line-clamp-2">{item.description}</p>
-                  <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-blue-400">
+                  <p className="text-sm text-slate-300 font-normal mb-6 line-clamp-2">{item.description}</p>
+                  <span className="inline-flex items-center gap-2 text-xs font-normal uppercase tracking-widest text-blue-400">
                     Детали <ArrowRight size={14} />
                   </span>
                 </div>
               </div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -1254,37 +1355,45 @@ const EngineeringSection = ({ onOpenBrief }) => {
     <section id="engineering" className="py-14 md:py-32 bg-slate-950 text-white relative overflow-hidden">
       <div className="container mx-auto px-6 relative z-10">
         <div className="max-w-4xl mb-10 md:mb-20 text-center mx-auto">
-          <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 leading-tight uppercase tracking-tighter">
+          <h2 className="font-heading text-3xl md:text-5xl font-normal mb-4 md:mb-6 leading-tight uppercase tracking-tighter">
             Профессиональный инжиниринг
           </h2>
-          <p className="text-slate-400 font-medium text-lg leading-relaxed">
+          <p className="font-sans text-slate-400 font-normal text-lg leading-relaxed tracking-body">
             Мы не просто «вешаем ящики», а создаем проект, который учитывает архитектуру, бюджет и долгосрочную эффективность.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-8 mb-10 md:mb-20">
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-8 mb-10 md:mb-20"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+        >
           {services.map((s, i) => (
-            <div
+            <motion.div
               key={i}
+              variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               className="p-8 bg-white/5 rounded-3xl border border-white/5 hover:bg-white/10 transition-all group"
             >
               <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white mb-6 shadow-sm group-hover:scale-110 transition-all">
                 <s.icon size={24} />
               </div>
-              <h4 className="text-lg font-bold mb-3 uppercase tracking-wider">{s.title}</h4>
-              <p className="text-sm text-slate-400 font-medium leading-relaxed">{s.desc}</p>
-            </div>
+              <h4 className="text-lg font-normal mb-3 uppercase tracking-wider">{s.title}</h4>
+              <p className="text-sm text-slate-400 font-normal leading-relaxed">{s.desc}</p>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         <div className="bg-white/5 border border-white/10 rounded-[3rem] p-6 md:p-16 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-10">
           <div className="max-w-xl">
-            <h3 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">Нужна помощь с техзаданием?</h3>
-            <p className="text-slate-400 font-medium">AI-помощник сформирует черновик ТЗ за пару минут.</p>
+            <h3 className="text-2xl md:text-3xl font-normal mb-3 md:mb-4">Нужна помощь с техзаданием?</h3>
+            <p className="text-slate-400 font-normal">AI-помощник сформирует черновик ТЗ за пару минут.</p>
           </div>
           <button
             onClick={onOpenBrief}
-            className="px-10 py-5 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-500 transition-all shadow-xl flex items-center gap-3 shrink-0"
+            className="px-10 py-5 bg-blue-600 text-white rounded-2xl font-normal hover:bg-blue-500 transition-all shadow-xl flex items-center gap-3 shrink-0"
             type="button"
           >
             <Sparkles size={20} className="text-blue-200" /> Попробовать AI-генератор
@@ -1311,10 +1420,10 @@ const PartnersSection = ({ onOpenPartner }) => {
     <section id="partners" className="py-14 md:py-32 bg-white text-slate-900 relative overflow-hidden">
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-10 md:mb-20 max-w-3xl mx-auto">
-          <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight">
+          <h2 className="font-heading text-3xl md:text-5xl font-normal mb-4 md:mb-6 tracking-tight leading-tight">
             Сотрудничество для профессионалов
           </h2>
-          <p className="text-slate-500 font-medium text-lg">
+          <p className="font-sans text-slate-600 font-normal text-lg leading-relaxed tracking-body">
             Мы становимся вашим инженерным отделом. Вы творите — мы обеспечиваем техническую реализацию.
           </p>
         </div>
@@ -1322,14 +1431,14 @@ const PartnersSection = ({ onOpenPartner }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 mb-10 md:mb-20">
           {benefits.map((b, i) => (
             <div key={i} className="bg-slate-50 border border-slate-100 p-6 md:p-12 rounded-[2.5rem]">
-              <h3 className="text-xl md:text-2xl font-bold text-blue-600 mb-5 md:mb-8">{b.title}</h3>
+              <h3 className="text-xl md:text-2xl font-normal text-blue-600 mb-5 md:mb-8">{b.title}</h3>
               <ul className="space-y-4">
                 {b.points.map((p, j) => (
                   <li key={j} className="flex items-center gap-3">
                     <div className="w-5 h-5 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
                       <CheckCircle2 size={12} />
                     </div>
-                    <span className="text-slate-600 font-medium">{p}</span>
+                    <span className="text-slate-600 font-normal">{p}</span>
                   </li>
                 ))}
               </ul>
@@ -1340,7 +1449,7 @@ const PartnersSection = ({ onOpenPartner }) => {
         <div className="text-center">
           <button
             onClick={onOpenPartner}
-            className="px-12 py-5 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition-all shadow-2xl flex items-center gap-3 mx-auto uppercase tracking-widest text-sm"
+            className="px-12 py-5 bg-blue-600 text-white rounded-2xl font-normal hover:bg-blue-700 transition-all shadow-2xl flex items-center gap-3 mx-auto uppercase tracking-widest text-sm"
             type="button"
           >
             <UserCheck size={20} /> Стать партнером
@@ -1384,8 +1493,8 @@ const Services = ({ onOpenService }) => {
     <section id="services" className="py-14 md:py-24 bg-white border-t border-slate-100">
       <div className="container mx-auto px-6">
         <div className="text-center mb-8 md:mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-slate-900">Услуги под ключ</h2>
-          <p className="text-slate-500 font-medium mt-2 md:mt-3">Нажмите на услугу, чтобы увидеть детали и состав работ.</p>
+          <h2 className="font-heading text-3xl md:text-4xl font-normal text-slate-900 tracking-tight leading-tight">Услуги под ключ</h2>
+          <p className="font-sans text-slate-600 font-normal mt-2 md:mt-3 leading-relaxed tracking-body">Нажмите на услугу, чтобы увидеть детали и состав работ.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -1397,9 +1506,9 @@ const Services = ({ onOpenService }) => {
               className="text-left p-6 md:p-8 bg-slate-50 rounded-2xl hover:shadow-xl transition-all border border-slate-100 group hover:border-blue-200"
             >
               <s.icon size={32} className="text-blue-600 mb-4 md:mb-6 group-hover:scale-110 transition-transform" />
-              <h3 className="text-xl font-bold mb-2 md:mb-3">{s.title}</h3>
-              <p className="text-slate-500 text-sm font-medium">{s.desc}</p>
-              <div className="mt-6 text-xs font-bold uppercase tracking-widest text-blue-600 inline-flex items-center gap-2">
+              <h3 className="text-xl font-normal mb-2 md:mb-3">{s.title}</h3>
+              <p className="text-slate-600 text-sm font-normal">{s.desc}</p>
+              <div className="mt-6 text-xs font-normal uppercase tracking-widest text-blue-600 inline-flex items-center gap-2">
                 Подробнее <ArrowRight size={14} />
               </div>
             </button>
@@ -1416,7 +1525,7 @@ const ContactForm = ({ onOpenLead, onOpenContact }) => (
       <div className="bg-slate-950 rounded-[3rem] md:rounded-[4rem] p-6 md:p-20 text-white relative overflow-hidden flex flex-col lg:flex-row gap-8 md:gap-14 shadow-2xl">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-blue-600/10 skew-x-12 translate-x-24" />
         <div className="lg:w-1/2 relative z-10">
-          <h2 className="text-4xl md:text-7xl font-bold mb-6 md:mb-10 leading-none uppercase tracking-tighter">
+          <h2 className="font-heading text-4xl md:text-7xl font-normal mb-6 md:mb-10 leading-none uppercase tracking-tighter">
             Напишите нам
           </h2>
 
@@ -1426,10 +1535,10 @@ const ContactForm = ({ onOpenLead, onOpenContact }) => (
                 <Phone size={28} />
               </div>
               <div>
-                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">
+                <p className="text-[10px] font-normal text-slate-600 uppercase tracking-widest mb-2">
                   Телефон отдела продаж
                 </p>
-                <a href="tel:+73832631551" className="text-2xl md:text-3xl font-medium hover:text-blue-400 transition-colors tracking-tight">
+                <a href="tel:+73832631551" className="text-2xl md:text-3xl font-normal hover:text-blue-400 transition-colors tracking-tight">
                   +7 (383) 263-15-51
                 </a>
               </div>
@@ -1440,10 +1549,10 @@ const ContactForm = ({ onOpenLead, onOpenContact }) => (
                 <Mail size={28} />
               </div>
               <div>
-                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">
+                <p className="text-[10px] font-normal text-slate-600 uppercase tracking-widest mb-2">
                   Электронная почта
                 </p>
-                <a href="mailto:info@vozduh-nsk54.ru" className="text-xl md:text-2xl font-medium hover:text-blue-400 transition-colors">
+                <a href="mailto:info@vozduh-nsk54.ru" className="text-xl md:text-2xl font-normal hover:text-blue-400 transition-colors">
                   info@vozduh-nsk54.ru
                 </a>
               </div>
@@ -1454,10 +1563,10 @@ const ContactForm = ({ onOpenLead, onOpenContact }) => (
                 <MapPin size={28} />
               </div>
               <div>
-                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">
+                <p className="text-[10px] font-normal text-slate-600 uppercase tracking-widest mb-2">
                   Офис
                 </p>
-                <p className="text-lg md:text-xl font-medium text-slate-300">
+                <p className="text-lg md:text-xl font-normal text-slate-300">
                   г. Новосибирск, ул. Королева 40, офис 208
                 </p>
               </div>
@@ -1467,14 +1576,14 @@ const ContactForm = ({ onOpenLead, onOpenContact }) => (
           <div className="flex gap-4 flex-wrap">
             <button
               onClick={() => onOpenLead("Контакты: Telegram")}
-              className="px-8 py-4 bg-blue-600 rounded-2xl font-bold flex items-center gap-3 hover:bg-blue-500 transition-all shadow-xl shadow-blue-600/20 tracking-wide text-sm"
+              className="px-8 py-4 bg-blue-600 rounded-2xl font-normal flex items-center gap-3 hover:bg-blue-500 transition-all shadow-xl shadow-blue-600/20 tracking-wide text-sm"
               type="button"
             >
               <Send size={20} /> Telegram
             </button>
             <button
               onClick={onOpenContact}
-              className="px-8 py-4 bg-white/5 border border-white/10 rounded-2xl font-bold flex items-center gap-3 hover:bg-white/10 transition-all tracking-wide text-sm"
+              className="px-8 py-4 bg-white/5 border border-white/10 rounded-2xl font-normal flex items-center gap-3 hover:bg-white/10 transition-all tracking-wide text-sm"
               type="button"
             >
               <MapPin size={20} /> Оставить заявку
@@ -1490,23 +1599,23 @@ const ContactForm = ({ onOpenLead, onOpenContact }) => (
             }}
             className="space-y-4 md:space-y-6 bg-white/5 p-6 md:p-12 rounded-[2.5rem] border border-white/10 backdrop-blur-sm shadow-inner"
           >
-            <h3 className="text-2xl md:text-3xl font-bold mb-2 uppercase">Заказать звонок</h3>
-            <p className="text-slate-400 text-sm font-medium">
+            <h3 className="text-2xl md:text-3xl font-normal mb-2 uppercase">Заказать звонок</h3>
+            <p className="text-slate-500 text-sm font-normal">
               Оставьте контакты — перезвоним и сделаем первичный подбор.
             </p>
             <div className="space-y-4">
               <input
                 type="text"
                 placeholder="Ваше имя"
-                className="w-full p-5 bg-white/5 rounded-2xl border border-white/10 outline-none focus:border-blue-500 transition-all font-medium"
+                className="w-full p-5 bg-white/5 rounded-2xl border border-white/10 outline-none focus:border-blue-500 transition-all font-normal"
               />
               <input
                 type="tel"
                 placeholder="Телефон"
-                className="w-full p-5 bg-white/5 rounded-2xl border border-white/10 outline-none focus:border-blue-500 transition-all font-medium"
+                className="w-full p-5 bg-white/5 rounded-2xl border border-white/10 outline-none focus:border-blue-500 transition-all font-normal"
               />
             </div>
-            <button className="w-full py-5 bg-white text-slate-900 rounded-[2rem] font-bold text-lg hover:bg-blue-400 hover:text-white transition-all shadow-2xl">
+            <button className="w-full py-5 bg-white text-slate-900 rounded-[2rem] font-normal text-lg hover:bg-blue-400 hover:text-white transition-all shadow-2xl">
               Отправить данные
             </button>
           </form>
@@ -1521,30 +1630,30 @@ const Footer = () => (
     <div className="container mx-auto px-6">
       <div className="flex flex-col md:flex-row justify-between border-b border-slate-200 pb-8 md:pb-12 mb-8 md:mb-12 gap-6 md:gap-10">
         <div>
-          <div className="font-heading text-slate-900 text-3xl font-bold mb-4 uppercase tracking-tighter">
+          <div className="font-heading text-slate-900 text-3xl font-normal mb-4 uppercase tracking-tighter leading-tight">
             ВОЗДУХ <span className="text-blue-600">НСК</span>
           </div>
-          <p className="text-slate-400 font-medium text-sm">
+          <p className="font-sans text-slate-600 font-normal text-sm leading-relaxed tracking-body">
             Инжиниринговые решения полного цикла. Климат для жизни и бизнеса.
           </p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-12 text-sm">
           <div>
-            <h4 className="text-slate-900 font-bold mb-4 uppercase tracking-widest text-[10px]">
+            <h4 className="text-slate-900 font-normal mb-4 uppercase tracking-widest text-[10px]">
               Навигация
             </h4>
-            <div className="flex flex-col gap-3 font-medium text-slate-500">
+            <div className="flex flex-col gap-3 font-normal text-slate-600">
               <a href="#catalog">Решения</a>
               <a href="#engineering">Инжиниринг</a>
               <a href="#partners">Партнерам</a>
             </div>
           </div>
           <div>
-            <h4 className="text-slate-900 font-bold mb-4 uppercase tracking-widest text-[10px]">
+            <h4 className="text-slate-900 font-normal mb-4 uppercase tracking-widest text-[10px]">
               Клиентам
             </h4>
-            <div className="flex flex-col gap-3 font-medium text-slate-500">
+            <div className="flex flex-col gap-3 font-normal text-slate-600">
               <span>Договор</span>
               <span>Сервис</span>
               <span>Гарантии</span>
@@ -1553,9 +1662,9 @@ const Footer = () => (
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 text-[11px] font-medium text-slate-400 leading-relaxed uppercase tracking-widest">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 text-[11px] font-normal text-slate-500 leading-relaxed uppercase tracking-widest">
         <div className="space-y-2">
-          <p className="font-bold text-slate-600">Карточка организации:</p>
+          <p className="font-normal text-slate-600">Карточка организации:</p>
           <p><strong>ООО «ВОЗДУХ НСК»</strong></p>
           <p>ИНН: 5405074634 | КПП: 540101001</p>
           <p>ОГРН: 1225400025190</p>
@@ -1563,7 +1672,7 @@ const Footer = () => (
         </div>
 
         <div className="lg:text-right space-y-2">
-          <p className="font-bold text-slate-600">Руководство:</p>
+          <p className="font-normal text-slate-600">Руководство:</p>
           <p>Генеральный директор: <strong>Полеха Яков Владимирович</strong></p>
           <p className="mt-6 opacity-60">© {new Date().getFullYear()} Все права защищены.</p>
         </div>
@@ -1631,8 +1740,8 @@ const ClimateAssistant = () => {
                   <Sparkles size={16} className="text-white" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm">Инженер‑консультант</h3>
-                  <p className="text-xs text-slate-400 font-medium">Онлайн 24/7</p>
+                  <h3 className="font-normal text-sm">Инженер‑консультант</h3>
+                  <p className="text-xs text-slate-500 font-normal">Онлайн 24/7</p>
                 </div>
               </div>
               <button
@@ -1649,14 +1758,14 @@ const ClimateAssistant = () => {
                 <div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                   <div
                     className={[
-                      "max-w-[80%] p-3 rounded-2xl text-sm font-medium leading-relaxed",
+                      "max-w-[80%] p-3 rounded-2xl font-normal",
                       msg.role === "user"
-                        ? "bg-blue-600 text-white rounded-br-none"
-                        : "bg-white text-slate-700 shadow-sm border border-slate-100 rounded-bl-none",
+                        ? "bg-blue-600 text-white rounded-br-none text-user-msg"
+                        : "bg-white text-slate-700 shadow-sm border border-slate-100 rounded-bl-none text-ai-response",
                     ].join(" ")}
                   >
                     {String(msg.text).split("\n").map((line, i) => (
-                      <p key={i} className={i > 0 ? "mt-2" : ""}>
+                      <p key={i} className={i > 0 ? "mt-4" : ""}>
                         {line}
                       </p>
                     ))}
@@ -1682,7 +1791,7 @@ const ClimateAssistant = () => {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Например: нужна вытяжка для кафе..."
-                  className="flex-1 bg-slate-100 border-none rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-blue-600 focus:outline-none transition-all font-medium"
+                  className="flex-1 bg-slate-100 border-none rounded-xl px-4 py-2 focus:ring-2 focus:ring-blue-600 focus:outline-none transition-all text-user-msg"
                 />
                 <button
                   type="submit"
@@ -1782,20 +1891,20 @@ const ServiceInfoModal = ({ serviceKey, onClose, onOpenLead }) => {
               <Icon size={22} />
             </div>
             <div>
-              <h3 className="text-xl md:text-2xl font-extrabold text-slate-900">{item.title}</h3>
-              <p className="text-slate-500 font-medium mt-1 text-sm">Кратко и по делу — что входит и какой результат.</p>
+              <h3 className="text-xl md:text-2xl font-normal text-slate-900">{item.title}</h3>
+              <p className="text-slate-600 font-normal mt-1 text-sm">Кратко и по делу — что входит и какой результат.</p>
             </div>
           </div>
           <button type="button" onClick={onClose} className="p-2 rounded-xl hover:bg-slate-50">
-            <X size={22} className="text-slate-500" />
+            <X size={22} className="text-slate-600" />
           </button>
         </div>
 
         <div className="p-6 md:p-8 space-y-6">
           {item.blocks.map((b, i) => (
             <div key={i} className="bg-slate-50 rounded-2xl p-5 border border-slate-100">
-              <h4 className="font-bold text-slate-900">{b.h}</h4>
-              <p className="text-slate-600 font-medium text-sm mt-2 leading-relaxed">{b.p}</p>
+              <h4 className="font-normal text-slate-900">{b.h}</h4>
+              <p className="text-slate-600 font-normal text-sm mt-2 leading-relaxed">{b.p}</p>
             </div>
           ))}
 
@@ -1803,20 +1912,20 @@ const ServiceInfoModal = ({ serviceKey, onClose, onOpenLead }) => {
             <button
               type="button"
               onClick={() => onOpenLead(item.leadHint)}
-              className="flex-1 py-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-blue-600 transition-all"
+              className="flex-1 py-4 bg-slate-900 text-white rounded-2xl font-normal hover:bg-blue-600 transition-all"
             >
               Получить консультацию
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-4 border border-slate-200 rounded-2xl font-bold text-slate-600 hover:border-blue-600 hover:text-blue-600 transition-all"
+              className="flex-1 py-4 border border-slate-200 rounded-2xl font-normal text-slate-600 hover:border-blue-600 hover:text-blue-600 transition-all"
             >
               Закрыть
             </button>
           </div>
 
-          <p className="text-[11px] text-slate-400 font-medium leading-relaxed">
+          <p className="text-[11px] text-slate-500 font-normal leading-relaxed">
             Информация носит ознакомительный характер. Финальный состав работ и подбор оборудования уточняется инженером после осмотра/ТЗ.
           </p>
         </div>
@@ -1928,8 +2037,8 @@ const QuickCalcModal = ({ initialTab = "vent", onClose, onOpenLead }) => {
           <div className="flex items-center gap-3">
             <Calculator size={18} className="text-blue-300" />
             <div>
-              <h3 className="font-bold text-base md:text-lg">Быстрый расчёт (ориентировочно)</h3>
-              <p className="text-xs text-slate-300 font-medium">Для предварительного понимания притока/вытяжки и мощности кондиционера</p>
+              <h3 className="font-normal text-base md:text-lg">Быстрый расчёт (ориентировочно)</h3>
+              <p className="text-xs text-slate-300 font-normal">Для предварительного понимания притока/вытяжки и мощности кондиционера</p>
             </div>
           </div>
           <button type="button" onClick={onClose} className="p-2 hover:bg-white/10 rounded-xl">
@@ -1942,14 +2051,14 @@ const QuickCalcModal = ({ initialTab = "vent", onClose, onOpenLead }) => {
             <button
               type="button"
               onClick={() => setTab("vent")}
-              className={`px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${tab === "vent" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-900"}`}
+              className={`px-5 py-2 rounded-xl text-xs font-normal uppercase tracking-widest transition-all ${tab === "vent" ? "bg-white shadow-sm text-slate-900" : "text-slate-600 hover:text-slate-900"}`}
             >
               Вентиляция
             </button>
             <button
               type="button"
               onClick={() => setTab("ac")}
-              className={`px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${tab === "ac" ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-900"}`}
+              className={`px-5 py-2 rounded-xl text-xs font-normal uppercase tracking-widest transition-all ${tab === "ac" ? "bg-white shadow-sm text-slate-900" : "text-slate-600 hover:text-slate-900"}`}
             >
               Кондиционер
             </button>
@@ -1957,21 +2066,21 @@ const QuickCalcModal = ({ initialTab = "vent", onClose, onOpenLead }) => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4">
-              <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Площадь</div>
-              <input type="number" value={area} onChange={(e) => setArea(e.target.value)} className="w-full p-3 rounded-xl bg-white border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 font-semibold" />
-              <div className="text-xs text-slate-400 mt-2">м²</div>
+              <div className="text-[10px] font-normal text-slate-600 uppercase tracking-widest mb-2">Площадь</div>
+              <input type="number" value={area} onChange={(e) => setArea(e.target.value)} className="w-full p-3 rounded-xl bg-white border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 font-normal" />
+              <div className="text-xs text-slate-500 mt-2">м²</div>
             </div>
 
             <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4">
-              <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Высота</div>
-              <input type="number" step="0.1" value={height} onChange={(e) => setHeight(e.target.value)} className="w-full p-3 rounded-xl bg-white border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 font-semibold" />
-              <div className="text-xs text-slate-400 mt-2">м</div>
+              <div className="text-[10px] font-normal text-slate-600 uppercase tracking-widest mb-2">Высота</div>
+              <input type="number" step="0.1" value={height} onChange={(e) => setHeight(e.target.value)} className="w-full p-3 rounded-xl bg-white border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 font-normal" />
+              <div className="text-xs text-slate-500 mt-2">м</div>
             </div>
 
             <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4">
-              <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Люди</div>
-              <input type="number" value={people} onChange={(e) => setPeople(e.target.value)} className="w-full p-3 rounded-xl bg-white border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 font-semibold" />
-              <div className="text-xs text-slate-400 mt-2">чел.</div>
+              <div className="text-[10px] font-normal text-slate-600 uppercase tracking-widest mb-2">Люди</div>
+              <input type="number" value={people} onChange={(e) => setPeople(e.target.value)} className="w-full p-3 rounded-xl bg-white border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 font-normal" />
+              <div className="text-xs text-slate-500 mt-2">чел.</div>
             </div>
           </div>
 
@@ -1980,10 +2089,10 @@ const QuickCalcModal = ({ initialTab = "vent", onClose, onOpenLead }) => {
               <div className="bg-slate-50 border border-slate-100 rounded-2xl p-5">
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                   <div>
-                    <h4 className="font-bold text-slate-900">Параметры объекта</h4>
-                    <p className="text-sm text-slate-500 font-medium mt-1">Используем минимум по людям и по кратности, берем большее.</p>
+                    <h4 className="font-normal text-slate-900">Параметры объекта</h4>
+                    <p className="text-sm text-slate-600 font-normal mt-1">Используем минимум по людям и по кратности, берем большее.</p>
                   </div>
-                  <select value={vPreset} onChange={(e) => setVPreset(e.target.value)} className="p-3 rounded-xl border border-slate-200 bg-white font-semibold">
+                  <select value={vPreset} onChange={(e) => setVPreset(e.target.value)} className="p-3 rounded-xl border border-slate-200 bg-white font-normal">
                     {VENT_PRESETS.map((p) => (
                       <option key={p.key} value={p.key}>{p.name}</option>
                     ))}
@@ -1993,34 +2102,34 @@ const QuickCalcModal = ({ initialTab = "vent", onClose, onOpenLead }) => {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-white border border-slate-200 rounded-2xl p-5">
-                  <div className="text-xs font-bold uppercase tracking-widest text-slate-500">По людям</div>
-                  <div className="text-3xl font-extrabold mt-2 text-slate-900">{Math.round(vent.L_people)} <span className="text-base font-bold text-slate-400">м³/ч</span></div>
-                  <div className="text-xs text-slate-500 mt-2 font-medium">{vCfg.perPerson} м³/ч на человека</div>
+                  <div className="text-xs font-normal uppercase tracking-widest text-slate-600">По людям</div>
+                  <div className="text-3xl font-normal mt-2 text-slate-900">{Math.round(vent.L_people)} <span className="text-base font-normal text-slate-500">м³/ч</span></div>
+                  <div className="text-xs text-slate-600 mt-2 font-normal">{vCfg.perPerson} м³/ч на человека</div>
                 </div>
 
                 <div className="bg-white border border-slate-200 rounded-2xl p-5">
-                  <div className="text-xs font-bold uppercase tracking-widest text-slate-500">По кратности</div>
-                  <div className="text-3xl font-extrabold mt-2 text-slate-900">{Math.round(vent.L_ach)} <span className="text-base font-bold text-slate-400">м³/ч</span></div>
-                  <div className="text-xs text-slate-500 mt-2 font-medium">{vCfg.ach} 1/ч × объём {round1(volume)} м³</div>
+                  <div className="text-xs font-normal uppercase tracking-widest text-slate-600">По кратности</div>
+                  <div className="text-3xl font-normal mt-2 text-slate-900">{Math.round(vent.L_ach)} <span className="text-base font-normal text-slate-500">м³/ч</span></div>
+                  <div className="text-xs text-slate-600 mt-2 font-normal">{vCfg.ach} 1/ч × объём {round1(volume)} м³</div>
                 </div>
 
                 <div className="bg-slate-900 text-white rounded-2xl p-5">
-                  <div className="text-xs font-bold uppercase tracking-widest text-slate-300">Итого (берём большее)</div>
-                  <div className="text-3xl font-extrabold mt-2">{Math.round(vent.L_total)} <span className="text-base font-bold text-slate-300">м³/ч</span></div>
-                  <div className="text-xs text-slate-300 mt-2 font-medium">Приток ≈ вытяжка</div>
+                  <div className="text-xs font-normal uppercase tracking-widest text-slate-300">Итого (берём большее)</div>
+                  <div className="text-3xl font-normal mt-2">{Math.round(vent.L_total)} <span className="text-base font-normal text-slate-300">м³/ч</span></div>
+                  <div className="text-xs text-slate-300 mt-2 font-normal">Приток ≈ вытяжка</div>
                 </div>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 mt-2">
-                <button type="button" onClick={() => onOpenLead("Быстрый расчёт: Вентиляция")} className="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition-all">
+                <button type="button" onClick={() => onOpenLead("Быстрый расчёт: Вентиляция")} className="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-normal hover:bg-blue-700 transition-all">
                   Получить подбор
                 </button>
-                <button type="button" onClick={onClose} className="flex-1 py-4 border border-slate-200 rounded-2xl font-bold text-slate-600 hover:border-blue-600 hover:text-blue-600 transition-all">
+                <button type="button" onClick={onClose} className="flex-1 py-4 border border-slate-200 rounded-2xl font-normal text-slate-600 hover:border-blue-600 hover:text-blue-600 transition-all">
                   Закрыть
                 </button>
               </div>
 
-              <p className="text-[11px] text-slate-400 font-medium leading-relaxed">
+              <p className="text-[11px] text-slate-500 font-normal leading-relaxed">
                 Оценка ориентировочная. Для санузлов/кухонь/техпомещений могут требоваться отдельные вытяжные нормы и локальные зонты.
               </p>
             </div>
@@ -2029,66 +2138,66 @@ const QuickCalcModal = ({ initialTab = "vent", onClose, onOpenLead }) => {
               <div className="bg-slate-50 border border-slate-100 rounded-2xl p-5">
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                   <div>
-                    <h4 className="font-bold text-slate-900">Параметры помещения</h4>
-                    <p className="text-sm text-slate-500 font-medium mt-1">Считаем по площади и по формуле S×h×q, берём большее, плюс люди и техника.</p>
+                    <h4 className="font-normal text-slate-900">Параметры помещения</h4>
+                    <p className="text-sm text-slate-600 font-normal mt-1">Считаем по площади и по формуле S×h×q, берём большее, плюс люди и техника.</p>
                   </div>
-                  <select value={aPreset} onChange={(e) => setAPreset(e.target.value)} className="p-3 rounded-xl border border-slate-200 bg-white font-semibold">
+                  <select value={aPreset} onChange={(e) => setAPreset(e.target.value)} className="p-3 rounded-xl border border-slate-200 bg-white font-normal">
                     {AC_PRESETS.map((p) => (
                       <option key={p.key} value={p.key}>{p.name}</option>
                     ))}
                   </select>
                 </div>
 
-                <label className="flex items-center gap-3 mt-4 text-sm font-bold text-slate-700">
+                <label className="flex items-center gap-3 mt-4 text-sm font-normal text-slate-700">
                   <input type="checkbox" checked={sunny} onChange={(e) => setSunny(e.target.checked)} />
                   Солнечная сторона / большие окна
                 </label>
 
                 <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Компьютеры / техника (шт.)</div>
-                    <input type="number" value={computers} onChange={(e) => setComputers(e.target.value)} className="w-full p-3 rounded-xl bg-white border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 font-semibold" />
-                    <div className="text-xs text-slate-400 mt-2">≈ 0.3 кВт на 1 шт.</div>
+                    <div className="text-[10px] font-normal text-slate-600 uppercase tracking-widest mb-2">Компьютеры / техника (шт.)</div>
+                    <input type="number" value={computers} onChange={(e) => setComputers(e.target.value)} className="w-full p-3 rounded-xl bg-white border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 font-normal" />
+                    <div className="text-xs text-slate-500 mt-2">≈ 0.3 кВт на 1 шт.</div>
                   </div>
 
                   <div className="bg-white border border-slate-200 rounded-2xl p-4">
-                    <div className="text-xs font-bold uppercase tracking-widest text-slate-500">Рекомендация</div>
-                    <div className="text-2xl font-extrabold mt-2 text-slate-900">{round1(ac.total)} <span className="text-base font-bold text-slate-400">кВт</span></div>
-                    <div className="text-xs text-slate-500 mt-2 font-medium">Ближайший типоразмер: {ac.nearest.label}</div>
+                    <div className="text-xs font-normal uppercase tracking-widest text-slate-600">Рекомендация</div>
+                    <div className="text-2xl font-normal mt-2 text-slate-900">{round1(ac.total)} <span className="text-base font-normal text-slate-500">кВт</span></div>
+                    <div className="text-xs text-slate-600 mt-2 font-normal">Ближайший типоразмер: {ac.nearest.label}</div>
                   </div>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-white border border-slate-200 rounded-2xl p-5">
-                  <div className="text-xs font-bold uppercase tracking-widest text-slate-500">По площади</div>
-                  <div className="text-3xl font-extrabold mt-2 text-slate-900">{round1(ac.q_area)} <span className="text-base font-bold text-slate-400">кВт</span></div>
-                  <div className="text-xs text-slate-500 mt-2 font-medium">{aCfg.wpm2}{sunny ? "×1.2" : ""} Вт/м²</div>
+                  <div className="text-xs font-normal uppercase tracking-widest text-slate-600">По площади</div>
+                  <div className="text-3xl font-normal mt-2 text-slate-900">{round1(ac.q_area)} <span className="text-base font-normal text-slate-500">кВт</span></div>
+                  <div className="text-xs text-slate-600 mt-2 font-normal">{aCfg.wpm2}{sunny ? "×1.2" : ""} Вт/м²</div>
                 </div>
 
                 <div className="bg-white border border-slate-200 rounded-2xl p-5">
-                  <div className="text-xs font-bold uppercase tracking-widest text-slate-500">S×h×q</div>
-                  <div className="text-3xl font-extrabold mt-2 text-slate-900">{round1(ac.q_shq)} <span className="text-base font-bold text-slate-400">кВт</span></div>
-                  <div className="text-xs text-slate-500 mt-2 font-medium">q≈{aCfg.q}{sunny ? "×1.1" : ""}</div>
+                  <div className="text-xs font-normal uppercase tracking-widest text-slate-600">S×h×q</div>
+                  <div className="text-3xl font-normal mt-2 text-slate-900">{round1(ac.q_shq)} <span className="text-base font-normal text-slate-500">кВт</span></div>
+                  <div className="text-xs text-slate-600 mt-2 font-normal">q≈{aCfg.q}{sunny ? "×1.1" : ""}</div>
                 </div>
 
                 <div className="bg-slate-900 text-white rounded-2xl p-5">
-                  <div className="text-xs font-bold uppercase tracking-widest text-slate-300">Добавки</div>
-                  <div className="text-3xl font-extrabold mt-2">{round1(ac.q_people + ac.q_pc)} <span className="text-base font-bold text-slate-300">кВт</span></div>
-                  <div className="text-xs text-slate-300 mt-2 font-medium">Люди + техника</div>
+                  <div className="text-xs font-normal uppercase tracking-widest text-slate-300">Добавки</div>
+                  <div className="text-3xl font-normal mt-2">{round1(ac.q_people + ac.q_pc)} <span className="text-base font-normal text-slate-300">кВт</span></div>
+                  <div className="text-xs text-slate-300 mt-2 font-normal">Люди + техника</div>
                 </div>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 mt-2">
-                <button type="button" onClick={() => onOpenLead("Быстрый расчёт: Кондиционер")} className="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition-all">
+                <button type="button" onClick={() => onOpenLead("Быстрый расчёт: Кондиционер")} className="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-normal hover:bg-blue-700 transition-all">
                   Получить подбор
                 </button>
-                <button type="button" onClick={onClose} className="flex-1 py-4 border border-slate-200 rounded-2xl font-bold text-slate-600 hover:border-blue-600 hover:text-blue-600 transition-all">
+                <button type="button" onClick={onClose} className="flex-1 py-4 border border-slate-200 rounded-2xl font-normal text-slate-600 hover:border-blue-600 hover:text-blue-600 transition-all">
                   Закрыть
                 </button>
               </div>
 
-              <p className="text-[11px] text-slate-400 font-medium leading-relaxed">
+              <p className="text-[11px] text-slate-500 font-normal leading-relaxed">
                 Оценка ориентировочная. Для точного подбора учитываются ориентация окон, утепление, притоки, оборудование и фактические теплопритоки.
               </p>
             </div>
@@ -2150,7 +2259,7 @@ const WorksSection = () => (
             Живые фото с объектов: кондиционирование, вентиляция, инженерные узлы.
           </p>
         </div>
-        <div className="hidden md:flex items-center gap-2 text-sm text-slate-500">
+        <div className="hidden md:flex items-center gap-2 text-sm text-slate-600">
           <span className="inline-flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-emerald-500" />
             Новые объекты добавляем регулярно
@@ -2177,12 +2286,12 @@ const WorksSection = () => (
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
               <div className="absolute left-4 top-4">
-                <span className="inline-flex items-center rounded-full bg-white/80 backdrop-blur px-3 py-1 text-xs font-medium text-slate-800 border border-white/70">
+                <span className="inline-flex items-center rounded-full bg-white/80 backdrop-blur px-3 py-1 text-xs font-normal text-slate-800 border border-white/70">
                   {w.tag}
                 </span>
               </div>
               <div className="absolute left-4 right-4 bottom-4">
-                <p className="text-white text-base font-medium leading-snug drop-shadow">
+                <p className="text-white text-base font-normal leading-snug drop-shadow">
                   {w.title}
                 </p>
               </div>
@@ -2278,8 +2387,8 @@ const ARTICLES = [
 
 const SchemaCard = ({ title }) => (
   <div className="relative w-full rounded-3xl p-6 bg-white/35 backdrop-blur-xl border border-white/40 shadow-sm">
-    <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Схема</div>
-    <div className="text-lg font-bold text-slate-900">{title}</div>
+    <div className="text-[10px] font-normal uppercase tracking-widest text-slate-600 mb-2">Схема</div>
+    <div className="text-lg font-normal text-slate-900">{title}</div>
 
     <div className="mt-6 aspect-[4/3] rounded-2xl bg-gradient-to-br from-blue-50 to-emerald-50 border border-white/60 flex items-center justify-center overflow-hidden">
       <svg viewBox="0 0 400 300" className="w-full h-full">
@@ -2316,12 +2425,12 @@ const ArticleModal = ({ article, onClose }) => {
       >
         <div className="p-6 md:p-8 border-b border-slate-100 flex items-start justify-between">
           <div className="max-w-3xl">
-            <div className="text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-2">Статья</div>
-            <h3 className="text-2xl md:text-3xl font-bold text-slate-900">{article.title}</h3>
-            <p className="text-slate-500 font-medium mt-2">{article.excerpt}</p>
+            <div className="text-[10px] font-normal uppercase tracking-widest text-blue-600 mb-2">Статья</div>
+            <h3 className="text-2xl md:text-3xl font-normal text-slate-900">{article.title}</h3>
+            <p className="text-slate-600 font-normal mt-2">{article.excerpt}</p>
           </div>
           <button type="button" onClick={onClose} className="p-2 rounded-xl hover:bg-slate-50">
-            <X size={22} className="text-slate-500" />
+            <X size={22} className="text-slate-600" />
           </button>
         </div>
 
@@ -2337,13 +2446,13 @@ const ArticleModal = ({ article, onClose }) => {
           <div className="md:col-span-3 p-6 md:p-10 overflow-y-auto">
             <div className="prose prose-slate max-w-none">
               {article.body.map((p, i) => (
-                <p key={i} className="text-slate-700 font-medium leading-relaxed">
+                <p key={i} className="text-slate-700 font-normal leading-relaxed">
                   {p}
                 </p>
               ))}
               <div className="mt-8 p-6 rounded-3xl bg-slate-50 border border-slate-100">
-                <div className="text-sm font-bold text-slate-900 mb-2">Нужен расчёт под ваш объект?</div>
-                <p className="text-slate-500 font-medium text-sm">
+                <div className="text-sm font-normal text-slate-900 mb-2">Нужен расчёт под ваш объект?</div>
+                <p className="text-slate-600 font-normal text-sm">
                   Оставьте заявку — наши специалисты свяжутся с вами и проконсультируют по всем интересующим вас вопросам.
                 </p>
               </div>
@@ -2360,11 +2469,11 @@ const ArticlesSection = ({ onOpenArticle }) => (
   <section id="articles" className="py-14 md:py-24 bg-white">
     <div className="container mx-auto px-6">
       <div className="max-w-3xl mb-8 md:mb-12">
-        <div className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-3 md:mb-4">Полезное</div>
-        <h2 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight flex items-center gap-3">
+        <div className="text-xs font-normal text-blue-600 uppercase tracking-widest mb-3 md:mb-4">Полезное</div>
+        <h2 className="font-heading text-4xl md:text-5xl font-normal text-slate-900 tracking-tight leading-tight flex items-center gap-3">
           <BookOpen className="text-blue-600" size={28} /> Статьи
         </h2>
-        <p className="text-slate-500 font-medium mt-2 md:mt-4">
+        <p className="font-sans text-slate-600 font-normal mt-2 md:mt-4 leading-relaxed tracking-body">
           Короткие материалы для понимания: что выбрать, как работает вентиляция и почему кондиционер не заменяет свежий воздух.
         </p>
       </div>
@@ -2381,10 +2490,10 @@ const ArticlesSection = ({ onOpenArticle }) => (
               <img src={a.image} alt={a.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
             </div>
             <div className="p-5 md:p-7">
-              <div className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Статья</div>
-              <div className="text-xl font-bold text-slate-900 mb-2 md:mb-3">{a.title}</div>
-              <div className="text-sm text-slate-500 font-medium leading-relaxed line-clamp-3">{a.excerpt}</div>
-              <div className="mt-5 text-xs font-bold uppercase tracking-widest text-blue-600">Читать →</div>
+              <div className="text-[10px] font-normal uppercase tracking-widest text-slate-500 mb-2">Статья</div>
+              <div className="text-xl font-normal text-slate-900 mb-2 md:mb-3">{a.title}</div>
+              <div className="text-sm text-slate-600 font-normal leading-relaxed line-clamp-3">{a.excerpt}</div>
+              <div className="mt-5 text-xs font-normal uppercase tracking-widest text-blue-600">Читать →</div>
             </div>
           </button>
         ))}
@@ -2398,9 +2507,9 @@ const ServiceSection = ({ onOpenLead }) => (
   <section id="service" className="py-14 md:py-24 bg-slate-950 text-white">
     <div className="container mx-auto px-6">
       <div className="max-w-4xl mb-8 md:mb-14">
-        <div className="text-xs font-bold text-blue-400 uppercase tracking-widest mb-3 md:mb-4">Сервис</div>
-        <h2 className="text-4xl md:text-5xl font-bold tracking-tight">Обслуживание вентиляции и кондиционирования</h2>
-        <p className="text-slate-300 font-medium mt-2 md:mt-4 leading-relaxed">
+        <div className="text-xs font-normal text-blue-400 uppercase tracking-widest mb-3 md:mb-4">Сервис</div>
+        <h2 className="font-heading text-4xl md:text-5xl font-normal tracking-tight leading-tight">Обслуживание вентиляции и кондиционирования</h2>
+        <p className="font-sans text-slate-300 font-normal mt-2 md:mt-4 leading-relaxed tracking-body">
           Регулярный сервис продлевает срок службы оборудования, сохраняет эффективность и предотвращает поломки в сезон.
         </p>
       </div>
@@ -2412,23 +2521,23 @@ const ServiceSection = ({ onOpenLead }) => (
           { h: "Пусконаладка и настройка", p: "Балансировка расхода воздуха, настройка контроллеров, рекомендации по эксплуатации." },
         ].map((b) => (
           <div key={b.h} className="p-6 md:p-8 bg-white/5 rounded-[2rem] border border-white/10">
-            <div className="text-lg font-bold mb-2 md:mb-3">{b.h}</div>
-            <div className="text-sm text-slate-300 font-medium leading-relaxed">{b.p}</div>
+            <div className="text-lg font-normal mb-2 md:mb-3">{b.h}</div>
+            <div className="text-sm text-slate-300 font-normal leading-relaxed">{b.p}</div>
           </div>
         ))}
       </div>
 
       <div className="mt-8 md:mt-12 bg-white/5 border border-white/10 rounded-[2.5rem] p-6 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8">
         <div className="max-w-2xl">
-          <div className="text-2xl font-bold">Нужен регламент обслуживания?</div>
-          <div className="text-slate-300 font-medium mt-2">
+          <div className="text-2xl font-normal">Нужен регламент обслуживания?</div>
+          <div className="text-slate-300 font-normal mt-2">
             Подскажем периодичность, состав работ и подготовим коммерческое предложение под ваш объект.
           </div>
         </div>
         <button
           type="button"
           onClick={() => onOpenLead("Сервис: Обслуживание")}
-          className="px-10 py-4 bg-blue-600 rounded-2xl font-bold hover:bg-blue-500 transition-all shadow-xl"
+          className="px-10 py-4 bg-blue-600 rounded-2xl font-normal hover:bg-blue-500 transition-all shadow-xl"
         >
           Запросить сервис
         </button>
@@ -2475,18 +2584,25 @@ const BackToTop = () => {
 };
 
 // --- Reveal wrapper для плавных анимаций секций ---
-const Reveal = ({ children }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 18 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, amount: 0.2 }}
-    transition={{ duration: 0.6 }}
-  >
-    {children}
-  </motion.div>
-);
+const Reveal = ({ children }) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.15, margin: "-50px" });
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 32 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      className={`section-reveal transition-all duration-500 ${isInView ? "is-visible" : ""}`}
+    >
+      {children}
+    </motion.div>
+  );
+};
 function MainSite() {
   const [activeSolution, setActiveSolution] = useState(null);
+  const [activeTurkovCategory, setActiveTurkovCategory] = useState(null);
   const [leadContext, setLeadContext] = useState(null);
   const [modalState, setModalState] = useState(null);
 
@@ -2554,7 +2670,7 @@ const closeCalc = () => {
       </Reveal>
 
       <Reveal>
-        <CloudPromo onOpenLead={openLead} />
+        <TurkovPromo onOpenCategory={setActiveTurkovCategory} onOpenLead={openLead} />
       </Reveal>
 
       <Reveal>
@@ -2602,6 +2718,13 @@ const closeCalc = () => {
           <SolutionDetailModal
             solution={activeSolution}
             onClose={() => setActiveSolution(null)}
+            onOpenLead={openLead}
+          />
+        )}
+        {activeTurkovCategory && (
+          <TurkovCategoryModal
+            category={activeTurkovCategory}
+            onClose={() => setActiveTurkovCategory(null)}
             onOpenLead={openLead}
           />
         )}
