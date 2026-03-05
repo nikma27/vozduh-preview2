@@ -8,6 +8,7 @@ import {
   ArrowRight,
   Menu,
   X,
+  ChevronDown,
   Phone,
   MapPin,
   CheckCircle2,
@@ -32,6 +33,7 @@ import {
 } from "lucide-react";
 import { AnimatePresence, motion, useInView } from "framer-motion";
 import BrandMarquee from "./components/BrandMarquee";
+import AnimatedWindLogo from "./components/AnimatedWindLogo";
 
 /**
  * 0) Helpers
@@ -868,6 +870,7 @@ const SolutionDetailModal = ({ solution, onClose, onOpenLead }) => {
 const Navbar = ({ onOpenContact }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isLogoHovered, setIsLogoHovered] = useState(false);
 
   useEffect(() => {
     let ticking = false;
@@ -903,10 +906,15 @@ const Navbar = ({ onOpenContact }) => {
       ].join(" ")}
     >
       <div className="container mx-auto px-4 sm:px-5 md:px-6 flex justify-between items-center">
-        <a href="#" className="flex items-center gap-2 sm:gap-3 group z-50 relative overflow-visible">
+        <a
+          href="#"
+          className="flex items-center gap-2 sm:gap-3 group z-50 relative overflow-visible"
+          onMouseEnter={() => setIsLogoHovered(true)}
+          onMouseLeave={() => setIsLogoHovered(false)}
+        >
           <div className="relative shrink-0">
-            <div className="p-2 sm:p-2.5 md:p-3 rounded-full transition-all duration-300 bg-blue-600 text-white group-hover:scale-105">
-              <Wind className="shrink-0 w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-8 lg:h-8 xl:w-9 xl:h-9 2xl:w-10 2xl:h-10" size={24} />
+            <div className="p-2 sm:p-2.5 md:p-3 rounded-full transition-all duration-300 bg-blue-600 text-white group-hover:scale-105 flex items-center justify-center">
+              <AnimatedWindLogo isHovered={isLogoHovered} className="shrink-0 w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-8 lg:h-8 xl:w-9 xl:h-9 2xl:w-10 2xl:h-10 text-white" size={24} />
             </div>
             <div className="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-px bg-gradient-to-r from-blue-600/60 to-transparent rounded-full opacity-80" aria-hidden="true" />
           </div>
@@ -920,7 +928,7 @@ const Navbar = ({ onOpenContact }) => {
             <a
               key={link.name}
               href={link.href}
-              className="text-nav font-normal hover:text-blue-500 hover:font-normal transition-colors text-slate-800 whitespace-nowrap"
+              className="text-nav font-normal hover:text-blue-500 hover:font-normal transition-colors text-slate-800 whitespace-nowrap uppercase"
             >
               {link.name}
             </a>
@@ -934,7 +942,7 @@ const Navbar = ({ onOpenContact }) => {
           </div>
           <button
             onClick={onOpenContact}
-            className="text-nav px-3 sm:px-4 lg:px-4 xl:px-5 py-1.5 rounded-full font-normal transition-all hover:shadow-lg hover:-translate-y-0.5 whitespace-nowrap bg-blue-600 text-white hover:bg-blue-700"
+            className="text-nav px-3 sm:px-4 lg:px-4 xl:px-5 py-1.5 rounded-full font-normal transition-all hover:shadow-lg hover:-translate-y-0.5 whitespace-nowrap bg-blue-600 text-white hover:bg-blue-700 uppercase"
           >
             Оставить заявку
           </button>
@@ -958,7 +966,7 @@ const Navbar = ({ onOpenContact }) => {
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className="fixed inset-0 bg-white/95 backdrop-blur-xl z-40 flex flex-col p-6 xl:hidden border-l border-white/20 h-screen overflow-y-auto"
           >
-            <div className="flex flex-col gap-3 text-xl font-normal text-slate-800 flex-1 justify-center items-center text-center">
+            <div className="flex flex-col gap-3 text-xl font-normal text-slate-800 flex-1 justify-center items-center text-center uppercase">
               {navLinks.map((link) => (
                 <a
                   key={link.name}
@@ -1017,7 +1025,7 @@ const Hero = ({ onOpenCalc }) => (
           Проектирование • Поставка • Монтаж • Сервис
         </div>
 
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-normal leading-[0.95] tracking-tight mb-10">
+        <h1 className="text-5xl md:text-7xl lg:text-8xl font-normal leading-[0.95] tracking-tight mb-10 uppercase">
           Климат{" "}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
             как искусство
@@ -1031,14 +1039,14 @@ const Hero = ({ onOpenCalc }) => (
         <div className="flex flex-wrap gap-5">
           <button
             onClick={() => onOpenCalc("vent")}
-            className="px-10 py-5 bg-blue-600 rounded-full font-normal text-lg flex items-center gap-3 hover:bg-blue-500 transition-all shadow-2xl shadow-blue-600/30"
+            className="px-10 py-5 bg-blue-600 rounded-full font-normal text-lg flex items-center gap-3 hover:bg-blue-500 transition-all shadow-2xl shadow-blue-600/30 uppercase"
             type="button"
           >
             Начать расчет <ArrowRight size={20} />
           </button>
           <a
             href="#catalog"
-            className="px-10 py-5 bg-white/5 border border-white/20 backdrop-blur-md rounded-full font-normal text-lg hover:bg-white/10 transition-all text-center flex items-center justify-center"
+            className="px-10 py-5 bg-white/5 border border-white/20 backdrop-blur-md rounded-full font-normal text-lg hover:bg-white/10 transition-all text-center flex items-center justify-center uppercase"
           >
             Наши решения
           </a>
@@ -1048,7 +1056,7 @@ const Hero = ({ onOpenCalc }) => (
   </section>
 );
 
-/** Данные категорий TURKOV по turkov.ru */
+/** Данные категорий TURKOV по turkov.ru + раскрывающиеся информационные блоки с каталога */
 const turkovCategories = [
   {
     id: "turkov-pvu",
@@ -1058,6 +1066,11 @@ const turkovCategories = [
     details: [
       { title: "С роторным рекуператором", desc: "Бытовые, полупромышленные и промышленные установки от 400 до 30 000 м³/ч.", icon: "/icons/recuperation.svg" },
       { title: "С пластинчатым рекуператором", desc: "2–4 ступени рекуперации, работа до −45 °C. Энтальпийные теплообменники.", icon: "/icons/recuperation.svg" },
+    ],
+    infoSheets: [
+      { title: "Почему выбирают TURKOV", bullets: ["3 года гарантии, доставка по России, бесплатная поддержка и помощь в подборе", "Комбинация с канальным оборудованием: увлажнитель, очистка до 99.95%, охладитель", "Автоматика собственного производства, управление через пульт, приложение, Яндекс.Алиса", "Встроенная фильтрация, защита рекуператора от обмерзания", "КПД возврата тепла до 85%, влаги до 83%. Мощность от 300 до 30 000 м³/ч"] },
+      { title: "Как работает ПВУ с рекуперацией", content: "Рекуператор подогревает приточный воздух за счёт температуры вытяжного, возвращая до 85% тепловой энергии и до 83% влаги. Свежий воздух подаётся через решётки, отработанный выводится на улицу. Нагреватель доводит температуру до требуемой." },
+      { title: "Как подобрать ПВУ", bullets: ["Учёт: тип объекта, регион, количество жильцов, кратность воздухообмена", "Ступени рекуперации: 2 — до −25 °C, 3 — до −35 °C, 4 — до −45 °C", "Тип нагревателя: электрический или водяной (жидкостный)", "Мощность: от 300 до 30 000 м³/ч и выше по заказу"] },
     ],
   },
   {
@@ -1070,6 +1083,11 @@ const turkovCategories = [
       { title: "Промышленные", desc: "Мощные приточные системы для коммерческих и производственных зданий.", icon: "/icons/factory.svg" },
       { title: "С HEPA фильтром", desc: "Высокая степень очистки воздуха для медицинских и чистых помещений.", icon: "/icons/filter.svg" },
     ],
+    infoSheets: [
+      { title: "Что такое приточная установка", bullets: ["Подогрев воздуха перед подачей — электрический или жидкостный нагреватель", "Автономная работа по датчикам", "Стабильная подача при любой погоде, в отличие от проветривания", "Очистка от пыли, пыльцы, спор и микроорганизмов"] },
+      { title: "Как выбрать приточную вентиляцию", bullets: ["До 200 м²: модели 200–590 м³/ч (компактные)", "210–650 м²: модели 620–2000 м³/ч (бытовые)", "От 650 м²: модели 2100–40 000 м³/ч (промышленные)", "Медицина, аллергики: линейка i-Vent с HEPA до 99.95%", "Нагреватель: жидкостный экономичнее при газе, электрический проще в монтаже"] },
+      { title: "7 причин выбрать TURKOV", bullets: ["Управление: пульт, приложение, Яндекс.Алиса, умный дом (MQTT, Modbus)", "Комбинация с увлажнителем и охладителем", "Низкий шум, фильтр F5 (опционально F7/F9)", "Заслонка с электроприводом — защита при отключении питания", "Моноблок до 15 000 м³/ч без мостиков холода", "Готовность: собрано и протестировано на заводе", "От 200 до 40 000 м³/ч и выше по заказу"] },
+    ],
   },
   {
     id: "turkov-pool",
@@ -1081,6 +1099,11 @@ const turkovCategories = [
       { title: "Климатические комплексы", desc: "С рекуперацией, опционально со встроенным осушителем.", icon: "/icons/waves.svg" },
       { title: "Фреоновые осушители", desc: "Осушители с подмесом до 480 л/сутки.", icon: "/icons/wind.svg" },
     ],
+    infoSheets: [
+      { title: "4 причины выбрать TURKOV", bullets: ["Собственное производство в Москве и Калужской области, сервис 6 дней в неделю", "4 способа управления: пульт, приложение, умный дом Яндекс, MQTT/Modbus", "4 категории: фреоновые осушители, ПВУ с рециркуляцией, климкомплексы с рекуперацией, с встроенным осушителем", "От 600 до 12 500 м³/ч и выше по заказу"] },
+      { title: "Как выбрать оборудование", bullets: ["Учёт: площадь зеркала воды, обходных дорожек, температура воздуха и воды", "Частота пользования и количество посетителей", "Наличие газового котла, регион (влажность и температура на улице)", "При низкой влажности снаружи и котельной — ПВУ с рециркуляцией", "При ограничениях по котлу — фреоновый осушитель с подмесом"] },
+      { title: "Зачем нужна вентиляция в бассейне", bullets: ["Комфорт: подогретый отфильтрованный воздух, нет перепадов температур", "Снижение затрат на отопление благодаря рекуперации", "Контроль влажности — защита от конденсата, плесени, сохранность конструкции", "Постоянный обмен воздуха — удаление влаги, CO₂, паров хлора", "Круглосуточная работа — испарение влаги происходит постоянно"] },
+    ],
   },
   {
     id: "turkov-vytyazh",
@@ -1091,15 +1114,23 @@ const turkovCategories = [
       { title: "Бытовые вытяжные", desc: "Для квартир и частных домов.", icon: "/icons/wind.svg" },
       { title: "Промышленные вытяжные", desc: "Мощные вытяжные системы для производства и складов.", icon: "/icons/factory.svg" },
     ],
+    infoSheets: [
+      { title: "Для чего нужна вытяжная установка", content: "Вытяжная установка отвечает за выброс отработанного воздуха на улицу и часто используется в комплекте с приточным оборудованием. В корпусе — энергоэффективный вентилятор и заслонка с электроприводом." },
+      { title: "Причины выбрать TURKOV", bullets: ["3 года гарантии", "Управление автономно или в связке с приточными установками и осушителями", "Опционально — фильтр грубой очистки", "Заслонка с возвратной пружиной встроена — защита при отключении питания", "Поставка собранной и настроенной, монтаж в любом положении", "Бытовые и промышленные от 200 до 40 000 м³/ч"] },
+    ],
   },
   {
-    id: "turkov-filter",
-    icon: "/icons/filter.svg",
-    title: "Оборудование с высокой фильтрацией",
-    description: "Приточные установки и канальные очистители с HEPA и повышенной степенью очистки.",
+    id: "turkov-freon",
+    icon: "/icons/wind.svg",
+    title: "Фреоновые осушители",
+    description: "Снижение влажности в бассейнах или складских помещениях до 480 л/сутки.",
     details: [
-      { title: "Приточные с HEPA", desc: "Оборудование с фильтрами тонкой очистки F5 и выше.", icon: "/icons/filter.svg" },
-      { title: "Канальные очистители воздуха", desc: "Встраиваемые модули для доочистки в существующих системах.", icon: "/icons/duct.svg" },
+      { title: "Фреоновые осушители с подмесом", desc: "Эффективное осушение и подмес свежего воздуха для бассейнов.", icon: "/icons/wind.svg" },
+    ],
+    infoSheets: [
+      { title: "Критерии выбора осушителя", bullets: ["Учёт: площадь зеркала воды, температура воды и воздуха, частота пользования", "Подходит при: нет газового котла; влажность снаружи выше, чем внутри; вентиляции недостаточно", "Используйте онлайн-калькулятор для расчёта влагоизбытков"] },
+      { title: "Преимущества TURKOV", bullets: ["Российский производитель, заводы в Москве и Калужской области", "Управление: пульт в комплекте или умный дом", "Подмес свежего воздуха ~13% — соблюдение санитарных норм", "Площадь зеркала до 180 м², производительность 800–6800 м³/ч, влагосъём до 444 л/сутки"] },
+      { title: "Как работает канальный осушитель", content: "Принцип — конденсация влаги через циркуляцию хладагента. Вентилятор втягивает влажный воздух → охлаждение на испарителе ниже точки росы → осушенный воздух нагревается на конденсаторе → подача обратно в помещение. Конденсат — в дренаж. Производительность не зависит от климата." },
     ],
   },
   {
@@ -1112,6 +1143,26 @@ const turkovCategories = [
       { title: "Адиабатические увлажнители", desc: "Естественное испарение через канальные блоки.", icon: "/icons/droplets.svg" },
       { title: "Канальные очистители", desc: "Доочистка воздуха в вентканалах.", icon: "/icons/filter.svg" },
     ],
+    infoSheets: [
+      { title: "Что такое канальное оборудование", content: "Дополнительные модули в сети воздуховодов, расширяющие функционал приточной или ПВУ. Решают задачи увлажнения, охлаждения и глубокой фильтрации централизованно для всех помещений." },
+      { title: "Канальные увлажнители", content: "Адиабатический увлажнитель поддерживает влажность 40–50% даже зимой — комфорт для здоровья и сохранность предметов быта." },
+      { title: "Канальные очистители", content: "Четырёхступенчатая фильтрация, включая HEPA — очистка до 99.95%. Устраняет запахи, пыль, аллергены." },
+      { title: "Канальные охладители", content: "Снижают теплопритоки от приточного воздуха. Не заменяют кондиционер — охлаждают только приточный поток. Для жарких регионов — в связке со сплит-системой." },
+      { title: "Преимущества", bullets: ["Централизованное управление через общую автоматику", "Тихая эксплуатация — монтаж удалённо от жилых зон", "Равномерное распределение воздуха по всем комнатам", "Масштабируемость — можно добавить увлажнитель или охладитель позже", "Скрытый монтаж — видны только решётки"] },
+    ],
+  },
+  {
+    id: "turkov-filter",
+    icon: "/icons/filter.svg",
+    title: "Оборудование с высокой фильтрацией",
+    description: "Приточные установки и канальные очистители с HEPA и повышенной степенью очистки.",
+    details: [
+      { title: "Приточные с HEPA", desc: "Оборудование с фильтрами тонкой очистки F5 и выше.", icon: "/icons/filter.svg" },
+      { title: "Канальные очистители воздуха", desc: "Встраиваемые модули для доочистки в существующих системах.", icon: "/icons/duct.svg" },
+    ],
+    infoSheets: [
+      { title: "Высокая степень очистки", content: "Линейка i-Vent — четыре фильтра (G4 + F7 + уголь + HEPA H13), очистка до 99.95%. Для медицинских учреждений, аптек, помещений с аллергиками. Производительность 450–4000 м³/ч." },
+    ],
   },
   {
     id: "turkov-osush",
@@ -1121,90 +1172,124 @@ const turkovCategories = [
     details: [
       { title: "Конденсационные осушители", desc: "Эффективное осушение для влажных помещений.", icon: "/icons/wind.svg" },
     ],
-  },
-  {
-    id: "turkov-auto",
-    icon: "/icons/smart-modes.svg",
-    title: "Датчики и автоматика",
-    description: "Датчики, пульты, контроллеры и модули для управления вентиляцией.",
-    details: [
-      { title: "Датчики", desc: "CO₂, влажности, температуры, присутствия.", icon: "/icons/sensors.svg" },
-      { title: "Пульты и регуляторы", desc: "Управление и настройка режимов работы.", icon: "/icons/smart-modes.svg" },
-      { title: "Контроллеры и модули", desc: "Интеграция с умным домом (Яндекс, TURKOV Wi-Fi).", icon: "/icons/smart-modes.svg" },
-    ],
+    infoSheets: [],
   },
 ];
 
-const TurkovCategoryModal = ({ category, onClose, onOpenLead }) => (
-  <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 md:p-6 font-sans">
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      onClick={onClose}
-      className="absolute inset-0 bg-slate-900/60 backdrop-blur-xl"
-    />
-    <motion.div
-      className="bg-white w-full max-w-2xl md:rounded-[2.5rem] relative z-10 overflow-hidden shadow-2xl"
-    >
-      <div className="relative h-40 md:h-48 overflow-hidden bg-gradient-to-br from-slate-800 to-slate-600 flex items-center justify-center">
-        <img src={category.icon} alt="" className="w-20 h-20 md:w-24 md:h-24 opacity-60" />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
-        <div className="absolute bottom-6 left-8 right-8 text-white">
-          <h2 className="text-2xl md:text-3xl font-normal tracking-tight">{category.title}</h2>
-        </div>
-      </div>
-
-      <div className="p-6 md:p-10 overflow-y-auto max-h-[60vh]">
-        <div className="flex justify-between items-center mb-8">
-          <span className="text-xs font-normal text-blue-600 uppercase tracking-widest">TURKOV</span>
-          <button onClick={onClose} type="button" className="p-2 hover:bg-slate-50 rounded-full">
-            <X size={24} />
-          </button>
+const TurkovCategoryModal = ({ category, onClose, onOpenLead }) => {
+  const [openSheet, setOpenSheet] = useState(null);
+  const infoSheets = category.infoSheets || [];
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 md:p-6 font-sans">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+        className="absolute inset-0 bg-slate-900/60 backdrop-blur-xl"
+      />
+      <motion.div
+        className="bg-white w-full max-w-2xl md:rounded-[2.5rem] relative z-10 overflow-hidden shadow-2xl"
+      >
+        <div className="relative h-40 md:h-48 overflow-hidden bg-gradient-to-br from-slate-800 to-slate-600 flex items-center justify-center">
+          <img src={category.icon} alt="" className="w-20 h-20 md:w-24 md:h-24 opacity-60" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
+          <div className="absolute bottom-6 left-8 right-8 text-white">
+            <h2 className="text-2xl md:text-3xl font-normal tracking-tight">{category.title}</h2>
+          </div>
         </div>
 
-        <p className="text-slate-600 font-normal mb-8 leading-relaxed">{category.description}</p>
+        <div className="p-6 md:p-10 overflow-y-auto max-h-[70vh]">
+          <div className="flex justify-between items-center mb-6">
+            <span className="text-xs font-normal text-blue-600 uppercase tracking-widest">TURKOV</span>
+            <button onClick={onClose} type="button" className="p-2 hover:bg-slate-50 rounded-full">
+              <X size={24} />
+            </button>
+          </div>
 
-        <div className="space-y-6">
-          {category.details.map((item, idx) => (
-            <div key={idx} className="group flex gap-4 items-start">
-              <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 transition-colors group-hover:bg-blue-600">
-                <img src={item.icon} alt="" className="w-6 h-6 opacity-80 transition-[filter,opacity] group-hover:opacity-100 group-hover:brightness-0 group-hover:invert" />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-normal text-slate-900 mb-1">{item.title}</h3>
-                <p className="text-slate-600 font-normal text-sm leading-relaxed mb-3">{item.desc}</p>
-                <div className="flex gap-2 flex-wrap">
+          {infoSheets.length > 0 && (
+            <div className="mb-8 space-y-2">
+              <p className="text-xs font-normal text-slate-500 uppercase tracking-widest mb-4">Полезная информация</p>
+              {infoSheets.map((sheet, idx) => (
+                <div key={idx} className="border border-slate-100 rounded-xl overflow-hidden">
                   <button
-                    onClick={() => onOpenLead(`TURKOV ${category.title} → ${item.title} (Подбор)`)}
-                    className="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg font-normal text-xs hover:bg-blue-600 hover:text-white transition-all uppercase tracking-wide"
+                    type="button"
+                    onClick={() => setOpenSheet(openSheet === idx ? null : idx)}
+                    className="w-full flex items-center justify-between px-4 py-3 text-left font-normal text-slate-900 hover:bg-slate-50 transition-colors"
                   >
-                    Подобрать
+                    <span>{sheet.title}</span>
+                    <ChevronDown size={18} className={`text-slate-500 transition-transform ${openSheet === idx ? "rotate-180" : ""}`} />
                   </button>
-                  <button
-                    onClick={() => onOpenLead(`TURKOV ${category.title} → ${item.title} (Смета)`)}
-                    className="px-4 py-2 border border-slate-200 text-slate-600 rounded-lg font-normal text-xs hover:border-blue-600 hover:text-blue-600 transition-all uppercase tracking-wide"
-                  >
-                    Получить смету
-                  </button>
+                  <AnimatePresence>
+                    {openSheet === idx && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-4 pb-4 pt-0 text-slate-600 text-sm leading-relaxed border-t border-slate-50">
+                          {sheet.content && <p className="mb-0">{sheet.content}</p>}
+                          {sheet.bullets && (
+                            <ul className="list-disc list-inside space-y-1 mt-2">
+                              {sheet.bullets.map((b, i) => (
+                                <li key={i}>{b}</li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <p className="text-slate-600 font-normal mb-6 leading-relaxed">{category.description}</p>
+
+          <div className="space-y-5">
+            {category.details.map((item, idx) => (
+              <div key={idx} className="group flex gap-4 items-start">
+                <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 transition-colors group-hover:bg-blue-600">
+                  <img src={item.icon} alt="" className="w-6 h-6 opacity-80 transition-[filter,opacity] group-hover:opacity-100 group-hover:brightness-0 group-hover:invert" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-normal text-slate-900 mb-1">{item.title}</h3>
+                  <p className="text-slate-600 font-normal text-sm leading-relaxed mb-3">{item.desc}</p>
+                  <div className="flex gap-2 flex-wrap">
+                    <button
+                      onClick={() => onOpenLead(`TURKOV ${category.title} → ${item.title} (Подбор)`)}
+                      className="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg font-normal text-xs hover:bg-blue-600 hover:text-white transition-all uppercase tracking-wide"
+                    >
+                      Подобрать
+                    </button>
+                    <button
+                      onClick={() => onOpenLead(`TURKOV ${category.title} → ${item.title} (Смета)`)}
+                      className="px-4 py-2 border border-slate-200 text-slate-600 rounded-lg font-normal text-xs hover:border-blue-600 hover:text-blue-600 transition-all uppercase tracking-wide"
+                    >
+                      Получить смету
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        <div className="mt-8 pt-6 border-t border-slate-100">
-          <button
-            onClick={() => onOpenLead(`TURKOV ${category.title} (Общий запрос)`)}
-            className="w-full py-4 bg-slate-900 text-white rounded-2xl font-normal hover:bg-blue-600 transition-all"
-          >
-            Запросить консультацию по категории
-          </button>
+          <div className="mt-8 pt-6 border-t border-slate-100">
+            <button
+              onClick={() => onOpenLead(`TURKOV ${category.title} (Общий запрос)`)}
+              className="w-full py-4 bg-slate-900 text-white rounded-2xl font-normal hover:bg-blue-600 transition-all"
+            >
+              Запросить консультацию по категории
+            </button>
+          </div>
         </div>
-      </div>
-    </motion.div>
-  </div>
-);
+      </motion.div>
+    </div>
+  );
+};
 
 const TurkovPromo = ({ onOpenCategory, onOpenLead }) => (
   <section id="turkov" className="py-12 md:py-20 bg-slate-50 relative overflow-hidden">
@@ -1417,10 +1502,10 @@ const PartnersSection = ({ onOpenPartner }) => {
   ];
 
   return (
-    <section id="partners" className="py-14 md:py-32 bg-white text-slate-900 relative overflow-hidden">
+    <section id="partners" className="py-12 md:py-28 bg-white text-slate-900 relative overflow-hidden">
       <div className="container mx-auto px-6 relative z-10">
-        <div className="text-center mb-10 md:mb-20 max-w-3xl mx-auto">
-          <h2 className="font-heading text-3xl md:text-5xl font-normal mb-4 md:mb-6 tracking-tight leading-tight">
+        <div className="text-center mb-8 md:mb-16 max-w-3xl mx-auto">
+          <h2 className="font-heading text-3xl md:text-5xl font-normal mb-3 md:mb-5 tracking-tight leading-tight uppercase">
             Сотрудничество для профессионалов
           </h2>
           <p className="font-sans text-slate-600 font-normal text-lg leading-relaxed tracking-body">
@@ -1428,10 +1513,10 @@ const PartnersSection = ({ onOpenPartner }) => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 mb-10 md:mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-10 mb-8 md:mb-16">
           {benefits.map((b, i) => (
-            <div key={i} className="bg-slate-50 border border-slate-100 p-6 md:p-12 rounded-[2.5rem]">
-              <h3 className="text-xl md:text-2xl font-normal text-blue-600 mb-5 md:mb-8">{b.title}</h3>
+            <div key={i} className="bg-slate-50 border border-slate-100 p-6 md:p-10 rounded-[2.5rem]">
+              <h3 className="text-xl md:text-2xl font-normal text-blue-600 mb-4 md:mb-6 uppercase">{b.title}</h3>
               <ul className="space-y-4">
                 {b.points.map((p, j) => (
                   <li key={j} className="flex items-center gap-3">
@@ -1493,7 +1578,7 @@ const Services = ({ onOpenService }) => {
     <section id="services" className="py-14 md:py-24 bg-white border-t border-slate-100">
       <div className="container mx-auto px-6">
         <div className="text-center mb-8 md:mb-16">
-          <h2 className="font-heading text-3xl md:text-4xl font-normal text-slate-900 tracking-tight leading-tight">Услуги под ключ</h2>
+          <h2 className="font-heading text-3xl md:text-4xl font-normal text-slate-900 tracking-tight leading-tight uppercase">Услуги под ключ</h2>
           <p className="font-sans text-slate-600 font-normal mt-2 md:mt-3 leading-relaxed tracking-body">Нажмите на услугу, чтобы увидеть детали и состав работ.</p>
         </div>
 
@@ -1506,7 +1591,7 @@ const Services = ({ onOpenService }) => {
               className="text-left p-6 md:p-8 bg-slate-50 rounded-2xl hover:shadow-xl transition-all border border-slate-100 group hover:border-blue-200"
             >
               <s.icon size={32} className="text-blue-600 mb-4 md:mb-6 group-hover:scale-110 transition-transform" />
-              <h3 className="text-xl font-normal mb-2 md:mb-3">{s.title}</h3>
+              <h3 className="text-xl font-normal mb-2 md:mb-3 uppercase">{s.title}</h3>
               <p className="text-slate-600 text-sm font-normal">{s.desc}</p>
               <div className="mt-6 text-xs font-normal uppercase tracking-widest text-blue-600 inline-flex items-center gap-2">
                 Подробнее <ArrowRight size={14} />
@@ -1576,14 +1661,14 @@ const ContactForm = ({ onOpenLead, onOpenContact }) => (
           <div className="flex gap-4 flex-wrap">
             <button
               onClick={() => onOpenLead("Контакты: Telegram")}
-              className="px-8 py-4 bg-blue-600 rounded-2xl font-normal flex items-center gap-3 hover:bg-blue-500 transition-all shadow-xl shadow-blue-600/20 tracking-wide text-sm"
+              className="px-8 py-4 bg-blue-600 rounded-2xl font-normal flex items-center gap-3 hover:bg-blue-500 transition-all shadow-xl shadow-blue-600/20 tracking-wide text-sm uppercase"
               type="button"
             >
               <Send size={20} /> Telegram
             </button>
             <button
               onClick={onOpenContact}
-              className="px-8 py-4 bg-white/5 border border-white/10 rounded-2xl font-normal flex items-center gap-3 hover:bg-white/10 transition-all tracking-wide text-sm"
+              className="px-8 py-4 bg-white/5 border border-white/10 rounded-2xl font-normal flex items-center gap-3 hover:bg-white/10 transition-all tracking-wide text-sm uppercase"
               type="button"
             >
               <MapPin size={20} /> Оставить заявку
@@ -1615,7 +1700,7 @@ const ContactForm = ({ onOpenLead, onOpenContact }) => (
                 className="w-full p-5 bg-white/5 rounded-2xl border border-white/10 outline-none focus:border-blue-500 transition-all font-normal"
               />
             </div>
-            <button className="w-full py-5 bg-white text-slate-900 rounded-[2rem] font-normal text-lg hover:bg-blue-400 hover:text-white transition-all shadow-2xl">
+            <button className="w-full py-5 bg-white text-slate-900 rounded-[2rem] font-normal text-lg hover:bg-blue-400 hover:text-white transition-all shadow-2xl uppercase">
               Отправить данные
             </button>
           </form>
@@ -1643,7 +1728,7 @@ const Footer = () => (
             <h4 className="text-slate-900 font-normal mb-4 uppercase tracking-widest text-[10px]">
               Навигация
             </h4>
-            <div className="flex flex-col gap-3 font-normal text-slate-600">
+            <div className="flex flex-col gap-3 font-normal text-slate-600 uppercase">
               <a href="#catalog">Решения</a>
               <a href="#engineering">Инжиниринг</a>
               <a href="#partners">Партнерам</a>
@@ -1653,7 +1738,7 @@ const Footer = () => (
             <h4 className="text-slate-900 font-normal mb-4 uppercase tracking-widest text-[10px]">
               Клиентам
             </h4>
-            <div className="flex flex-col gap-3 font-normal text-slate-600">
+            <div className="flex flex-col gap-3 font-normal text-slate-600 uppercase">
               <span>Договор</span>
               <span>Сервис</span>
               <span>Гарантии</span>
@@ -2252,7 +2337,7 @@ const WorksSection = () => (
     <div className="container mx-auto px-4">
       <div className="flex items-end justify-between gap-4 md:gap-6 mb-6 md:mb-10">
         <div>
-          <h2 className="text-3xl md:text-4xl font-light tracking-tight text-slate-900">
+          <h2 className="text-3xl md:text-4xl font-light tracking-tight text-slate-900 uppercase">
             Наши работы
           </h2>
           <p className="mt-2 md:mt-3 text-slate-600 max-w-2xl">
@@ -2470,7 +2555,7 @@ const ArticlesSection = ({ onOpenArticle }) => (
     <div className="container mx-auto px-6">
       <div className="max-w-3xl mb-8 md:mb-12">
         <div className="text-xs font-normal text-blue-600 uppercase tracking-widest mb-3 md:mb-4">Полезное</div>
-        <h2 className="font-heading text-4xl md:text-5xl font-normal text-slate-900 tracking-tight leading-tight flex items-center gap-3">
+        <h2 className="font-heading text-4xl md:text-5xl font-normal text-slate-900 tracking-tight leading-tight flex items-center gap-3 uppercase">
           <BookOpen className="text-blue-600" size={28} /> Статьи
         </h2>
         <p className="font-sans text-slate-600 font-normal mt-2 md:mt-4 leading-relaxed tracking-body">
@@ -2508,7 +2593,7 @@ const ServiceSection = ({ onOpenLead }) => (
     <div className="container mx-auto px-6">
       <div className="max-w-4xl mb-8 md:mb-14">
         <div className="text-xs font-normal text-blue-400 uppercase tracking-widest mb-3 md:mb-4">Сервис</div>
-        <h2 className="font-heading text-4xl md:text-5xl font-normal tracking-tight leading-tight">Обслуживание вентиляции и кондиционирования</h2>
+        <h2 className="font-heading text-4xl md:text-5xl font-normal tracking-tight leading-tight uppercase">Обслуживание вентиляции и кондиционирования</h2>
         <p className="font-sans text-slate-300 font-normal mt-2 md:mt-4 leading-relaxed tracking-body">
           Регулярный сервис продлевает срок службы оборудования, сохраняет эффективность и предотвращает поломки в сезон.
         </p>
@@ -2521,7 +2606,7 @@ const ServiceSection = ({ onOpenLead }) => (
           { h: "Пусконаладка и настройка", p: "Балансировка расхода воздуха, настройка контроллеров, рекомендации по эксплуатации." },
         ].map((b) => (
           <div key={b.h} className="p-6 md:p-8 bg-white/5 rounded-[2rem] border border-white/10">
-            <div className="text-lg font-normal mb-2 md:mb-3">{b.h}</div>
+            <div className="text-lg font-normal mb-2 md:mb-3 uppercase">{b.h}</div>
             <div className="text-sm text-slate-300 font-normal leading-relaxed">{b.p}</div>
           </div>
         ))}
