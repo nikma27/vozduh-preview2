@@ -112,6 +112,16 @@ body { font-weight: 300; }
   will-change: transform;
 }
 
+/* Бегущая строка «Наши работы» — обратное направление */
+@keyframes marquee-reverse {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+.marquee-track-reverse {
+  animation: marquee-reverse 1280s linear infinite;
+  will-change: transform;
+}
+
 /* Safari iOS: backdrop-filter требует -webkit- префикса */
 .backdrop-blur-sm { -webkit-backdrop-filter: blur(4px); }
 .backdrop-blur-md { -webkit-backdrop-filter: blur(12px); }

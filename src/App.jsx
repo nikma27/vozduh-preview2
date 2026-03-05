@@ -33,6 +33,7 @@ import {
 } from "lucide-react";
 import { AnimatePresence, motion, useInView } from "framer-motion";
 import BrandMarquee from "./components/BrandMarquee";
+import WorksMarquee from "./components/WorksMarquee";
 import AnimatedWindLogo from "./components/AnimatedWindLogo";
 
 /**
@@ -2298,96 +2299,6 @@ const QuickCalcModal = ({ initialTab = "vent", onClose, onOpenLead }) => {
  * 5) App
  */
 
-// --- Наши работы (галерея) ---
-const WORKS = [
-  {
-    title: 'Монтаж кондиционера в квартире',
-    tag: 'Кондиционирование',
-    image: '/photos/ac-apartment-wide.jpg',
-  },
-  {
-    title: 'Аккуратный монтаж внутреннего блока',
-    tag: 'Кондиционирование',
-    image: '/photos/ac-room-sun.jpg',
-  },
-  {
-    title: 'Вентустановки на объекте',
-    tag: 'Промышленная вентиляция',
-    image: '/photos/vent-units.jpg',
-  },
-  {
-    title: 'Воздуховоды и вытяжка в кухне',
-    tag: 'Общепит (HoReCa)',
-    image: '/photos/kitchen-hoods.jpg',
-  },
-  {
-    title: 'Монтаж воздуховодов',
-    tag: 'Промышленная вентиляция',
-    image: '/photos/duct-industrial.jpg',
-  },
-  {
-    title: 'Окрасочно-сушильная камера',
-    tag: 'Промышленность',
-    image: '/photos/spray-booth-1.jpg',
-  },
-]
-
-const WorksSection = () => (
-  <section id="works" className="py-14 md:py-24 bg-white">
-    <div className="container mx-auto px-4">
-      <div className="flex items-end justify-between gap-4 md:gap-6 mb-6 md:mb-10">
-        <div>
-          <h2 className="text-3xl md:text-4xl font-light tracking-tight text-slate-900 uppercase">
-            Наши работы
-          </h2>
-          <p className="mt-2 md:mt-3 text-slate-600 max-w-2xl">
-            Живые фото с объектов: кондиционирование, вентиляция, инженерные узлы.
-          </p>
-        </div>
-        <div className="hidden md:flex items-center gap-2 text-sm text-slate-600">
-          <span className="inline-flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-emerald-500" />
-            Новые объекты добавляем регулярно
-          </span>
-        </div>
-      </div>
-
-      <div className="grid gap-4 md:gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {WORKS.map((w, idx) => (
-          <motion.div
-            key={w.title}
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.25 }}
-            transition={{ duration: 0.45, delay: idx * 0.04 }}
-            className="rounded-3xl overflow-hidden border border-slate-200 bg-white shadow-sm hover:shadow-md transition-shadow"
-          >
-            <div className="relative aspect-[16/10]">
-              <img
-                src={w.image}
-                alt={w.title}
-                className="absolute inset-0 h-full w-full object-cover"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
-              <div className="absolute left-4 top-4">
-                <span className="inline-flex items-center rounded-full bg-white/80 backdrop-blur px-3 py-1 text-xs font-normal text-slate-800 border border-white/70">
-                  {w.tag}
-                </span>
-              </div>
-              <div className="absolute left-4 right-4 bottom-4">
-                <p className="text-white text-base font-normal leading-snug drop-shadow">
-                  {w.title}
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-    </div>
-  </section>
-)
-
 // --- Статьи ---
 const ARTICLES = [
   {
@@ -2763,7 +2674,7 @@ const closeCalc = () => {
       </Reveal>
 
       <Reveal>
-        <WorksSection />
+        <WorksMarquee />
       </Reveal>
 
       <Reveal>
