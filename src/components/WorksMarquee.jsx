@@ -1,123 +1,164 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from "react";
+import { motion } from "framer-motion";
 
-// Изображения из папки public/nashi (исключены thumb для качества)
-const nashiImages = [
-  "photo_2007@27-07-2023_16-03-39.jpg",
-  "photo_2007@27-07-2023_16-03-39 — копия — копия.jpg",
-  "photo_2015@27-07-2023_16-03-39 — копия — копия.jpg",
-  "photo_2048@04-08-2023_20-02-19 — копия — копия.jpg",
-  "photo_2051@04-08-2023_20-02-19 — копия — копия.jpg",
-  "photo_2088@10-08-2023_13-38-18 — копия — копия.jpg",
-  "photo_2091@10-08-2023_13-38-18 — копия — копия.jpg",
-  "photo_2093@11-08-2023_20-14-23 — копия — копия.jpg",
-  "photo_2142@25-08-2023_16-48-43 — копия — копия.jpg",
-  "photo_2374@15-11-2023_15-44-56 — копия — копия.jpg",
-  "photo_2379@15-11-2023_15-44-56 — копия — копия.jpg",
-  "photo_2380@15-11-2023_15-44-56 — копия — копия.jpg",
-  "photo_2387@17-11-2023_17-16-26 — копия — копия.jpg",
-  "photo_2412@24-11-2023_16-04-36 — копия — копия.jpg",
-  "photo_2419@28-11-2023_21-36-03 — копия — копия.jpg",
-  "photo_2422@29-11-2023_18-10-15 — копия — копия.jpg",
-  "photo_2448@14-12-2023_17-22-56 — копия — копия.jpg",
-  "photo_2458@15-12-2023_16-57-33 — копия — копия.jpg",
-  "photo_2463@21-12-2023_13-59-06 — копия — копия.jpg",
-  "photo_2483@28-12-2023_18-30-12 — копия — копия.jpg",
-  "photo_2485@28-12-2023_18-30-12 — копия — копия.jpg",
-  "photo_2489@08-01-2024_20-17-13 — копия — копия.jpg",
-  "photo_2490@08-01-2024_20-17-13 — копия — копия.jpg",
-  "photo_2493@09-01-2024_18-54-16 — копия — копия.jpg",
-  "photo_2496@09-01-2024_18-54-16 — копия — копия.jpg",
-  "photo_2497@09-01-2024_18-54-16 — копия — копия.jpg",
-  "photo_2511@12-01-2024_22-15-44 — копия — копия.jpg",
-  "photo_2514@14-01-2024_17-51-24 — копия — копия.jpg",
-  "photo_2522@14-01-2024_19-00-11 — копия — копия.jpg",
-  "photo_2540@19-01-2024_12-10-45 — копия — копия.jpg",
-  "photo_2545@19-01-2024_12-10-45 — копия — копия.jpg",
-  "photo_2622@20-02-2024_11-06-44 — копия — копия.jpg",
-  "photo_2624@20-02-2024_11-11-54 — копия — копия.jpg",
-  "photo_2631@20-02-2024_15-17-25 — копия — копия.jpg",
-  "photo_2672@15-03-2024_17-58-50 — копия — копия.jpg",
-  "photo_2698@12-04-2024_13-07-05 — копия — копия.jpg",
-  "photo_2699@12-04-2024_13-07-05 — копия — копия.jpg",
-  "photo_2704@13-04-2024_13-54-48 — копия — копия.jpg",
-  "photo_2727@20-04-2024_21-53-38 — копия — копия.jpg",
-  "photo_2756@29-04-2024_17-49-30 — копия — копия.jpg",
-  "photo_2757@29-04-2024_17-49-30 — копия — копия.jpg",
-  "photo_2760@29-04-2024_17-49-30 — копия — копия.jpg",
-  "photo_2764@29-04-2024_17-49-30 — копия — копия.jpg",
-  "photo_2767@29-04-2024_17-49-31 — копия — копия.jpg",
-  "photo_2770@29-04-2024_17-49-41 — копия — копия.jpg",
-  "photo_2783@08-05-2024_15-49-11 — копия — копия.jpg",
-  "photo_2786@14-05-2024_16-09-28 — копия — копия.jpg",
-  "photo_2797@14-05-2024_20-27-49 — копия — копия.jpg",
-  "photo_2826@22-05-2024_23-44-28 — копия — копия.jpg",
-  "photo_2829@22-05-2024_23-44-28 — копия — копия.jpg",
-  "photo_2831@22-05-2024_23-44-28 — копия — копия.jpg",
-  "photo_2832@22-05-2024_23-44-28 — копия — копия.jpg",
-  "photo_2876@25-06-2024_20-50-19 — копия — копия.jpg",
-  "photo_2900@05-07-2024_14-37-42 — копия — копия.jpg",
-  "photo_2941@21-08-2024_02-55-52 — копия — копия.jpg",
-  "photo_2943@21-08-2024_02-55-52 — копия — копия.jpg",
-  "photo_2985@12-11-2024_16-03-35 — копия — копия.jpg",
-  "photo_3025@11-01-2025_13-10-58 — копия — копия.jpg",
-  "photo_3037@14-01-2025_18-33-17 — копия — копия.jpg",
-  "photo_3041@29-01-2025_17-56-28 — копия — копия.jpg",
-  "photo_3044@29-01-2025_17-56-28 — копия — копия.jpg",
-  "photo_3066@10-03-2025_18-36-51 — копия — копия.jpg",
-  "photo_3130@21-04-2025_08-20-44 — копия — копия.jpg",
-  "photo_3146@22-04-2025_15-28-43 — копия — копия.jpg",
-  "photo_3149@22-04-2025_15-28-43 — копия — копия.jpg",
-  "photo_3171@16-09-2025_18-04-00 — копия — копия.jpg",
-  "photo_3182@22-09-2025_16-58-25 — копия — копия.jpg",
-  "photo_3183@22-09-2025_16-58-25 — копия — копия.jpg",
-  "photo_3189@29-10-2025_20-32-59 — копия — копия.jpg",
-  "photo_3190@29-10-2025_20-32-59 — копия — копия.jpg",
-  "photo_3192@29-10-2025_20-32-59 — копия — копия.jpg",
-  "photo_3193@29-10-2025_20-32-59 — копия.jpg",
-  "photo_3200@29-10-2025_20-33-02 — копия.jpg",
-  "photo_3201@29-10-2025_20-33-02 — копия.jpg",
-  "photo_3205@29-10-2025_20-33-03 — копия.jpg",
-  "photo_3206@29-10-2025_20-33-03 — копия.jpg",
-  "photo_3207@29-10-2025_20-33-03 — копия.jpg",
-  "photo_3208@25-11-2025_21-46-56 — копия.jpg",
-  "photo_3209@25-11-2025_21-46-56 — копия.jpg",
-  "photo_3210@25-11-2025_21-46-56 — копия.jpg",
-  "photo_3211@25-11-2025_21-46-56 — копия.jpg",
-  "photo_3254@28-12-2025_12-40-06 — копия.jpg",
-  "photo_3255@28-12-2025_12-40-06 — копия.jpg",
+const NASHI_IMAGES = [
+  "/nashi/photo_2007@27-07-2023_16-03-39.jpg",
+  "/nashi/photo_2007@27-07-2023_16-03-39 — копия — копия.jpg",
+  "/nashi/photo_2015@27-07-2023_16-03-39 — копия — копия.jpg",
+  "/nashi/photo_2048@04-08-2023_20-02-19 — копия — копия.jpg",
+  "/nashi/photo_2051@04-08-2023_20-02-19 — копия — копия.jpg",
+  "/nashi/photo_2088@10-08-2023_13-38-18 — копия — копия.jpg",
+  "/nashi/photo_2091@10-08-2023_13-38-18 — копия — копия.jpg",
+  "/nashi/photo_2093@11-08-2023_20-14-23 — копия — копия.jpg",
+  "/nashi/photo_2142@25-08-2023_16-48-43 — копия — копия.jpg",
+  "/nashi/photo_2374@15-11-2023_15-44-56 — копия — копия.jpg",
+  "/nashi/photo_2379@15-11-2023_15-44-56 — копия — копия.jpg",
+  "/nashi/photo_2380@15-11-2023_15-44-56 — копия — копия.jpg",
+  "/nashi/photo_2387@17-11-2023_17-16-26 — копия — копия.jpg",
+  "/nashi/photo_2412@24-11-2023_16-04-36 — копия — копия.jpg",
+  "/nashi/photo_2419@28-11-2023_21-36-03 — копия — копия.jpg",
+  "/nashi/photo_2422@29-11-2023_18-10-15 — копия — копия.jpg",
+  "/nashi/photo_2448@14-12-2023_17-22-56 — копия — копия.jpg",
+  "/nashi/photo_2458@15-12-2023_16-57-33 — копия — копия.jpg",
+  "/nashi/photo_2463@21-12-2023_13-59-06 — копия — копия.jpg",
+  "/nashi/photo_2483@28-12-2023_18-30-12 — копия — копия.jpg",
+  "/nashi/photo_2485@28-12-2023_18-30-12 — копия — копия.jpg",
+  "/nashi/photo_2489@08-01-2024_20-17-13 — копия — копия.jpg",
+  "/nashi/photo_2490@08-01-2024_20-17-13 — копия — копия.jpg",
+  "/nashi/photo_2493@09-01-2024_18-54-16 — копия — копия.jpg",
+  "/nashi/photo_2496@09-01-2024_18-54-16 — копия — копия.jpg",
+  "/nashi/photo_2497@09-01-2024_18-54-16 — копия — копия.jpg",
+  "/nashi/photo_2514@14-01-2024_17-51-24 — копия — копия.jpg",
+  "/nashi/photo_2522@14-01-2024_19-00-11 — копия — копия.jpg",
+  "/nashi/photo_2540@19-01-2024_12-10-45 — копия — копия.jpg",
+  "/nashi/photo_2545@19-01-2024_12-10-45 — копия — копия.jpg",
 ];
 
 const WorksMarquee = () => {
-  const images = [...nashiImages, ...nashiImages];
+  const [hoveredIndex, setHoveredIndex] = useState(null);
+  const trackRef = useRef(null);
+  const [scrollPx, setScrollPx] = useState(0);
+  const scrollPxRef = useRef(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStart = useRef({ x: 0, scroll: 0 });
+  const rafRef = useRef(null);
+  const lastTimeRef = useRef(0);
+
+  const allImages = [...NASHI_IMAGES, ...NASHI_IMAGES];
+  const halfWidthRef = useRef(0);
+
+  // Auto-scroll вправо (обратное направление): 280 сек на полный цикл
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    halfWidthRef.current = track.scrollWidth / 2;
+  }, [allImages.length]);
+
+  useEffect(() => {
+    const animate = (t) => {
+      if (isDragging || hoveredIndex !== null) return;
+      const dt = t - lastTimeRef.current;
+      lastTimeRef.current = t;
+      const half = halfWidthRef.current;
+      if (half <= 0) return;
+      const speed = half / (280 * 1000); // px/ms
+      setScrollPx((prev) => {
+        const next = prev + speed * dt;
+        const val = next >= 0 ? next - half : next;
+        scrollPxRef.current = val;
+        return val;
+      });
+      rafRef.current = requestAnimationFrame(animate);
+    };
+    lastTimeRef.current = performance.now();
+    rafRef.current = requestAnimationFrame(animate);
+    return () => rafRef.current && cancelAnimationFrame(rafRef.current);
+  }, [isDragging, hoveredIndex]);
+
+  const handleMouseDown = (e) => {
+    if (e.button !== 0) return;
+    setIsDragging(true);
+    dragStart.current = { x: e.clientX, scroll: scrollPxRef.current };
+  };
+
+  useEffect(() => {
+    if (!isDragging) return;
+    const half = halfWidthRef.current;
+    const onMove = (e) => {
+      const dx = e.clientX - dragStart.current.x;
+      const next = Math.max(-half, Math.min(0, dragStart.current.scroll + dx));
+      scrollPxRef.current = next;
+      setScrollPx(next);
+    };
+    const onUp = () => setIsDragging(false);
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+  }, [isDragging]);
 
   return (
-    <section id="works" className="py-10 md:py-16 bg-white border-y border-slate-100 overflow-hidden">
-      <div className="container mx-auto px-6 mb-6 md:mb-10 text-center">
-        <p className="font-heading text-xs font-bold uppercase tracking-[0.2em] text-slate-400">
+    <section id="works" className="py-14 md:py-24 bg-white overflow-hidden">
+      <div className="container mx-auto px-6 mb-6 md:mb-10">
+        <h2 className="text-3xl md:text-4xl font-light tracking-tight text-slate-900">
           Наши работы
-        </p>
-        <p className="mt-2 text-slate-600 text-sm md:text-base max-w-2xl mx-auto">
+        </h2>
+        <p className="mt-2 md:mt-3 text-slate-600 max-w-2xl">
           Живые фото с объектов: кондиционирование, вентиляция, инженерные узлы.
         </p>
       </div>
-      <div className="relative flex overflow-x-hidden">
-        <div className="marquee-track-reverse flex gap-4 md:gap-6 items-stretch">
-          {images.map((name, i) => (
-            <div
-              key={i}
-              className="flex-shrink-0 rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm hover:shadow-md transition-shadow w-[200px] sm:w-[240px] md:w-[280px] lg:w-[320px]"
-            >
-              <div className="relative aspect-[16/10]">
-                <img
-                  src={`/nashi/${encodeURIComponent(name)}`}
-                  alt={`Работа ${i + 1}`}
-                  className="absolute inset-0 h-full w-full object-cover"
-                  loading="lazy"
+
+      <div
+        className="relative flex overflow-x-hidden select-none"
+        style={{ cursor: isDragging ? "grabbing" : "grab" }}
+        onMouseDown={handleMouseDown}
+        onMouseLeave={() => setHoveredIndex(null)}
+        onDragStart={(e) => e.preventDefault()}
+      >
+        <div
+          ref={trackRef}
+          className="flex gap-6 md:gap-8 items-center shrink-0 will-change-transform"
+          style={{ transform: `translateX(${scrollPx}px)` }}
+        >
+          {allImages.map((src, i) => {
+            const isThisHovered = hoveredIndex === i;
+            const shouldDim = hoveredIndex !== null && hoveredIndex !== i;
+
+            return (
+              <div
+                key={`${src}-${i}`}
+                className="relative shrink-0 w-[308px] md:w-[396px] h-[198px] md:h-[242px] rounded-2xl overflow-hidden cursor-pointer"
+                style={{ zIndex: isThisHovered ? 10 : 1 }}
+                onMouseEnter={() => setHoveredIndex(i)}
+                onMouseLeave={() => setHoveredIndex(null)}
+              >
+                <motion.div
+                  className="w-full h-full rounded-2xl overflow-hidden"
+                  initial={false}
+                  animate={{
+                    scale: isThisHovered ? 1.1 : 1,
+                    transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] },
+                  }}
+                >
+                  <img
+                    src={src}
+                    alt={`Работа ${(i % NASHI_IMAGES.length) + 1}`}
+                    className="w-full h-full object-cover rounded-2xl"
+                    loading="lazy"
+                  />
+                </motion.div>
+                <motion.div
+                  className="absolute inset-0 pointer-events-none rounded-2xl"
+                  animate={{
+                    backgroundColor: shouldDim ? "rgba(15, 23, 42, 0.35)" : "rgba(15, 23, 42, 0)",
+                  }}
+                  transition={{ duration: 0.3 }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

@@ -34,7 +34,6 @@ import {
 import { AnimatePresence, motion, useInView } from "framer-motion";
 import BrandMarquee from "./components/BrandMarquee";
 import WorksMarquee from "./components/WorksMarquee";
-import AnimatedWindLogo from "./components/AnimatedWindLogo";
 
 /**
  * 0) Helpers
@@ -871,7 +870,6 @@ const SolutionDetailModal = ({ solution, onClose, onOpenLead }) => {
 const Navbar = ({ onOpenContact }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isLogoHovered, setIsLogoHovered] = useState(false);
 
   useEffect(() => {
     let ticking = false;
@@ -889,14 +887,14 @@ const Navbar = ({ onOpenContact }) => {
   }, []);
 
   const navLinks = [
-    { name: "Решения", href: "#catalog" },
-    { name: "Производители", href: "#manufacturers" },
-    { name: "Работы", href: "#works" },
-    { name: "Инжиниринг", href: "#engineering" },
-    { name: "Сервис", href: "#service" },
-    { name: "Статьи", href: "#articles" },
-    { name: "Партнерам", href: "#partners" },
-    { name: "Контакты", href: "#contact" },
+    { name: "РЕШЕНИЯ", href: "#catalog" },
+    { name: "ПРОИЗВОДИТЕЛИ", href: "#manufacturers" },
+    { name: "РАБОТЫ", href: "#works" },
+    { name: "ИНЖИНИРИНГ", href: "#engineering" },
+    { name: "СЕРВИС", href: "#service" },
+    { name: "СТАТЬИ", href: "#articles" },
+    { name: "ПАРТНЕРАМ", href: "#partners" },
+    { name: "КОНТАКТЫ", href: "#contact" },
   ];
 
   return (
@@ -907,15 +905,10 @@ const Navbar = ({ onOpenContact }) => {
       ].join(" ")}
     >
       <div className="container mx-auto px-4 sm:px-5 md:px-6 flex justify-between items-center">
-        <a
-          href="#"
-          className="flex items-center gap-2 sm:gap-3 group z-50 relative overflow-visible"
-          onMouseEnter={() => setIsLogoHovered(true)}
-          onMouseLeave={() => setIsLogoHovered(false)}
-        >
+        <a href="#" className="flex items-center gap-2 sm:gap-3 group z-50 relative overflow-visible">
           <div className="relative shrink-0">
-            <div className="p-2 sm:p-2.5 md:p-3 rounded-full transition-all duration-300 bg-blue-600 text-white group-hover:scale-105 flex items-center justify-center">
-              <AnimatedWindLogo isHovered={isLogoHovered} className="shrink-0 w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-8 lg:h-8 xl:w-9 xl:h-9 2xl:w-10 2xl:h-10 text-white" size={24} />
+            <div className="p-2 sm:p-2.5 md:p-3 rounded-full transition-all duration-300 bg-blue-600 text-white group-hover:scale-105">
+              <Wind className="shrink-0 w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-8 lg:h-8 xl:w-9 xl:h-9 2xl:w-10 2xl:h-10" size={24} />
             </div>
             <div className="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-px bg-gradient-to-r from-blue-600/60 to-transparent rounded-full opacity-80" aria-hidden="true" />
           </div>
@@ -939,7 +932,6 @@ const Navbar = ({ onOpenContact }) => {
         <div className="hidden xl:flex items-center gap-3 xl:gap-4 2xl:gap-6">
           <div className="flex flex-col items-end text-nav text-slate-900">
             <span className="font-normal">+7 (383) 263-15-51</span>
-            <span className="text-slate-600 font-normal">Пн–Пт 9:00–18:00</span>
           </div>
           <button
             onClick={onOpenContact}
@@ -967,7 +959,7 @@ const Navbar = ({ onOpenContact }) => {
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className="fixed inset-0 bg-white/95 backdrop-blur-xl z-40 flex flex-col p-6 xl:hidden border-l border-white/20 h-screen overflow-y-auto"
           >
-            <div className="flex flex-col gap-3 text-xl font-normal text-slate-800 flex-1 justify-center items-center text-center uppercase">
+            <div className="flex flex-col gap-3 text-xl font-normal text-slate-800 flex-1 justify-center items-center text-center">
               {navLinks.map((link) => (
                 <a
                   key={link.name}
@@ -975,7 +967,7 @@ const Navbar = ({ onOpenContact }) => {
                   onClick={() => setMobileMenuOpen(false)}
                   className="relative group overflow-hidden"
                 >
-                  <span className="relative z-10 group-hover:text-blue-600 transition-colors">
+                  <span className="relative z-10 group-hover:text-blue-600 transition-colors uppercase">
                     {link.name}
                   </span>
                 </a>
@@ -994,7 +986,7 @@ const Navbar = ({ onOpenContact }) => {
                   setMobileMenuOpen(false);
                   onOpenContact();
                 }}
-                className="w-full py-4 bg-blue-600 text-white rounded-xl font-normal"
+                className="w-full py-4 bg-blue-600 text-white rounded-xl font-normal uppercase"
                 type="button"
               >
                 Оставить заявку
@@ -1026,7 +1018,7 @@ const Hero = ({ onOpenCalc }) => (
           Проектирование • Поставка • Монтаж • Сервис
         </div>
 
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-normal leading-[0.95] tracking-tight mb-10 uppercase">
+        <h1 className="text-5xl md:text-7xl lg:text-8xl font-normal leading-[0.95] tracking-tight mb-10">
           Климат{" "}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
             как искусство
@@ -1040,14 +1032,14 @@ const Hero = ({ onOpenCalc }) => (
         <div className="flex flex-wrap gap-5">
           <button
             onClick={() => onOpenCalc("vent")}
-            className="px-10 py-5 bg-blue-600 rounded-full font-normal text-lg flex items-center gap-3 hover:bg-blue-500 transition-all shadow-2xl shadow-blue-600/30 uppercase"
+            className="px-10 py-5 bg-blue-600 rounded-full font-normal text-lg flex items-center gap-3 hover:bg-blue-500 transition-all shadow-2xl shadow-blue-600/30"
             type="button"
           >
             Начать расчет <ArrowRight size={20} />
           </button>
           <a
             href="#catalog"
-            className="px-10 py-5 bg-white/5 border border-white/20 backdrop-blur-md rounded-full font-normal text-lg hover:bg-white/10 transition-all text-center flex items-center justify-center uppercase"
+            className="px-10 py-5 bg-white/5 border border-white/20 backdrop-blur-md rounded-full font-normal text-lg hover:bg-white/10 transition-all text-center flex items-center justify-center"
           >
             Наши решения
           </a>
@@ -1208,6 +1200,8 @@ const TurkovCategoryModal = ({ category, onClose, onOpenLead }) => {
             </button>
           </div>
 
+          <p className="text-slate-600 font-normal mb-6 leading-relaxed">{category.description}</p>
+
           {infoSheets.length > 0 && (
             <div className="mb-8 space-y-2">
               <p className="text-xs font-normal text-slate-500 uppercase tracking-widest mb-4">Полезная информация</p>
@@ -1247,8 +1241,6 @@ const TurkovCategoryModal = ({ category, onClose, onOpenLead }) => {
               ))}
             </div>
           )}
-
-          <p className="text-slate-600 font-normal mb-6 leading-relaxed">{category.description}</p>
 
           <div className="space-y-5">
             {category.details.map((item, idx) => (
@@ -1319,7 +1311,7 @@ const TurkovPromo = ({ onOpenCategory, onOpenLead }) => (
       </div>
 
       <motion.div
-        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5"
+        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.1 }}
@@ -1331,16 +1323,24 @@ const TurkovPromo = ({ onOpenCategory, onOpenLead }) => (
             variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             onClick={() => onOpenCategory(item)}
-            className="group p-5 md:p-6 rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-lg hover:border-blue-200 transition-all cursor-pointer"
+            className="group rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-lg hover:border-blue-200 transition-all cursor-pointer overflow-hidden min-h-[200px] md:min-h-[240px] flex flex-col"
           >
-            <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center mb-4 group-hover:bg-blue-600 transition-colors">
-              <img src={item.icon} alt="" className="w-6 h-6 opacity-80 group-hover:opacity-100 group-hover:brightness-0 group-hover:invert" />
+            {item.image ? (
+              <div className="relative h-36 md:h-40 overflow-hidden bg-slate-100 shrink-0">
+                <img
+                  src={item.image}
+                  alt=""
+                  className="w-full h-full object-cover object-center group-hover:scale-[1.03] transition-transform duration-500"
+                />
+              </div>
+            ) : null}
+            <div className="p-6 md:p-8 flex-1 flex flex-col">
+              <h3 className="text-base md:text-lg font-normal text-slate-900 mb-2 uppercase tracking-wide">{item.title}</h3>
+              <p className="text-slate-600 text-sm font-normal line-clamp-2 leading-relaxed flex-1">{item.description}</p>
+              <span className="inline-flex items-center gap-1 text-xs font-normal text-blue-600 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                Подробнее <ArrowRight size={12} />
+              </span>
             </div>
-            <h3 className="text-sm md:text-base font-normal text-slate-900 mb-1 uppercase tracking-wide">{item.title}</h3>
-            <p className="text-slate-600 text-xs font-normal line-clamp-2 leading-relaxed">{item.description}</p>
-            <span className="inline-flex items-center gap-1 text-xs font-normal text-blue-600 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
-              Подробнее <ArrowRight size={12} />
-            </span>
           </motion.div>
         ))}
       </motion.div>
@@ -1506,7 +1506,7 @@ const PartnersSection = ({ onOpenPartner }) => {
     <section id="partners" className="py-12 md:py-28 bg-white text-slate-900 relative overflow-hidden">
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-8 md:mb-16 max-w-3xl mx-auto">
-          <h2 className="font-heading text-3xl md:text-5xl font-normal mb-3 md:mb-5 tracking-tight leading-tight uppercase">
+          <h2 className="font-heading text-3xl md:text-5xl font-normal mb-3 md:mb-5 tracking-tight leading-tight">
             Сотрудничество для профессионалов
           </h2>
           <p className="font-sans text-slate-600 font-normal text-lg leading-relaxed tracking-body">
@@ -1517,7 +1517,7 @@ const PartnersSection = ({ onOpenPartner }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-10 mb-8 md:mb-16">
           {benefits.map((b, i) => (
             <div key={i} className="bg-slate-50 border border-slate-100 p-6 md:p-10 rounded-[2.5rem]">
-              <h3 className="text-xl md:text-2xl font-normal text-blue-600 mb-4 md:mb-6 uppercase">{b.title}</h3>
+              <h3 className="text-xl md:text-2xl font-normal text-blue-600 mb-4 md:mb-6">{b.title}</h3>
               <ul className="space-y-4">
                 {b.points.map((p, j) => (
                   <li key={j} className="flex items-center gap-3">
@@ -1579,7 +1579,7 @@ const Services = ({ onOpenService }) => {
     <section id="services" className="py-14 md:py-24 bg-white border-t border-slate-100">
       <div className="container mx-auto px-6">
         <div className="text-center mb-8 md:mb-16">
-          <h2 className="font-heading text-3xl md:text-4xl font-normal text-slate-900 tracking-tight leading-tight uppercase">Услуги под ключ</h2>
+          <h2 className="font-heading text-3xl md:text-4xl font-normal text-slate-900 tracking-tight leading-tight">Услуги под ключ</h2>
           <p className="font-sans text-slate-600 font-normal mt-2 md:mt-3 leading-relaxed tracking-body">Нажмите на услугу, чтобы увидеть детали и состав работ.</p>
         </div>
 
@@ -1592,7 +1592,7 @@ const Services = ({ onOpenService }) => {
               className="text-left p-6 md:p-8 bg-slate-50 rounded-2xl hover:shadow-xl transition-all border border-slate-100 group hover:border-blue-200"
             >
               <s.icon size={32} className="text-blue-600 mb-4 md:mb-6 group-hover:scale-110 transition-transform" />
-              <h3 className="text-xl font-normal mb-2 md:mb-3 uppercase">{s.title}</h3>
+              <h3 className="text-xl font-normal mb-2 md:mb-3">{s.title}</h3>
               <p className="text-slate-600 text-sm font-normal">{s.desc}</p>
               <div className="mt-6 text-xs font-normal uppercase tracking-widest text-blue-600 inline-flex items-center gap-2">
                 Подробнее <ArrowRight size={14} />
@@ -1662,14 +1662,14 @@ const ContactForm = ({ onOpenLead, onOpenContact }) => (
           <div className="flex gap-4 flex-wrap">
             <button
               onClick={() => onOpenLead("Контакты: Telegram")}
-              className="px-8 py-4 bg-blue-600 rounded-2xl font-normal flex items-center gap-3 hover:bg-blue-500 transition-all shadow-xl shadow-blue-600/20 tracking-wide text-sm uppercase"
+              className="px-8 py-4 bg-blue-600 rounded-2xl font-normal flex items-center gap-3 hover:bg-blue-500 transition-all shadow-xl shadow-blue-600/20 tracking-wide text-sm"
               type="button"
             >
               <Send size={20} /> Telegram
             </button>
             <button
               onClick={onOpenContact}
-              className="px-8 py-4 bg-white/5 border border-white/10 rounded-2xl font-normal flex items-center gap-3 hover:bg-white/10 transition-all tracking-wide text-sm uppercase"
+              className="px-8 py-4 bg-white/5 border border-white/10 rounded-2xl font-normal flex items-center gap-3 hover:bg-white/10 transition-all tracking-wide text-sm"
               type="button"
             >
               <MapPin size={20} /> Оставить заявку
@@ -1701,7 +1701,7 @@ const ContactForm = ({ onOpenLead, onOpenContact }) => (
                 className="w-full p-5 bg-white/5 rounded-2xl border border-white/10 outline-none focus:border-blue-500 transition-all font-normal"
               />
             </div>
-            <button className="w-full py-5 bg-white text-slate-900 rounded-[2rem] font-normal text-lg hover:bg-blue-400 hover:text-white transition-all shadow-2xl uppercase">
+            <button className="w-full py-5 bg-white text-slate-900 rounded-[2rem] font-normal text-lg hover:bg-blue-400 hover:text-white transition-all shadow-2xl">
               Отправить данные
             </button>
           </form>
@@ -1729,7 +1729,7 @@ const Footer = () => (
             <h4 className="text-slate-900 font-normal mb-4 uppercase tracking-widest text-[10px]">
               Навигация
             </h4>
-            <div className="flex flex-col gap-3 font-normal text-slate-600 uppercase">
+            <div className="flex flex-col gap-3 font-normal text-slate-600">
               <a href="#catalog">Решения</a>
               <a href="#engineering">Инжиниринг</a>
               <a href="#partners">Партнерам</a>
@@ -1739,7 +1739,7 @@ const Footer = () => (
             <h4 className="text-slate-900 font-normal mb-4 uppercase tracking-widest text-[10px]">
               Клиентам
             </h4>
-            <div className="flex flex-col gap-3 font-normal text-slate-600 uppercase">
+            <div className="flex flex-col gap-3 font-normal text-slate-600">
               <span>Договор</span>
               <span>Сервис</span>
               <span>Гарантии</span>
@@ -2299,6 +2299,96 @@ const QuickCalcModal = ({ initialTab = "vent", onClose, onOpenLead }) => {
  * 5) App
  */
 
+// --- Наши работы (галерея) ---
+const WORKS = [
+  {
+    title: 'Монтаж кондиционера в квартире',
+    tag: 'Кондиционирование',
+    image: '/photos/ac-apartment-wide.jpg',
+  },
+  {
+    title: 'Аккуратный монтаж внутреннего блока',
+    tag: 'Кондиционирование',
+    image: '/photos/ac-room-sun.jpg',
+  },
+  {
+    title: 'Вентустановки на объекте',
+    tag: 'Промышленная вентиляция',
+    image: '/photos/vent-units.jpg',
+  },
+  {
+    title: 'Воздуховоды и вытяжка в кухне',
+    tag: 'Общепит (HoReCa)',
+    image: '/photos/kitchen-hoods.jpg',
+  },
+  {
+    title: 'Монтаж воздуховодов',
+    tag: 'Промышленная вентиляция',
+    image: '/photos/duct-industrial.jpg',
+  },
+  {
+    title: 'Окрасочно-сушильная камера',
+    tag: 'Промышленность',
+    image: '/photos/spray-booth-1.jpg',
+  },
+]
+
+const WorksSection = () => (
+  <section id="works" className="py-14 md:py-24 bg-white">
+    <div className="container mx-auto px-4">
+      <div className="flex items-end justify-between gap-4 md:gap-6 mb-6 md:mb-10">
+        <div>
+          <h2 className="text-3xl md:text-4xl font-light tracking-tight text-slate-900">
+            Наши работы
+          </h2>
+          <p className="mt-2 md:mt-3 text-slate-600 max-w-2xl">
+            Живые фото с объектов: кондиционирование, вентиляция, инженерные узлы.
+          </p>
+        </div>
+        <div className="hidden md:flex items-center gap-2 text-sm text-slate-600">
+          <span className="inline-flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+            Новые объекты добавляем регулярно
+          </span>
+        </div>
+      </div>
+
+      <div className="grid gap-4 md:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {WORKS.map((w, idx) => (
+          <motion.div
+            key={w.title}
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.25 }}
+            transition={{ duration: 0.45, delay: idx * 0.04 }}
+            className="rounded-3xl overflow-hidden border border-slate-200 bg-white shadow-sm hover:shadow-md transition-shadow"
+          >
+            <div className="relative aspect-[16/10]">
+              <img
+                src={w.image}
+                alt={w.title}
+                className="absolute inset-0 h-full w-full object-cover"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
+              <div className="absolute left-4 top-4">
+                <span className="inline-flex items-center rounded-full bg-white/80 backdrop-blur px-3 py-1 text-xs font-normal text-slate-800 border border-white/70">
+                  {w.tag}
+                </span>
+              </div>
+              <div className="absolute left-4 right-4 bottom-4">
+                <p className="text-white text-base font-normal leading-snug drop-shadow">
+                  {w.title}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  </section>
+)
+
 // --- Статьи ---
 const ARTICLES = [
   {
@@ -2466,7 +2556,7 @@ const ArticlesSection = ({ onOpenArticle }) => (
     <div className="container mx-auto px-6">
       <div className="max-w-3xl mb-8 md:mb-12">
         <div className="text-xs font-normal text-blue-600 uppercase tracking-widest mb-3 md:mb-4">Полезное</div>
-        <h2 className="font-heading text-4xl md:text-5xl font-normal text-slate-900 tracking-tight leading-tight flex items-center gap-3 uppercase">
+        <h2 className="font-heading text-4xl md:text-5xl font-normal text-slate-900 tracking-tight leading-tight flex items-center gap-3">
           <BookOpen className="text-blue-600" size={28} /> Статьи
         </h2>
         <p className="font-sans text-slate-600 font-normal mt-2 md:mt-4 leading-relaxed tracking-body">
@@ -2504,7 +2594,7 @@ const ServiceSection = ({ onOpenLead }) => (
     <div className="container mx-auto px-6">
       <div className="max-w-4xl mb-8 md:mb-14">
         <div className="text-xs font-normal text-blue-400 uppercase tracking-widest mb-3 md:mb-4">Сервис</div>
-        <h2 className="font-heading text-4xl md:text-5xl font-normal tracking-tight leading-tight uppercase">Обслуживание вентиляции и кондиционирования</h2>
+        <h2 className="font-heading text-4xl md:text-5xl font-normal tracking-tight leading-tight">Обслуживание вентиляции и кондиционирования</h2>
         <p className="font-sans text-slate-300 font-normal mt-2 md:mt-4 leading-relaxed tracking-body">
           Регулярный сервис продлевает срок службы оборудования, сохраняет эффективность и предотвращает поломки в сезон.
         </p>
@@ -2517,7 +2607,7 @@ const ServiceSection = ({ onOpenLead }) => (
           { h: "Пусконаладка и настройка", p: "Балансировка расхода воздуха, настройка контроллеров, рекомендации по эксплуатации." },
         ].map((b) => (
           <div key={b.h} className="p-6 md:p-8 bg-white/5 rounded-[2rem] border border-white/10">
-            <div className="text-lg font-normal mb-2 md:mb-3 uppercase">{b.h}</div>
+            <div className="text-lg font-normal mb-2 md:mb-3">{b.h}</div>
             <div className="text-sm text-slate-300 font-normal leading-relaxed">{b.p}</div>
           </div>
         ))}

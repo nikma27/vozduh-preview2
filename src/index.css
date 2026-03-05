@@ -112,14 +112,17 @@ body { font-weight: 300; }
   will-change: transform;
 }
 
-/* Бегущая строка «Наши работы» — обратное направление */
-@keyframes marquee-reverse {
+/* Бегущая строка «Наши работы» — 280 секунд в обратную сторону, пауза при наведении */
+@keyframes worksMarquee {
   0% { transform: translateX(-50%); }
   100% { transform: translateX(0); }
 }
-.marquee-track-reverse {
-  animation: marquee-reverse 1280s linear infinite;
+.works-marquee-track {
+  animation: worksMarquee 280s linear infinite;
   will-change: transform;
+}
+.works-marquee-paused {
+  animation-play-state: paused;
 }
 
 /* Safari iOS: backdrop-filter требует -webkit- префикса */
