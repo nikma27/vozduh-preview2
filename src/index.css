@@ -6,6 +6,10 @@
 @tailwind utilities;
 
 html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .marquee-track { animation: none; }
+}
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: #f8fafc; }
 ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
@@ -110,19 +114,6 @@ body { font-weight: 300; }
 .marquee-track {
   animation: marquee 30s linear infinite;
   will-change: transform;
-}
-
-/* Бегущая строка «Наши работы» — 280 секунд в обратную сторону, пауза при наведении */
-@keyframes worksMarquee {
-  0% { transform: translateX(-50%); }
-  100% { transform: translateX(0); }
-}
-.works-marquee-track {
-  animation: worksMarquee 280s linear infinite;
-  will-change: transform;
-}
-.works-marquee-paused {
-  animation-play-state: paused;
 }
 
 /* Safari iOS: backdrop-filter требует -webkit- префикса */

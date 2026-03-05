@@ -1,0 +1,25 @@
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: vozduh-n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=false
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=http://localhost:5175
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+volumes:
+  n8n_data: {}
+# 1. Запустить n8n
+npm run n8n
+
+# 2. Открыть http://localhost:5678, импортировать docs/n8n-lead-workflow.json и активировать workflow
+
+# 3. Запустить сайт
+npm run dev

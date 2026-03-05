@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState , useCallback } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   Wind,
@@ -30,311 +30,24 @@ import {
   Filter,
   ArrowUp,
   BookOpen,
+  Shield,
+  Package,
+  BadgeCheck,
 } from "lucide-react";
 import { AnimatePresence, motion, useInView } from "framer-motion";
 import BrandMarquee from "./components/BrandMarquee";
 import WorksMarquee from "./components/WorksMarquee";
+import { postLead } from "./api/leads";
+import { fetchGeminiResponse } from "./api/gemini";
+import { complexSolutions } from "./data/solutions";
+import { turkovCategories } from "./data/turkov";
+import { ARTICLES } from "./data/articles";
+import { VENT_PRESETS, AC_PRESETS, round1, pickNearestKW } from "./data/presets";
+import { SERVICE_INFO } from "./data/services";
 
 /**
- * 0) Helpers
+ * 1) Data - imported from ./data/ (solutions, turkov, articles, presets, services)
  */
-const safeJson = async (resp) => {
-  try {
-    return await resp.json();
-  } catch {
-    return null;
-  }
-};
-
-const postLead = async (lead) => {
-  const base = import.meta.env.VITE_LEAD_API;
-  if (!base) {
-    // Предпросмотр: если API не настроено — просто "успешно" (чтобы модалки закрывались)
-    return { ok: true, mocked: true };
-  }
-
-  const resp = await fetch(`${base}/api/lead`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ ...lead, page: window.location.href }),
-  });
-
-  if (!resp.ok) {
-    const t = await resp.text().catch(() => "");
-    throw new Error(`Lead API error: ${resp.status} ${t}`);
-  }
-  return resp.json();
-};
-
-const fetchGeminiResponse = async (userQuery, customSystemPrompt = null) => {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY || "";
-  if (!apiKey) return "AI отключён в предпросмотре (не задан VITE_GEMINI_API_KEY).";
-
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-  const defaultSystemPrompt =
-    "Ты — главный инженер компании 'Воздух НСК'. Отвечай кратко и профессионально.";
-  const systemPromptToUse = customSystemPrompt || defaultSystemPrompt;
-
-  const payload = {
-    contents: [{ parts: [{ text: userQuery }] }],
-    systemInstruction: { parts: [{ text: systemPromptToUse }] },
-  };
-
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    if (!response.ok) throw new Error("API Error");
-    const data = await response.json();
-    return (
-      data.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "Извините, сервис временно недоступен."
-    );
-  } catch {
-    return "Произошла ошибка связи с сервером.";
-  }
-};
-
-/**
- * 1) Data
- * (картинки — прямые ссылки на unsplash; без google-search-URL)
- */
-const complexSolutions = [
-  // LIFE
-  {
-    id: "life-ac",
-    segment: "life",
-    icon: Snowflake,
-    title: "Кондиционирование жилья",
-    description:
-      "Комфортная прохлада без сквозняков: тихие инверторные системы и аккуратная интеграция в интерьер.",
-    image:
-      "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1600&q=80",
-    details: [
-      {
-        title: "Инверторные системы",
-        desc: "Тихие решения для спален: плавное охлаждение без ледяного потока.",
-        icon: "/icons/inverter.svg",
-        subImage:
-          "https://images.unsplash.com/photo-1617103996702-96ff29b1c467?auto=format&fit=crop&w=800&q=80",
-      },
-      {
-        title: "Мульти-сплит",
-        desc: "Один внешний блок — до 5 комнат. Удобно для фасадных ограничений.",
-        icon: "/icons/multi-split.svg",
-        subImage:
-          "https://images.unsplash.com/photo-1627236585127-18c72807e335?auto=format&fit=crop&w=800&q=80",
-      },
-      {
-        title: "Канальные системы",
-        desc: "Скрытый монтаж: видны только решётки/диффузоры. Максимальная эстетика.",
-        icon: "/icons/duct.svg",
-        subImage:
-          "https://images.unsplash.com/photo-1596238612140-52cb23214b2d?auto=format&fit=crop&w=800&q=80",
-      },
-    ],
-  },
-  {
-    id: "life-vent",
-    segment: "life",
-    icon: Wind,
-    title: "Вентиляция квартиры и дома",
-    description:
-      "Свежий воздух 24/7 при закрытых окнах. Фильтрация пыли, аллергенов и контроль CO₂.",
-    image:
-      "https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?auto=format&fit=crop&w=1600&q=80",
-    details: [
-      {
-        title: "Бризеры",
-        desc: "Приток в одну комнату: подогрев, фильтрация, тихая работа.",
-        icon: "/icons/breezer.svg",
-        subImage:
-          "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80",
-      },
-      {
-        title: "ПВУ с рекуперацией",
-        desc: "Экономия тепла до 80%: приток нагревается вытяжным воздухом.",
-        icon: "/icons/recuperation.svg",
-        subImage:
-          "https://images.unsplash.com/photo-1581093583449-8255a6d338ce?auto=format&fit=crop&w=800&q=80",
-      },
-      {
-        title: "Умные режимы",
-        desc: "Автоматическая подача по датчикам (CO₂/влажность/присутствие).",
-        icon: "/icons/smart-modes.svg",
-        subImage:
-          "https://images.unsplash.com/photo-1558002038-1091a1661116?auto=format&fit=crop&w=800&q=80",
-      },
-    ],
-  },
-  {
-    id: "life-humid",
-    segment: "life",
-    icon: Droplets,
-    title: "Увлажнение воздуха",
-    description:
-      "Здоровый микроклимат и сохранность отделки. Автоподдержание 40–60% зимой.",
-    image:
-      "/photos/photo_6_2026-03-02_12-37-46.jpg",
-    details: [
-      {
-        title: "Форсуночное увлажнение",
-        desc: "Микрораспыление воды: эффективно и гигиенично при правильной подготовке.",
-        icon: "/icons/spray-humid.svg",
-        subImage:
-          "https://images.unsplash.com/photo-1534127003460-6b6070a319f0?auto=format&fit=crop&w=800&q=80",
-      },
-      {
-        title: "Адиабатическое",
-        desc: "Естественное испарение через канальные блоки вентиляции.",
-        icon: "/icons/adiabatic.svg",
-        subImage:
-          "https://images.unsplash.com/photo-1585776245991-cf79dd8fc78b?auto=format&fit=crop&w=800&q=80",
-      },
-    ],
-  },
-  {
-    id: "life-dry",
-    segment: "life",
-    icon: Waves,
-    title: "Осушение (бассейны)",
-    description:
-      "Защита от плесени и конденсата в зонах бассейнов/саун. Контроль точки росы.",
-    image:
-      "/photos/bassein-1.jpg",
-    details: [
-      {
-        title: "Настенные осушители",
-        desc: "Компактные решения для небольших бассейнов и купелей.",
-        icon: "/icons/wall-dehumidifier.svg",
-        subImage:
-          "https://images.unsplash.com/photo-1563456073177-380d381b83d8?auto=format&fit=crop&w=800&q=80",
-      },
-      {
-        title: "Канальные системы",
-        desc: "Скрытый монтаж + подмес свежего воздуха: полный климат-контроль.",
-        icon: "/icons/duct.svg",
-        subImage:
-          "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80",
-      },
-    ],
-  },
-
-  // BUSINESS
-  {
-    id: "biz-ac",
-    segment: "business",
-    icon: Snowflake,
-    title: "Коммерческий холод",
-    description:
-      "Офисы, отели, торговые залы: энергоэффективность и централизованное управление.",
-    image:
-      "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1600&q=80",
-    details: [
-      {
-        title: "VRF/VRV",
-        desc: "Многозональное управление климатом здания с одной точкой подключения.",
-        subImage:
-          "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&w=800&q=80",
-      },
-      {
-        title: "Кассетные блоки",
-        desc: "Равномерная подача 360° — идеальна для Open Space.",
-        subImage:
-          "https://images.unsplash.com/photo-1510520434124-5bc7e642b61d?auto=format&fit=crop&w=800&q=80",
-      },
-      {
-        title: "Прецизионные",
-        desc: "Точное поддержание температуры/влажности для серверных и ЦОД.",
-        subImage:
-          "https://images.unsplash.com/photo-1558494949-ef526b0042a0?auto=format&fit=crop&w=800&q=80",
-      },
-    ],
-  },
-  {
-    id: "biz-vent",
-    segment: "business",
-    icon: Utensils,
-    title: "Вентиляция HoReCa",
-    description:
-      "Ресторанные и кухонные зоны: удаление запахов, жира и избыточного тепла.",
-    image:
-      "/photos/horeca-ducts.jpg",
-    details: [
-      {
-        title: "Вытяжные зонты",
-        desc: "Эффективное удаление жира и жара, лабиринтные фильтры.",
-        subImage:
-          "https://images.unsplash.com/photo-1621871908119-28a5b35c03eb?auto=format&fit=crop&w=800&q=80",
-      },
-      {
-        title: "Общеобменная",
-        desc: "Подготовка и подача свежего воздуха в залы для гостей.",
-        subImage:
-          "https://images.unsplash.com/photo-1599407357322-92df91866782?auto=format&fit=crop&w=800&q=80",
-      },
-    ],
-  },
-
-  // INDUSTRY
-  {
-    id: "ind-cool",
-    segment: "industry",
-    icon: Factory,
-    title: "Промышленный холод",
-    description:
-      "Технологическое охлаждение оборудования и складов. Мегаваттные мощности.",
-    image:
-      "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&w=1600&q=80",
-    details: [
-      {
-        title: "Модульные чиллеры",
-        desc: "Высокая мощность для систем вода–воздух и охлаждения станков.",
-        subImage:
-          "https://images.unsplash.com/photo-1590636735492-36c997321a0f?auto=format&fit=crop&w=800&q=80",
-      },
-      {
-        title: "Градирни",
-        desc: "Охлаждение технической воды для производственных циклов.",
-        subImage:
-          "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80",
-      },
-      {
-        title: "ККБ",
-        desc: "Компрессорно-конденсаторные блоки для интеграции в приточные установки.",
-        subImage:
-          "https://images.unsplash.com/photo-1565193566173-0923d5a633f3?auto=format&fit=crop&w=800&q=80",
-      },
-    ],
-  },
-  {
-    id: "ind-vent",
-    segment: "industry",
-    icon: Wind,
-    title: "Пром. вентиляция",
-    description:
-      "Аспирация и очистка воздуха в цехах. Работа с агрессивными средами и температурами.",
-    image:
-      "/photos/photo_5_2026-03-02_12-38-04.jpg",
-    details: [
-      {
-        title: "Аспирация",
-        desc: "Удаление пыли, стружки, сварочных аэрозолей и выбросов.",
-        subImage:
-          "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80",
-      },
-      {
-        title: "Дымоудаление",
-        desc: "Противопожарная безопасность: удаление дыма и подпор воздуха.",
-        subImage:
-          "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=800&q=80",
-      },
-    ],
-  },
-];
 
 /**
  * 2) Modals
@@ -1049,126 +762,6 @@ const Hero = ({ onOpenCalc }) => (
   </section>
 );
 
-/** Данные категорий TURKOV по turkov.ru + раскрывающиеся информационные блоки с каталога */
-const turkovCategories = [
-  {
-    id: "turkov-pvu",
-    icon: "/icons/recuperation.svg",
-    title: "Приточно-вытяжные установки",
-    description: "Энергоэффективные ПВУ с пластинчатым или роторным рекуператором для квартир и промышленности.",
-    details: [
-      { title: "С роторным рекуператором", desc: "Бытовые, полупромышленные и промышленные установки от 400 до 30 000 м³/ч.", icon: "/icons/recuperation.svg" },
-      { title: "С пластинчатым рекуператором", desc: "2–4 ступени рекуперации, работа до −45 °C. Энтальпийные теплообменники.", icon: "/icons/recuperation.svg" },
-    ],
-    infoSheets: [
-      { title: "Почему выбирают TURKOV", bullets: ["3 года гарантии, доставка по России, бесплатная поддержка и помощь в подборе", "Комбинация с канальным оборудованием: увлажнитель, очистка до 99.95%, охладитель", "Автоматика собственного производства, управление через пульт, приложение, Яндекс.Алиса", "Встроенная фильтрация, защита рекуператора от обмерзания", "КПД возврата тепла до 85%, влаги до 83%. Мощность от 300 до 30 000 м³/ч"] },
-      { title: "Как работает ПВУ с рекуперацией", content: "Рекуператор подогревает приточный воздух за счёт температуры вытяжного, возвращая до 85% тепловой энергии и до 83% влаги. Свежий воздух подаётся через решётки, отработанный выводится на улицу. Нагреватель доводит температуру до требуемой." },
-      { title: "Как подобрать ПВУ", bullets: ["Учёт: тип объекта, регион, количество жильцов, кратность воздухообмена", "Ступени рекуперации: 2 — до −25 °C, 3 — до −35 °C, 4 — до −45 °C", "Тип нагревателя: электрический или водяной (жидкостный)", "Мощность: от 300 до 30 000 м³/ч и выше по заказу"] },
-    ],
-  },
-  {
-    id: "turkov-pritoch",
-    icon: "/icons/duct.svg",
-    title: "Приточные установки",
-    description: "Нагрев и подача очищенного воздуха для объектов от 20 до 20 000 м².",
-    details: [
-      { title: "Компактные и бытовые", desc: "Приточки для квартир и небольших объектов.", icon: "/icons/duct.svg" },
-      { title: "Промышленные", desc: "Мощные приточные системы для коммерческих и производственных зданий.", icon: "/icons/factory.svg" },
-      { title: "С HEPA фильтром", desc: "Высокая степень очистки воздуха для медицинских и чистых помещений.", icon: "/icons/filter.svg" },
-    ],
-    infoSheets: [
-      { title: "Что такое приточная установка", bullets: ["Подогрев воздуха перед подачей — электрический или жидкостный нагреватель", "Автономная работа по датчикам", "Стабильная подача при любой погоде, в отличие от проветривания", "Очистка от пыли, пыльцы, спор и микроорганизмов"] },
-      { title: "Как выбрать приточную вентиляцию", bullets: ["До 200 м²: модели 200–590 м³/ч (компактные)", "210–650 м²: модели 620–2000 м³/ч (бытовые)", "От 650 м²: модели 2100–40 000 м³/ч (промышленные)", "Медицина, аллергики: линейка i-Vent с HEPA до 99.95%", "Нагреватель: жидкостный экономичнее при газе, электрический проще в монтаже"] },
-      { title: "7 причин выбрать TURKOV", bullets: ["Управление: пульт, приложение, Яндекс.Алиса, умный дом (MQTT, Modbus)", "Комбинация с увлажнителем и охладителем", "Низкий шум, фильтр F5 (опционально F7/F9)", "Заслонка с электроприводом — защита при отключении питания", "Моноблок до 15 000 м³/ч без мостиков холода", "Готовность: собрано и протестировано на заводе", "От 200 до 40 000 м³/ч и выше по заказу"] },
-    ],
-  },
-  {
-    id: "turkov-pool",
-    icon: "/icons/waves.svg",
-    title: "Вентиляция для бассейна",
-    description: "Осушение, воздухообмен, рекуперация и фильтрация для бассейнов.",
-    details: [
-      { title: "ПВУ с рециркуляцией", desc: "Приточно-вытяжные установки с рециркуляцией воздуха.", icon: "/icons/recuperation.svg" },
-      { title: "Климатические комплексы", desc: "С рекуперацией, опционально со встроенным осушителем.", icon: "/icons/waves.svg" },
-      { title: "Фреоновые осушители", desc: "Осушители с подмесом до 480 л/сутки.", icon: "/icons/wind.svg" },
-    ],
-    infoSheets: [
-      { title: "4 причины выбрать TURKOV", bullets: ["Собственное производство в Москве и Калужской области, сервис 6 дней в неделю", "4 способа управления: пульт, приложение, умный дом Яндекс, MQTT/Modbus", "4 категории: фреоновые осушители, ПВУ с рециркуляцией, климкомплексы с рекуперацией, с встроенным осушителем", "От 600 до 12 500 м³/ч и выше по заказу"] },
-      { title: "Как выбрать оборудование", bullets: ["Учёт: площадь зеркала воды, обходных дорожек, температура воздуха и воды", "Частота пользования и количество посетителей", "Наличие газового котла, регион (влажность и температура на улице)", "При низкой влажности снаружи и котельной — ПВУ с рециркуляцией", "При ограничениях по котлу — фреоновый осушитель с подмесом"] },
-      { title: "Зачем нужна вентиляция в бассейне", bullets: ["Комфорт: подогретый отфильтрованный воздух, нет перепадов температур", "Снижение затрат на отопление благодаря рекуперации", "Контроль влажности — защита от конденсата, плесени, сохранность конструкции", "Постоянный обмен воздуха — удаление влаги, CO₂, паров хлора", "Круглосуточная работа — испарение влаги происходит постоянно"] },
-    ],
-  },
-  {
-    id: "turkov-vytyazh",
-    icon: "/icons/wind.svg",
-    title: "Вытяжные установки",
-    description: "Профессиональные решения для удаления отработанного воздуха.",
-    details: [
-      { title: "Бытовые вытяжные", desc: "Для квартир и частных домов.", icon: "/icons/wind.svg" },
-      { title: "Промышленные вытяжные", desc: "Мощные вытяжные системы для производства и складов.", icon: "/icons/factory.svg" },
-    ],
-    infoSheets: [
-      { title: "Для чего нужна вытяжная установка", content: "Вытяжная установка отвечает за выброс отработанного воздуха на улицу и часто используется в комплекте с приточным оборудованием. В корпусе — энергоэффективный вентилятор и заслонка с электроприводом." },
-      { title: "Причины выбрать TURKOV", bullets: ["3 года гарантии", "Управление автономно или в связке с приточными установками и осушителями", "Опционально — фильтр грубой очистки", "Заслонка с возвратной пружиной встроена — защита при отключении питания", "Поставка собранной и настроенной, монтаж в любом положении", "Бытовые и промышленные от 200 до 40 000 м³/ч"] },
-    ],
-  },
-  {
-    id: "turkov-freon",
-    icon: "/icons/wind.svg",
-    title: "Фреоновые осушители",
-    description: "Снижение влажности в бассейнах или складских помещениях до 480 л/сутки.",
-    details: [
-      { title: "Фреоновые осушители с подмесом", desc: "Эффективное осушение и подмес свежего воздуха для бассейнов.", icon: "/icons/wind.svg" },
-    ],
-    infoSheets: [
-      { title: "Критерии выбора осушителя", bullets: ["Учёт: площадь зеркала воды, температура воды и воздуха, частота пользования", "Подходит при: нет газового котла; влажность снаружи выше, чем внутри; вентиляции недостаточно", "Используйте онлайн-калькулятор для расчёта влагоизбытков"] },
-      { title: "Преимущества TURKOV", bullets: ["Российский производитель, заводы в Москве и Калужской области", "Управление: пульт в комплекте или умный дом", "Подмес свежего воздуха ~13% — соблюдение санитарных норм", "Площадь зеркала до 180 м², производительность 800–6800 м³/ч, влагосъём до 444 л/сутки"] },
-      { title: "Как работает канальный осушитель", content: "Принцип — конденсация влаги через циркуляцию хладагента. Вентилятор втягивает влажный воздух → охлаждение на испарителе ниже точки росы → осушенный воздух нагревается на конденсаторе → подача обратно в помещение. Конденсат — в дренаж. Производительность не зависит от климата." },
-    ],
-  },
-  {
-    id: "turkov-okhl-uvl",
-    icon: "/icons/droplets.svg",
-    title: "Охладители, увлажнители, очистители",
-    description: "Дополнительные модули для идеального микроклимата.",
-    details: [
-      { title: "Канальные охладители", desc: "Охлаждение приточного воздуха в тёплый сезон.", icon: "/icons/snowflake.svg" },
-      { title: "Адиабатические увлажнители", desc: "Естественное испарение через канальные блоки.", icon: "/icons/droplets.svg" },
-      { title: "Канальные очистители", desc: "Доочистка воздуха в вентканалах.", icon: "/icons/filter.svg" },
-    ],
-    infoSheets: [
-      { title: "Что такое канальное оборудование", content: "Дополнительные модули в сети воздуховодов, расширяющие функционал приточной или ПВУ. Решают задачи увлажнения, охлаждения и глубокой фильтрации централизованно для всех помещений." },
-      { title: "Канальные увлажнители", content: "Адиабатический увлажнитель поддерживает влажность 40–50% даже зимой — комфорт для здоровья и сохранность предметов быта." },
-      { title: "Канальные очистители", content: "Четырёхступенчатая фильтрация, включая HEPA — очистка до 99.95%. Устраняет запахи, пыль, аллергены." },
-      { title: "Канальные охладители", content: "Снижают теплопритоки от приточного воздуха. Не заменяют кондиционер — охлаждают только приточный поток. Для жарких регионов — в связке со сплит-системой." },
-      { title: "Преимущества", bullets: ["Централизованное управление через общую автоматику", "Тихая эксплуатация — монтаж удалённо от жилых зон", "Равномерное распределение воздуха по всем комнатам", "Масштабируемость — можно добавить увлажнитель или охладитель позже", "Скрытый монтаж — видны только решётки"] },
-    ],
-  },
-  {
-    id: "turkov-filter",
-    icon: "/icons/filter.svg",
-    title: "Оборудование с высокой фильтрацией",
-    description: "Приточные установки и канальные очистители с HEPA и повышенной степенью очистки.",
-    details: [
-      { title: "Приточные с HEPA", desc: "Оборудование с фильтрами тонкой очистки F5 и выше.", icon: "/icons/filter.svg" },
-      { title: "Канальные очистители воздуха", desc: "Встраиваемые модули для доочистки в существующих системах.", icon: "/icons/duct.svg" },
-    ],
-    infoSheets: [
-      { title: "Высокая степень очистки", content: "Линейка i-Vent — четыре фильтра (G4 + F7 + уголь + HEPA H13), очистка до 99.95%. Для медицинских учреждений, аптек, помещений с аллергиками. Производительность 450–4000 м³/ч." },
-    ],
-  },
-  {
-    id: "turkov-osush",
-    icon: "/icons/wind.svg",
-    title: "Конденсационные осушители",
-    description: "Снижение влажности в бассейнах и складских помещениях.",
-    details: [
-      { title: "Конденсационные осушители", desc: "Эффективное осушение для влажных помещений.", icon: "/icons/wind.svg" },
-    ],
-    infoSheets: [],
-  },
-];
-
 const TurkovCategoryModal = ({ category, onClose, onOpenLead }) => {
   const [openSheet, setOpenSheet] = useState(null);
   const infoSheets = category.infoSheets || [];
@@ -1284,66 +877,148 @@ const TurkovCategoryModal = ({ category, onClose, onOpenLead }) => {
   );
 };
 
-const TurkovPromo = ({ onOpenCategory, onOpenLead }) => (
-  <section id="turkov" className="py-12 md:py-20 bg-slate-50 relative overflow-hidden">
+const TurkovCatalogModal = ({ onClose, onOpenCategory }) =>
+  createPortal(
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 font-sans">
+      <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-xl" onClick={onClose} />
+      <motion.div
+        initial={{ opacity: 0, scale: 0.96 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.96 }}
+        className="relative z-10 w-full max-w-6xl max-h-[90vh] overflow-hidden rounded-[2rem] bg-slate-950 text-white shadow-2xl"
+      >
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute top-4 right-4 z-20 p-2 rounded-xl bg-white/5 hover:bg-white/10 text-white transition-colors"
+        >
+          <X size={24} />
+        </button>
+        <div className="p-6 md:p-8 overflow-y-auto max-h-[90vh]">
+          <h3 className="font-heading text-2xl md:text-3xl font-normal text-white uppercase tracking-tight mb-8">
+            Каталог TURKOV
+          </h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-8">
+            {turkovCategories.map((item) => (
+              <div
+                key={item.id}
+                onClick={() => {
+                  onClose();
+                  onOpenCategory(item);
+                }}
+                className="group p-8 bg-white/5 rounded-3xl border border-white/5 hover:bg-white/10 transition-all cursor-pointer min-h-[200px] md:min-h-[220px] flex flex-col"
+              >
+                {item.icon && (
+                  <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center mb-4 group-hover:bg-white/20 transition-colors">
+                    <img src={item.icon} alt="" className="w-6 h-6 opacity-90 brightness-0 invert" />
+                  </div>
+                )}
+                <h4 className="font-normal text-white mb-2 uppercase tracking-wide">{item.title}</h4>
+                <p className="text-slate-300 text-sm font-normal line-clamp-2 leading-relaxed flex-1">{item.description}</p>
+                <span className="inline-flex items-center gap-1 text-xs font-normal text-white/80 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  Подробнее <ArrowRight size={12} />
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </motion.div>
+    </div>,
+    document.body
+  );
+
+const TurkovPromo = ({ onOpenCategory, onOpenLead, onOpenTurkovCatalog }) => (
+  <section
+    id="turkov"
+    className="py-12 md:py-20 relative overflow-hidden"
+    style={{ backgroundColor: "#0f172a" }}
+  >
+    <div
+      className="absolute inset-0 z-0"
+      style={{
+        backgroundImage: "url(/turkov-catalogue-images/Cover_bg_8.webp)",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+      }}
+    />
+    <div className="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/70 to-transparent z-[1]" />
     <div className="container mx-auto px-6 relative z-10">
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-8 md:mb-12">
         <div className="max-w-2xl">
-          <span className="text-xs font-normal text-blue-600 uppercase tracking-widest mb-3 block">Официальный дилер</span>
-          <h2 className="text-3xl md:text-5xl font-normal text-slate-900 mb-4 leading-tight uppercase tracking-tight">
+          <span className="text-xs font-normal text-blue-400 uppercase tracking-widest mb-3 block">Официальный дилер</span>
+          <h2 className="text-3xl md:text-5xl font-normal text-white mb-4 leading-tight uppercase tracking-tight">
             TURKOV
           </h2>
-          <p className="text-slate-600 font-normal leading-relaxed mb-4">
+          <p className="text-slate-300 font-normal leading-relaxed mb-4">
             TURKOV — российский производитель энергоэффективных климатических систем, ведущий свою деятельность с 2012 года.
             Специализация: разработка и изготовление оборудования для объектов любого масштаба — от квартир до промышленных предприятий.
           </p>
-          <p className="text-slate-800 font-medium text-sm">
+          <p className="text-slate-200 font-medium text-sm">
             Воздух НСК является официальным дилером производителя TURKOV.
           </p>
         </div>
-        <button
-          onClick={() => onOpenLead("TURKOV — общий запрос")}
-          className="shrink-0 px-8 py-4 bg-slate-900 text-white rounded-full font-normal text-sm uppercase tracking-widest hover:bg-blue-600 transition-all"
-          type="button"
-        >
-          Запросить консультацию
-        </button>
+        <div className="flex flex-col sm:flex-row gap-3 shrink-0">
+          <button
+            onClick={() => onOpenLead("TURKOV — общий запрос")}
+            className="px-8 py-4 bg-white text-slate-900 rounded-full font-normal text-sm uppercase tracking-widest hover:bg-blue-400 hover:text-white transition-all"
+            type="button"
+          >
+            Запросить консультацию
+          </button>
+          <button
+            onClick={onOpenTurkovCatalog}
+            className="px-8 py-4 bg-blue-600 text-white rounded-full font-normal text-sm uppercase tracking-widest hover:bg-blue-700 hover:shadow-lg hover:-translate-y-0.5 transition-all"
+            type="button"
+          >
+            Каталог TURKOV
+          </button>
+        </div>
       </div>
 
-      <motion.div
-        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
-        variants={{ visible: { transition: { staggerChildren: 0.05 } } }}
-      >
-        {turkovCategories.map((item, i) => (
-          <motion.div
-            key={item.id}
-            variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            onClick={() => onOpenCategory(item)}
-            className="group rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-lg hover:border-blue-200 transition-all cursor-pointer overflow-hidden min-h-[200px] md:min-h-[240px] flex flex-col"
-          >
-            {item.image ? (
-              <div className="relative h-36 md:h-40 overflow-hidden bg-slate-100 shrink-0">
-                <img
-                  src={item.image}
-                  alt=""
-                  className="w-full h-full object-cover object-center group-hover:scale-[1.03] transition-transform duration-500"
-                />
-              </div>
-            ) : null}
-            <div className="p-6 md:p-8 flex-1 flex flex-col">
-              <h3 className="text-base md:text-lg font-normal text-slate-900 mb-2 uppercase tracking-wide">{item.title}</h3>
-              <p className="text-slate-600 text-sm font-normal line-clamp-2 leading-relaxed flex-1">{item.description}</p>
-              <span className="inline-flex items-center gap-1 text-xs font-normal text-blue-600 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                Подробнее <ArrowRight size={12} />
-              </span>
+      <div className="mb-10 md:mb-14">
+        <h3 className="font-heading text-2xl md:text-3xl font-normal text-white mb-8 uppercase tracking-tight">
+          Вентиляция TURKOV — это на всю жизнь
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-8">
+          <div className="group p-6 md:p-6 bg-white/10 backdrop-blur-md rounded-3xl border border-white/10 hover:bg-white/15 transition-all cursor-default">
+            <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center mb-3 group-hover:bg-white/20 transition-all">
+              <Shield size={20} className="text-white" />
             </div>
-          </motion.div>
-        ))}
-      </motion.div>
+            <h4 className="font-normal text-white mb-1.5 text-sm uppercase tracking-wide">Расширенная гарантия</h4>
+            <p className="text-slate-300 text-xs font-normal leading-relaxed line-clamp-3">
+              Как завод-производитель, мы даём 3 года гарантии на установку в сборе и 7 лет — на рекуператоры.
+            </p>
+          </div>
+          <div className="group p-6 md:p-6 bg-white/10 backdrop-blur-md rounded-3xl border border-white/10 hover:bg-white/15 transition-all cursor-default">
+            <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center mb-3 group-hover:bg-white/20 transition-all">
+              <Thermometer size={20} className="text-white" />
+            </div>
+            <h4 className="font-normal text-white mb-1.5 text-sm uppercase tracking-wide">Под любые климатические условия</h4>
+            <p className="text-slate-300 text-xs font-normal leading-relaxed line-clamp-3">
+              От влажности Черноморского побережья до морозов Крайнего Севера. Подбор вентиляции под ваш регион.
+            </p>
+          </div>
+          <div className="group p-6 md:p-6 bg-white/10 backdrop-blur-md rounded-3xl border border-white/10 hover:bg-white/15 transition-all cursor-default">
+            <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center mb-3 group-hover:bg-white/20 transition-all">
+              <Package size={20} className="text-white" />
+            </div>
+            <h4 className="font-normal text-white mb-1.5 text-sm uppercase tracking-wide">Комплектующие всегда в наличии</h4>
+            <p className="text-slate-300 text-xs font-normal leading-relaxed line-clamp-3">
+              Собственное производство. Дополните установку опциональным оборудованием или замените любую деталь.
+            </p>
+          </div>
+          <div className="group p-6 md:p-6 bg-white/10 backdrop-blur-md rounded-3xl border border-white/10 hover:bg-white/15 transition-all cursor-default">
+            <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center mb-3 group-hover:bg-white/20 transition-all">
+              <BadgeCheck size={20} className="text-white" />
+            </div>
+            <h4 className="font-normal text-white mb-1.5 text-sm uppercase tracking-wide">Подтверждено сертификатами</h4>
+            <p className="text-slate-300 text-xs font-normal leading-relaxed line-clamp-3">
+              Только проверенные материалы, отвечающие пожаробезопасным и санэпидемиологическим требованиям.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 );
@@ -1439,6 +1114,17 @@ const EngineeringSection = ({ onOpenBrief }) => {
 
   return (
     <section id="engineering" className="py-14 md:py-32 bg-slate-950 text-white relative overflow-hidden">
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: "url(/photos/photo_5_2026-03-02_12-38-04.jpg)",
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center",
+        }}
+      />
+      <div className="absolute inset-0 bg-blue-950/40 z-[1]" />
+      <div className="absolute inset-0 bg-gradient-to-l from-slate-950 via-slate-950/60 to-transparent z-[2]" />
       <div className="container mx-auto px-6 relative z-10">
         <div className="max-w-4xl mb-10 md:mb-20 text-center mx-auto">
           <h2 className="font-heading text-3xl md:text-5xl font-normal mb-4 md:mb-6 leading-tight uppercase tracking-tighter">
@@ -1461,7 +1147,7 @@ const EngineeringSection = ({ onOpenBrief }) => {
               key={i}
               variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="p-8 bg-white/5 rounded-3xl border border-white/5 hover:bg-white/10 transition-all group"
+              className="p-8 bg-white/10 backdrop-blur-md rounded-3xl border border-white/10 hover:bg-white/15 transition-all group"
             >
               <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white mb-6 shadow-sm group-hover:scale-110 transition-all">
                 <s.icon size={24} />
@@ -1472,7 +1158,7 @@ const EngineeringSection = ({ onOpenBrief }) => {
           ))}
         </motion.div>
 
-        <div className="bg-white/5 border border-white/10 rounded-[3rem] p-6 md:p-16 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-10">
+        <div className="bg-white/10 backdrop-blur-md border border-white/10 rounded-[3rem] p-6 md:p-16 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-10">
           <div className="max-w-xl">
             <h3 className="text-2xl md:text-3xl font-normal mb-3 md:mb-4">Нужна помощь с техзаданием?</h3>
             <p className="text-slate-400 font-normal">AI-помощник сформирует черновик ТЗ за пару минут.</p>
@@ -1914,49 +1600,6 @@ const ClimateAssistant = () => {
  * 4.5) Доп. модалки: быстрый калькулятор и инфо по услугам
  */
 
-const SERVICE_INFO = {
-  vent: {
-    title: "Вентиляция под ключ",
-    icon: Wind,
-    leadHint: "Услуги: Вентиляция",
-    blocks: [
-      { h: "Что делаем", p: "Обследуем объект, считаем воздухообмен, подбираем оборудование, проектируем трассы, монтируем и выполняем пусконаладку." },
-      { h: "Что входит", p: "Проект/схема, подбор оборудования, воздуховоды и фасонные элементы, автоматика (по необходимости), паспорта и инструкции." },
-      { h: "Результат", p: "Стабильный приток и вытяжка, комфорт по CO₂, меньше пыли и запахов. При желании — рекуперация для экономии тепла." },
-    ],
-  },
-  ac: {
-    title: "Кондиционирование под ключ",
-    icon: Snowflake,
-    leadHint: "Услуги: Кондиционирование",
-    blocks: [
-      { h: "Подбор", p: "Подбираем мощность и тип системы (сплит, мульти-сплит, кассета, канальный) под архитектуру и бюджет." },
-      { h: "Монтаж", p: "Трассы, дренаж, электрика, вакуумирование и запуск. Чистый монтаж с защитой отделки." },
-      { h: "Сервис", p: "Гарантийное и постгарантийное обслуживание: чистка, диагностика, дозаправка, сезонные осмотры." },
-    ],
-  },
-  auto: {
-    title: "Автоматизация и диспетчеризация",
-    icon: Settings,
-    leadHint: "Услуги: Автоматизация",
-    blocks: [
-      { h: "Управление", p: "Делаем управление климатом со смартфона, сценарии работы, расписания, удалённый доступ." },
-      { h: "Инженерная автоматика", p: "Шкафы управления, датчики, частотники, интеграция с вентиляцией/чиллерами/VRF." },
-      { h: "Энергоэффективность", p: "Оптимизируем режимы, уменьшаем энергопотребление, настраиваем защиту оборудования." },
-    ],
-  },
-  smoke: {
-    title: "Дымоудаление и подпор",
-    icon: Fan,
-    leadHint: "Услуги: Дымоудаление",
-    blocks: [
-      { h: "Проектирование", p: "Расчёт и подбор оборудования противодымной вентиляции, увязка с пожарной автоматикой." },
-      { h: "Монтаж", p: "Клапаны, вентиляторы, шахты, воздуховоды, электропитание и управление." },
-      { h: "Пусконаладка", p: "Проверка режимов, испытания, настройка алгоритмов, подготовка исполнительной документации." },
-    ],
-  },
-};
-
 const ServiceInfoModal = ({ serviceKey, onClose, onOpenLead }) => {
   const item = SERVICE_INFO[serviceKey];
   if (!item) return null;
@@ -2019,36 +1662,6 @@ const ServiceInfoModal = ({ serviceKey, onClose, onOpenLead }) => {
     </div>,
     document.body
   );
-};
-
-// Калькулятор (ориентировочный). Основание: СП 60.13330.2020 (минимальные расходы наружного воздуха, 0.35 кратности) + типовые методики подбора мощности кондиционера.
-const VENT_PRESETS = [
-  { key: "apartment", name: "Квартира / дом", perPerson: 30, ach: 0.35 },
-  { key: "office", name: "Офис", perPerson: 40, ach: 2.0 },
-  { key: "cafe", name: "Кафе / ресторан", perPerson: 60, ach: 6.0 },
-  { key: "production", name: "Производство", perPerson: 60, ach: 4.0 },
-];
-
-const AC_PRESETS = [
-  { key: "res", name: "Жильё", wpm2: 100, q: 35 },
-  { key: "office", name: "Офис", wpm2: 120, q: 40 },
-  { key: "retail", name: "Торговля", wpm2: 125, q: 40 },
-];
-
-const round1 = (n) => Math.round(n * 10) / 10;
-
-const pickNearestKW = (kw) => {
-  const options = [
-    { kw: 2.0, label: "07 (≈2.0 кВт)" },
-    { kw: 2.5, label: "09 (≈2.5 кВт)" },
-    { kw: 3.5, label: "12 (≈3.5 кВт)" },
-    { kw: 5.0, label: "18 (≈5.0 кВт)" },
-    { kw: 7.0, label: "24 (≈7.0 кВт)" },
-    { kw: 10.0, label: "36 (≈10 кВт)" },
-  ];
-  let best = options[0];
-  for (const o of options) if (Math.abs(o.kw - kw) < Math.abs(best.kw - kw)) best = o;
-  return best;
 };
 
 const QuickCalcModal = ({ initialTab = "vent", onClose, onOpenLead }) => {
@@ -2299,178 +1912,6 @@ const QuickCalcModal = ({ initialTab = "vent", onClose, onOpenLead }) => {
  * 5) App
  */
 
-// --- Наши работы (галерея) ---
-const WORKS = [
-  {
-    title: 'Монтаж кондиционера в квартире',
-    tag: 'Кондиционирование',
-    image: '/photos/ac-apartment-wide.jpg',
-  },
-  {
-    title: 'Аккуратный монтаж внутреннего блока',
-    tag: 'Кондиционирование',
-    image: '/photos/ac-room-sun.jpg',
-  },
-  {
-    title: 'Вентустановки на объекте',
-    tag: 'Промышленная вентиляция',
-    image: '/photos/vent-units.jpg',
-  },
-  {
-    title: 'Воздуховоды и вытяжка в кухне',
-    tag: 'Общепит (HoReCa)',
-    image: '/photos/kitchen-hoods.jpg',
-  },
-  {
-    title: 'Монтаж воздуховодов',
-    tag: 'Промышленная вентиляция',
-    image: '/photos/duct-industrial.jpg',
-  },
-  {
-    title: 'Окрасочно-сушильная камера',
-    tag: 'Промышленность',
-    image: '/photos/spray-booth-1.jpg',
-  },
-]
-
-const WorksSection = () => (
-  <section id="works" className="py-14 md:py-24 bg-white">
-    <div className="container mx-auto px-4">
-      <div className="flex items-end justify-between gap-4 md:gap-6 mb-6 md:mb-10">
-        <div>
-          <h2 className="text-3xl md:text-4xl font-light tracking-tight text-slate-900">
-            Наши работы
-          </h2>
-          <p className="mt-2 md:mt-3 text-slate-600 max-w-2xl">
-            Живые фото с объектов: кондиционирование, вентиляция, инженерные узлы.
-          </p>
-        </div>
-        <div className="hidden md:flex items-center gap-2 text-sm text-slate-600">
-          <span className="inline-flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-emerald-500" />
-            Новые объекты добавляем регулярно
-          </span>
-        </div>
-      </div>
-
-      <div className="grid gap-4 md:gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {WORKS.map((w, idx) => (
-          <motion.div
-            key={w.title}
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.25 }}
-            transition={{ duration: 0.45, delay: idx * 0.04 }}
-            className="rounded-3xl overflow-hidden border border-slate-200 bg-white shadow-sm hover:shadow-md transition-shadow"
-          >
-            <div className="relative aspect-[16/10]">
-              <img
-                src={w.image}
-                alt={w.title}
-                className="absolute inset-0 h-full w-full object-cover"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
-              <div className="absolute left-4 top-4">
-                <span className="inline-flex items-center rounded-full bg-white/80 backdrop-blur px-3 py-1 text-xs font-normal text-slate-800 border border-white/70">
-                  {w.tag}
-                </span>
-              </div>
-              <div className="absolute left-4 right-4 bottom-4">
-                <p className="text-white text-base font-normal leading-snug drop-shadow">
-                  {w.title}
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-    </div>
-  </section>
-)
-
-// --- Статьи ---
-const ARTICLES = [
-  {
-    id: "types",
-    title: "Какая бывает вентиляция",
-    excerpt: "Естественная и механическая, приточная, вытяжная, приточно-вытяжная с рекуперацией — как выбрать.",
-    image:
-      "/photos/duct-industrial.jpg",
-    schemaTitle: "Схема типов вентиляции",
-    body: [
-      "Вентиляция бывает естественной (за счёт разности температур/ветра) и механической (вентиляторы и установки).",
-      "По назначению выделяют: приточную (подаёт свежий воздух), вытяжную (удаляет загрязнённый), приточно‑вытяжную (балансирует приток и вытяжку) и ПВУ с рекуперацией тепла.",
-      "Для квартир часто применяют бризеры/ПВУ, для общепита — мощные вытяжные системы и зонт над тепловым оборудованием, для производств — аспирацию и локальные отсосы.",
-    ],
-  },
-  {
-    id: "supply-exhaust",
-    title: "Приток и вытяжка: зачем нужны",
-    excerpt: "Почему важно соблюдать баланс и как получить свежий воздух без сквозняков и запахов.",
-    image:
-      "/photos/engineering-room-wide.jpg",
-    schemaTitle: "Баланс притока и вытяжки",
-    body: [
-      "Приток подаёт наружный воздух, а вытяжка удаляет отработанный. Без вытяжки воздух застаивается, без притока появляется разрежение и подсосы из шахт и соседних помещений.",
-      "Правильный баланс снижает запахи, конденсат и плесень, улучшает самочувствие и защищает отделку.",
-      "В проектах важно учитывать перетоки (щели/дверные зазоры) и зоны удаления: кухня, санузлы, гардеробные.",
-    ],
-  },
-  {
-    id: "health",
-    title: "Почему вентиляция важна для человека",
-    excerpt: "CO₂, влажность, запахи и аллергены — что происходит в помещении без воздухообмена.",
-    image:
-      "/photos/home-vent-diffuser.jpg",
-    schemaTitle: "Качество воздуха",
-    body: [
-      "При закрытых окнах в помещении растёт CO₂ и влажность, накапливаются запахи и аэрозоли. Это влияет на сон, концентрацию и самочувствие.",
-      "Фильтрация и контролируемый воздухообмен снижают пыль, аллергены и уличный шум, а также помогают держать комфортную влажность.",
-      "Современные системы используют датчики CO₂ и автоматику — воздух подаётся тогда, когда он действительно нужен.",
-    ],
-  },
-  {
-    id: "brizers",
-    title: "Бризеры и их разновидности",
-    excerpt: "Компактная приточная вентиляция: подогрев, фильтры, шум, производительность и сценарии установки.",
-    image:
-      "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=80",
-    schemaTitle: "Устройство бризера",
-    body: [
-      "Бризер — это приточный прибор для одной комнаты. Он подаёт наружный воздух, фильтрует его и может подогревать зимой.",
-      "Ключевые параметры: производительность (м³/ч), уровень шума, класс фильтрации (например, HEPA/угольный), наличие подогрева и автоматики.",
-      "Бризер удобен как быстрый апгрейд для квартиры без сложного монтажа воздуховодов.",
-    ],
-  },
-  {
-    id: "ac-vs-vent",
-    title: "Кондиционирование vs вентиляция",
-    excerpt: "Почему кондиционер не заменяет вентиляцию и как объединять системы для максимального комфорта.",
-    image:
-      "https://images.unsplash.com/photo-1627236585127-18c72807e335?auto=format&fit=crop&w=1200&q=80",
-    schemaTitle: "Разница систем",
-    body: [
-      "Кондиционер охлаждает/нагревает воздух в помещении, но почти не обеспечивает приток свежего наружного воздуха.",
-      "Вентиляция отвечает за воздухообмен и качество воздуха. Лучший результат — совместная работа: вентиляция + кондиционирование.",
-      "Для домов и больших объектов часто используют канальные системы и ПВУ с рекуперацией, интегрированные с охлаждением.",
-    ],
-  },
-  {
-    id: "trends",
-    title: "Тенденции в вентиляции и кондиционировании",
-    excerpt: "Рекуперация, умное управление, энергоэффективность, низкий шум и интеграция в интерьер.",
-    image:
-      "https://images.unsplash.com/photo-1558002038-1091a1661116?auto=format&fit=crop&w=1200&q=80",
-    schemaTitle: "Тренды 2026",
-    body: [
-      "Рынок движется к энергоэффективности: рекуперация тепла, EC‑вентиляторы, точная автоматика и датчики качества воздуха.",
-      "Управление со смартфона и диспетчеризация становятся стандартом — удобнее сервис и мониторинг.",
-      "Интерьерные решения: скрытый монтаж, дизайнерские решётки, снижение шума и вибраций.",
-    ],
-  },
-];
-
 const SchemaCard = ({ title }) => (
   <div className="relative w-full rounded-3xl p-6 bg-white/35 backdrop-blur-xl border border-white/40 shadow-sm">
     <div className="text-[10px] font-normal uppercase tracking-widest text-slate-600 mb-2">Схема</div>
@@ -2689,6 +2130,7 @@ const Reveal = ({ children }) => {
 function MainSite() {
   const [activeSolution, setActiveSolution] = useState(null);
   const [activeTurkovCategory, setActiveTurkovCategory] = useState(null);
+  const [turkovCatalogOpen, setTurkovCatalogOpen] = useState(false);
   const [leadContext, setLeadContext] = useState(null);
   const [modalState, setModalState] = useState(null);
 
@@ -2756,7 +2198,11 @@ const closeCalc = () => {
       </Reveal>
 
       <Reveal>
-        <TurkovPromo onOpenCategory={setActiveTurkovCategory} onOpenLead={openLead} />
+        <TurkovPromo
+          onOpenCategory={setActiveTurkovCategory}
+          onOpenLead={openLead}
+          onOpenTurkovCatalog={() => setTurkovCatalogOpen(true)}
+        />
       </Reveal>
 
       <Reveal>
@@ -2807,10 +2253,22 @@ const closeCalc = () => {
             onOpenLead={openLead}
           />
         )}
+        {turkovCatalogOpen && (
+          <TurkovCatalogModal
+            onClose={() => setTurkovCatalogOpen(false)}
+            onOpenCategory={(item) => {
+              setTurkovCatalogOpen(false);
+              setActiveTurkovCategory(item);
+            }}
+          />
+        )}
         {activeTurkovCategory && (
           <TurkovCategoryModal
             category={activeTurkovCategory}
-            onClose={() => setActiveTurkovCategory(null)}
+            onClose={() => {
+              setActiveTurkovCategory(null);
+              setTurkovCatalogOpen(true);
+            }}
             onOpenLead={openLead}
           />
         )}

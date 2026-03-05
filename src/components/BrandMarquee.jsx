@@ -16,7 +16,7 @@ const BrandMarquee = () => (
       <div className="marquee-track flex whitespace-nowrap gap-20 items-center">
         {[...brands, ...brands].map((b, i) => (
           <span
-            key={i}
+            key={`${b}-${i}`}
             className="font-heading text-3xl font-bold text-slate-200 hover:text-blue-600 transition-colors cursor-default select-none"
           >
             {b}

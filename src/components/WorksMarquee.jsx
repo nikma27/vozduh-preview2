@@ -47,7 +47,7 @@ const WorksMarquee = () => {
   const allImages = [...NASHI_IMAGES, ...NASHI_IMAGES];
   const halfWidthRef = useRef(0);
 
-  // Auto-scroll вправо (обратное направление): 280 сек на полный цикл
+  // Auto-scroll вправо: 280 сек на полный цикл
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
@@ -55,13 +55,15 @@ const WorksMarquee = () => {
   }, [allImages.length]);
 
   useEffect(() => {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) return;
     const animate = (t) => {
       if (isDragging || hoveredIndex !== null) return;
       const dt = t - lastTimeRef.current;
       lastTimeRef.current = t;
       const half = halfWidthRef.current;
       if (half <= 0) return;
-      const speed = half / (280 * 1000); // px/ms
+      const speed = half / (280 * 1000);
       setScrollPx((prev) => {
         const next = prev + speed * dt;
         const val = next >= 0 ? next - half : next;
@@ -75,27 +77,44 @@ const WorksMarquee = () => {
     return () => rafRef.current && cancelAnimationFrame(rafRef.current);
   }, [isDragging, hoveredIndex]);
 
+  const getClientX = (e) => (e.touches ? e.touches[0].clientX : e.clientX);
+
   const handleMouseDown = (e) => {
     if (e.button !== 0) return;
     setIsDragging(true);
-    dragStart.current = { x: e.clientX, scroll: scrollPxRef.current };
+    dragStart.current = { x: getClientX(e), scroll: scrollPxRef.current };
+  };
+
+  const handleTouchStart = (e) => {
+    setIsDragging(true);
+    dragStart.current = { x: getClientX(e), scroll: scrollPxRef.current };
   };
 
   useEffect(() => {
     if (!isDragging) return;
     const half = halfWidthRef.current;
     const onMove = (e) => {
-      const dx = e.clientX - dragStart.current.x;
+      const dx = getClientX(e) - dragStart.current.x;
       const next = Math.max(-half, Math.min(0, dragStart.current.scroll + dx));
       scrollPxRef.current = next;
       setScrollPx(next);
     };
+    const onTouchMove = (e) => {
+      onMove(e);
+      e.cancelable && e.preventDefault();
+    };
     const onUp = () => setIsDragging(false);
     window.addEventListener("mousemove", onMove);
     window.addEventListener("mouseup", onUp);
+    window.addEventListener("touchmove", onTouchMove, { passive: false });
+    window.addEventListener("touchend", onUp);
+    window.addEventListener("touchcancel", onUp);
     return () => {
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseup", onUp);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchend", onUp);
+      window.removeEventListener("touchcancel", onUp);
     };
   }, [isDragging]);
 
@@ -111,16 +130,17 @@ const WorksMarquee = () => {
       </div>
 
       <div
-        className="relative flex overflow-x-hidden select-none"
+        className="relative flex overflow-x-hidden select-none touch-pan-x"
         style={{ cursor: isDragging ? "grabbing" : "grab" }}
         onMouseDown={handleMouseDown}
+        onTouchStart={handleTouchStart}
         onMouseLeave={() => setHoveredIndex(null)}
         onDragStart={(e) => e.preventDefault()}
       >
         <div
           ref={trackRef}
           className="flex gap-6 md:gap-8 items-center shrink-0 will-change-transform"
-          style={{ transform: `translateX(${scrollPx}px)` }}
+          style={{ transform: `translate3d(${scrollPx}px, 0, 0)` }}
         >
           {allImages.map((src, i) => {
             const isThisHovered = hoveredIndex === i;

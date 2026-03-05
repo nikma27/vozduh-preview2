@@ -1,0 +1,76 @@
+{
+  "name": "Vozduh НСК — приём заявок",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "webhook-lead",
+      "name": "Webhook — заявки",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300],
+      "webhookId": "vozduh-lead"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Заявка с сайта: type, context, name, phone, page, payload\nconst body = $input.first().json.body || $input.first().json;\nreturn {\n  json: {\n    type: body.type || 'lead',\n    context: body.context || '',\n    name: body.name || '',\n    phone: body.phone || '',\n    page: body.page || '',\n    payload: body.payload || {},\n    receivedAt: new Date().toISOString()\n  }\n};"
+      },
+      "id": "code-format",
+      "name": "Форматировать данные",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [470, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "telegram-msg",
+              "name": "message",
+              "value": "=🆕 Заявка с сайта\n\nТип: {{ $json.type }}\nКонтекст: {{ $json.context }}\nИмя: {{ $json.name }}\nТелефон: {{ $json.phone }}\nСтраница: {{ $json.page }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-telegram",
+      "name": "Сообщение для Telegram",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [690, 200]
+    }
+  ],
+  "connections": {
+    "Webhook — заявки": {
+      "main": [
+        [
+          {
+            "node": "Форматировать данные",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Форматировать данные": {
+      "main": [
+        [
+          {
+            "node": "Сообщение для Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
