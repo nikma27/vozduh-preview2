@@ -9,7 +9,6 @@ const navLinks = [
   { name: "РАБОТЫ", href: "#works" },
   { name: "ИНЖИНИРИНГ", href: "#engineering" },
   { name: "СЕРВИС", href: "#service" },
-  { name: "СТАТЬИ", href: "#articles" },
   { name: "ПАРТНЕРАМ", href: "#partners" },
   { name: "КОНТАКТЫ", href: "#contact" },
 ];

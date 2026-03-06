@@ -50,7 +50,7 @@ const Hero = ({ onOpenCalc }) => (
             href={import.meta.env.VITE_TG_BOT_LINK || "https://t.me/vozduh_nsk_bot"}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-10 py-5 bg-white/5 border border-white/20 backdrop-blur-md rounded-full font-normal text-lg hover:bg-white/10 transition-all text-center flex items-center justify-center gap-3"
+            className="px-10 py-5 bg-emerald-500/90 hover:bg-emerald-500 border border-emerald-400/30 rounded-full font-normal text-lg text-white transition-all text-center flex items-center justify-center gap-3 shadow-lg shadow-emerald-500/20"
           >
             <MessageCircle size={20} /> Telegram-консультант
           </a>

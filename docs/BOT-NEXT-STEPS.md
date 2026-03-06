@@ -17,7 +17,7 @@ cd c:\Projects\vozduh-tg-bot-ing
 copy .env.example .env
 # Открой .env и вставь:
 #   TELEGRAM_BOT_TOKEN=твой_токен
-#   GEMINI_API_KEY=твой_ключ_gemini  (опционально, для AI-ответов)
+#   YANDEX_FOLDER_ID= и YANDEX_API_KEY=  (опционально, для AI через Yandex GPT)
 
 npm install
 npm start
@@ -45,17 +45,22 @@ VITE_TG_BOT_LINK=https://t.me/ТВОЙ_BOT_USERNAME
 
 Кнопка «Воспользуйтесь нашим универсальным ТГ ботом» будет вести на твоего бота.
 
-## 5. Gemini API — AI-ответы бота
+## 5. Yandex GPT API — AI-ответы бота
 
-Без ключа бот отвечает заглушкой. Для умных ответов:
+**Подробная инструкция:** `vozduh-tg-bot-ing/docs/YANDEX-SETUP.md`
 
-1. Открой [Google AI Studio](https://aistudio.google.com/apikey)
-2. Войди в Google-аккаунт → **Create API Key**
-3. Скопируй ключ и добавь в `vozduh-tg-bot-ing/.env`:
+Без ключей бот отвечает заглушкой. Для умных ответов через Yandex:
+
+1. Открой [Yandex Cloud Console](https://console.cloud.yandex.ru/)
+2. Создай каталог (или выбери существующий) → скопируй **Folder ID**
+3. Создай сервисный аккаунт с ролью `ai.languageModels.user`
+4. Создай API-ключ для сервисного аккаунта
+5. Добавь в `vozduh-tg-bot-ing/.env`:
    ```
-   GEMINI_API_KEY=твой_ключ
+   YANDEX_FOLDER_ID=твой_folder_id
+   YANDEX_API_KEY=твой_api_key
    ```
-4. Перезапусти бота (`Ctrl+C`, затем `npm start`)
+6. Перезапусти бота (`Ctrl+C`, затем `npm start`)
 
 ## 6. Деплой бота (24/7)
 
@@ -64,4 +69,4 @@ VITE_TG_BOT_LINK=https://t.me/ТВОЙ_BOT_USERNAME
 - [Render](https://render.com)
 - VPS (DigitalOcean, Timeweb и т.п.)
 
-Укажи `TELEGRAM_BOT_TOKEN` и `GEMINI_API_KEY` в переменных окружения сервиса.
+Укажи `TELEGRAM_BOT_TOKEN`, `YANDEX_FOLDER_ID` и `YANDEX_API_KEY` в переменных окружения сервиса.

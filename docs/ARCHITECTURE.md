@@ -145,8 +145,7 @@ graph LR
 | 7 | EngineeringSection | #engineering | Инжиниринг |
 | 8 | PartnersSection | #partners | Партнёрам |
 | 9 | Services | #service | Сервисное обслуживание |
-| 10 | ArticlesSection | #articles | Статьи |
-| 11 | ContactForm | #contact | Контакты и форма |
+| 10 | ContactForm | #contact | Контакты и форма |
 | 12 | Footer | — | Подвал |
 
 ## 5. Зависимости
