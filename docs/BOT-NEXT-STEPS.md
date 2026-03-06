@@ -47,7 +47,7 @@ VITE_TG_BOT_LINK=https://t.me/ТВОЙ_BOT_USERNAME
 
 ## 5. Yandex GPT API — AI-ответы бота
 
-**Подробная инструкция:** `vozduh-tg-bot-ing/docs/YANDEX-SETUP.md`
+**Подробная инструкция:** [docs/YANDEX-SETUP.md](./YANDEX-SETUP.md) (в этом репозитории)
 
 Без ключей бот отвечает заглушкой. Для умных ответов через Yandex:
 
