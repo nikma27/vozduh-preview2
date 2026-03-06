@@ -37,6 +37,8 @@ import {
 import { AnimatePresence, motion, useInView } from "framer-motion";
 import BrandMarquee from "./components/BrandMarquee";
 import WorksMarquee from "./components/WorksMarquee";
+import Navbar from "./components/sections/Navbar";
+import Hero from "./components/sections/Hero";
 import { postLead } from "./api/leads";
 import { fetchGeminiResponse } from "./api/gemini";
 import { complexSolutions } from "./data/solutions";
@@ -578,195 +580,8 @@ const SolutionDetailModal = ({ solution, onClose, onOpenLead }) => {
 };
 
 /**
- * 3) Sections
+ * 3) Sections (Navbar, Hero вынесены в components/sections/)
  */
-const Navbar = ({ onOpenContact }) => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    let ticking = false;
-    let lastCall = 0;
-    const THROTTLE_MS = 100;
-    const handleScroll = () => {
-      if (ticking) return;
-      const now = Date.now();
-      if (now - lastCall < THROTTLE_MS) return;
-      ticking = true;
-      lastCall = now;
-      requestAnimationFrame(() => {
-        setIsScrolled(window.scrollY > 50);
-        ticking = false;
-      });
-    };
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const navLinks = [
-    { name: "РЕШЕНИЯ", href: "#catalog" },
-    { name: "ПРОИЗВОДИТЕЛИ", href: "#manufacturers" },
-    { name: "РАБОТЫ", href: "#works" },
-    { name: "ИНЖИНИРИНГ", href: "#engineering" },
-    { name: "СЕРВИС", href: "#service" },
-    { name: "СТАТЬИ", href: "#articles" },
-    { name: "ПАРТНЕРАМ", href: "#partners" },
-    { name: "КОНТАКТЫ", href: "#contact" },
-  ];
-
-  return (
-    <nav
-      className={[
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b bg-white/95 md:bg-white/80 md:backdrop-blur-md border-white/20 shadow-sm",
-        isScrolled ? "py-1 sm:py-1.5 md:py-1.5 lg:py-2 xl:py-2 2xl:py-2.5" : "py-1.5 sm:py-2 md:py-2 lg:py-2.5 xl:py-3 2xl:py-4",
-      ].join(" ")}
-    >
-      <div className="container mx-auto px-4 sm:px-5 md:px-6 flex justify-between items-center">
-        <a href="#" className="flex items-center gap-2 sm:gap-3 group z-50 relative overflow-visible">
-          <div className="relative shrink-0">
-            <div className="p-2 sm:p-2.5 md:p-3 rounded-full transition-all duration-300 bg-blue-600 text-white group-hover:scale-105">
-              <Wind className="shrink-0 w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-8 lg:h-8 xl:w-9 xl:h-9 2xl:w-10 2xl:h-10" size={24} />
-            </div>
-            <div className="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-px bg-gradient-to-r from-blue-600/60 to-transparent rounded-full opacity-80" aria-hidden="true" />
-          </div>
-          <span className="font-heading text-lg sm:text-xl md:text-xl lg:text-2xl xl:text-2xl 2xl:text-3xl font-normal tracking-tight uppercase text-slate-900 origin-left transform skew-x-[-1deg] group-hover:skew-x-0 transition-transform duration-300">
-            <span className="inline-block animate-[logoFlow_0.5s_ease-out_forwards]">Воздух</span><span className="text-blue-600 inline-block animate-[logoFlow_0.5s_ease-out_0.03s_forwards]">НСК</span>
-          </span>
-        </a>
-
-        <div className="hidden xl:flex items-center gap-4 xl:gap-5 2xl:gap-8">
-          {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              className="text-nav font-normal hover:text-blue-500 hover:font-normal transition-colors text-slate-800 whitespace-nowrap uppercase"
-            >
-              {link.name}
-            </a>
-          ))}
-        </div>
-
-        <div className="hidden xl:flex items-center gap-3 xl:gap-4 2xl:gap-6">
-          <div className="flex flex-col items-end text-nav text-slate-900">
-            <span className="font-normal">+7 (383) 263-15-51</span>
-          </div>
-          <button
-            onClick={onOpenContact}
-            className="text-nav px-3 sm:px-4 lg:px-4 xl:px-5 py-1.5 rounded-full font-normal transition-all hover:shadow-lg hover:-translate-y-0.5 whitespace-nowrap bg-blue-600 text-white hover:bg-blue-700 uppercase"
-          >
-            Оставить заявку
-          </button>
-        </div>
-
-        <button
-          className="xl:hidden text-xl sm:text-2xl transition-colors z-50 relative text-slate-900 p-1.5"
-          onClick={() => setMobileMenuOpen((v) => !v)}
-          type="button"
-        >
-          {mobileMenuOpen ? <X /> : <Menu />}
-        </button>
-      </div>
-
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, x: "100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "100%" }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed inset-0 bg-white/95 backdrop-blur-xl z-40 flex flex-col p-6 xl:hidden border-l border-white/20 h-screen overflow-y-auto"
-          >
-            <div className="flex flex-col gap-3 text-xl font-normal text-slate-800 flex-1 justify-center items-center text-center">
-              {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="relative group overflow-hidden"
-                >
-                  <span className="relative z-10 group-hover:text-blue-600 transition-colors uppercase">
-                    {link.name}
-                  </span>
-                </a>
-              ))}
-            </div>
-            <div className="mt-auto pt-6 border-t border-slate-200 text-center shrink-0 pb-6">
-              <a
-                href="tel:+73832631551"
-                className="block text-2xl font-normal mb-2 text-slate-900"
-              >
-                +7 (383) 263-15-51
-              </a>
-              <p className="text-slate-600 mb-4 font-normal">Новосибирск, ул. Королева 40</p>
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  onOpenContact();
-                }}
-                className="w-full py-4 bg-blue-600 text-white rounded-xl font-normal uppercase"
-                type="button"
-              >
-                Оставить заявку
-              </button>
-            </div>
-          </motion.div>
-        )}
-      
-</AnimatePresence>
-    </nav>
-  );
-};
-
-const Hero = ({ onOpenCalc }) => (
-  <section className="relative h-[100vh] flex items-center overflow-hidden bg-slate-900 text-white">
-    <div className="absolute inset-0 opacity-40">
-      <img
-        src="/photos/photo_10_2026-03-02_12-37-33.jpg"
-        className="w-full h-full object-cover"
-        alt="Background"
-        fetchPriority="high"
-      />
-    </div>
-    <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/70 to-transparent" />
-    <div className="container mx-auto px-4 sm:px-6 relative z-10">
-      <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-        <div className="inline-flex items-center gap-3 px-3 py-1.5 sm:px-4 rounded-full bg-blue-600/20 border border-blue-500/30 text-blue-300 text-[10px] font-normal uppercase tracking-[0.2em] sm:tracking-[0.3em] mb-6 md:mb-10 backdrop-blur-sm">
-          <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
-          Проектирование • Поставка • Монтаж • Сервис
-        </div>
-
-        <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-normal leading-[0.95] tracking-tight mb-6 md:mb-10">
-          Климат{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
-            как искусство
-          </span>
-        </h1>
-
-        <p className="max-w-2xl text-base md:text-lg lg:text-xl font-normal text-slate-500 mb-8 md:mb-12 leading-relaxed">
-          Проектирование, монтаж и сервис систем вентиляции, кондиционирования, дымоудаления, автоматизации для жилых, коммерческих и промышленных объектов.
-        </p>
-
-        <div className="flex flex-wrap gap-3 md:gap-5">
-          <button
-            onClick={() => onOpenCalc("vent")}
-            className="px-10 py-5 bg-blue-600 rounded-full font-normal text-lg flex items-center gap-3 hover:bg-blue-500 transition-all shadow-2xl shadow-blue-600/30"
-            type="button"
-          >
-            Начать расчет <ArrowRight size={20} />
-          </button>
-          <a
-            href="#catalog"
-            className="px-10 py-5 bg-white/5 border border-white/20 backdrop-blur-md rounded-full font-normal text-lg hover:bg-white/10 transition-all text-center flex items-center justify-center"
-          >
-            Наши решения
-          </a>
-        </div>
-      </motion.div>
-    </div>
-  </section>
-);
-
 const TurkovCategoryModal = ({ category, onClose, onOpenLead }) => {
   const [openSheet, setOpenSheet] = useState(null);
   const infoSheets = category.infoSheets || [];
@@ -884,44 +699,41 @@ const TurkovCategoryModal = ({ category, onClose, onOpenLead }) => {
 
 const TurkovCatalogModal = ({ onClose, onOpenCategory }) =>
   createPortal(
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 font-sans">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 font-sans overflow-hidden">
       <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-xl" onClick={onClose} />
       <motion.div
         initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.96 }}
-        className="relative z-10 w-full max-w-6xl max-h-[90vh] overflow-hidden rounded-[2rem] bg-slate-950 text-white shadow-2xl"
+        className="relative z-10 w-full max-w-6xl max-h-[85dvh] overflow-hidden rounded-xl md:rounded-[2rem] bg-gradient-to-br from-blue-400/25 via-blue-600/30 to-slate-950 text-white shadow-2xl"
       >
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 p-2 rounded-xl bg-white/5 hover:bg-white/10 text-white transition-colors"
+          className="absolute top-2 right-2 sm:top-3 sm:right-3 z-20 p-1.5 rounded-lg bg-blue-500/20 hover:bg-blue-500/30 text-white transition-colors"
         >
-          <X size={24} />
+          <X size={18} />
         </button>
-        <div className="p-6 md:p-8 overflow-y-auto max-h-[90vh]">
-          <h3 className="font-heading text-2xl md:text-3xl font-normal text-white uppercase tracking-tight mb-8">
+        <div className="p-3 sm:p-5 md:p-6 overflow-y-auto max-h-[85dvh] no-scrollbar overscroll-contain">
+          <h3 className="font-heading text-base sm:text-lg md:text-xl font-normal text-white uppercase tracking-tight mb-3 sm:mb-5">
             Каталог TURKOV
           </h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
             {turkovCategories.map((item) => (
               <div
                 key={item.id}
-                onClick={() => {
-                  onClose();
-                  onOpenCategory(item);
-                }}
-                className="group p-8 bg-white/5 rounded-3xl border border-white/5 hover:bg-white/10 transition-all cursor-pointer min-h-[200px] md:min-h-[220px] flex flex-col"
+                onClick={() => { onClose(); onOpenCategory(item); }}
+                className="group p-3 sm:p-4 rounded-xl md:rounded-2xl bg-gradient-to-br from-blue-400/30 to-slate-900/90 border border-blue-400/25 hover:from-blue-400/40 hover:to-slate-800/95 transition-all cursor-pointer flex flex-col min-h-0"
               >
                 {item.icon && (
-                  <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center mb-4 group-hover:bg-white/20 transition-colors">
-                    <img src={item.icon} alt="" className="w-6 h-6 opacity-90 brightness-0 invert" />
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-md bg-blue-400/25 flex items-center justify-center mb-1.5 sm:mb-2 group-hover:bg-blue-400/35 transition-colors shrink-0">
+                    <img src={item.icon} alt="" className="w-3 h-3 sm:w-4 sm:h-4 opacity-90 brightness-0 invert" />
                   </div>
                 )}
-                <h4 className="font-normal text-white mb-2 uppercase tracking-wide">{item.title}</h4>
-                <p className="text-slate-300 text-sm font-normal line-clamp-2 leading-relaxed flex-1">{item.description}</p>
-                <span className="inline-flex items-center gap-1 text-xs font-normal text-white/80 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  Подробнее <ArrowRight size={12} />
+                <h4 className="font-normal text-white text-[10px] sm:text-xs mb-0.5 uppercase tracking-wide leading-tight line-clamp-2">{item.title}</h4>
+                <p className="text-slate-300 text-[9px] sm:text-[10px] font-normal line-clamp-2 leading-snug flex-1 min-h-0">{item.description}</p>
+                <span className="inline-flex items-center gap-0.5 text-[9px] sm:text-[10px] text-blue-200 mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                  Подробнее <ArrowRight size={10} />
                 </span>
               </div>
             ))}
@@ -939,7 +751,7 @@ const TurkovPromo = ({ onOpenCategory, onOpenLead, onOpenTurkovCatalog }) => (
     style={{ backgroundColor: "#0f172a" }}
   >
     <div
-      className="absolute inset-0 z-0"
+      className="absolute inset-0 z-0 bg-section-turkov"
       style={{
         backgroundImage: "url(/turkov-catalogue-images/Cover_bg_8.webp)",
         backgroundSize: "cover",
@@ -1084,7 +896,7 @@ const Catalog = ({ onOpenSolution }) => {
             >
               <img
                 src={item.image}
-                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-110"
+                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 md:duration-700 group-hover:scale-110"
                 alt={item.title}
                 loading="lazy"
               />
@@ -1120,7 +932,7 @@ const EngineeringSection = ({ onOpenBrief }) => {
   return (
     <section id="engineering" className="py-10 md:py-24 lg:py-32 bg-slate-950 text-white relative overflow-hidden">
       <div
-        className="absolute inset-0 z-0"
+        className="absolute inset-0 z-0 bg-section-engineering"
         style={{
           backgroundImage: "url(/photos/photo_5_2026-03-02_12-38-04.jpg)",
           backgroundSize: "cover",
@@ -1366,6 +1178,27 @@ const ContactForm = ({ onOpenLead, onOpenContact }) => (
               <MapPin size={20} /> Оставить заявку
             </button>
           </div>
+
+          <a
+            href={import.meta.env.VITE_TG_BOT_LINK || "https://t.me/vozduh_nsk_bot"}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-6 block p-6 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-blue-500/30 transition-all group"
+          >
+            <div className="flex items-start gap-4">
+              <div className="p-3 bg-blue-600/20 rounded-xl text-blue-400 shrink-0 group-hover:bg-blue-600/30 transition-colors">
+                <MessageCircle size={28} />
+              </div>
+              <div>
+                <h4 className="font-normal text-white mb-2 uppercase tracking-wide">
+                  Воспользуйтесь нашим универсальным ТГ ботом техническим консультантом
+                </h4>
+                <p className="text-slate-400 text-sm font-normal">
+                  Ответит на все ваши вопросы по вентиляции, кондиционированию и климатическому оборудованию.
+                </p>
+              </div>
+            </div>
+          </a>
         </div>
 
         <div className="lg:w-1/2 relative z-10 flex flex-col justify-center">
@@ -2161,6 +1994,13 @@ useEffect(() => {
   window.addEventListener("popstate", applyFromUrl);
   return () => window.removeEventListener("popstate", applyFromUrl);
 }, []);
+
+const modalOpen = turkovCatalogOpen || activeTurkovCategory || modalState || leadContext || activeSolution || activeService || calcOpen || activeArticle;
+useEffect(() => {
+  if (modalOpen) document.body.style.overflow = "hidden";
+  else document.body.style.overflow = "";
+  return () => { document.body.style.overflow = ""; };
+}, [modalOpen]);
 // 'contact' | 'partner' | 'brief'
 
   const openContact = () => setModalState("contact");

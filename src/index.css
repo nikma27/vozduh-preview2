@@ -10,10 +10,8 @@ html { scroll-behavior: smooth; }
   html { scroll-behavior: auto; }
   .marquee-track { animation: none; }
 }
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #f8fafc; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+::-webkit-scrollbar { display: none !important; width: 0; height: 0; }
+html, body { -ms-overflow-style: none; scrollbar-width: none; }
 
 :root {
   /* Блок сообщения / ответа: 16px, 400, 1.5, 0 */
@@ -117,13 +115,30 @@ body { font-weight: 300; }
 }
 
 /* Safari iOS: backdrop-filter требует -webkit- префикса */
-.backdrop-blur-sm { -webkit-backdrop-filter: blur(4px); }
-.backdrop-blur-md { -webkit-backdrop-filter: blur(12px); }
-.backdrop-blur-xl { -webkit-backdrop-filter: blur(24px); }
+.backdrop-blur-sm { -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+.backdrop-blur-md { -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+.backdrop-blur-xl { -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px); }
 
 /* На мобильных уменьшаем blur для производительности */
 @media (max-width: 768px) {
   .backdrop-blur-md { -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
   .backdrop-blur-xl { -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+}
+
+/* Фоновые изображения: адаптация под мобильные */
+@media (max-width: 768px) {
+  .bg-section-turkov {
+    background-position: 50% center !important;
+    background-size: cover !important;
+  }
+  .bg-section-engineering {
+    background-position: center 40% !important;
+    background-size: cover !important;
+  }
+  .hero-bg-img { object-position: center 35%; }
+}
+@media (max-width: 480px) {
+  .bg-section-turkov { background-position: 45% center !important; }
+  .bg-section-engineering { background-position: center 30% !important; }
 }
 
