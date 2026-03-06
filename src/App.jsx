@@ -396,18 +396,19 @@ const BriefGeneratorModal = ({ onClose }) => {
   );
 };
 
-const LeadModal = ({ onClose, context }) => {
+const LeadModal = ({ onClose, leadContext }) => {
+  const ctx = typeof leadContext === "string" ? leadContext : leadContext?.context ?? "";
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [name, setName] = useState(typeof leadContext === "object" ? (leadContext?.name ?? "") : "");
+  const [phone, setPhone] = useState(typeof leadContext === "object" ? (leadContext?.phone ?? "") : "");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (loading) return;
     setLoading(true);
     try {
-      await postLead({ type: "lead", context, name, phone });
+      await postLead({ type: "lead", context: ctx, name, phone });
       setSubmitted(true);
       setTimeout(onClose, 1600);
     } catch {
@@ -437,7 +438,7 @@ const LeadModal = ({ onClose, context }) => {
             <div className="text-[10px] font-normal text-blue-600 uppercase tracking-widest mb-1">
               Раздел:
             </div>
-            <h3 className="text-lg font-normal leading-tight text-slate-900">{context}</h3>
+            <h3 className="text-lg font-normal leading-tight text-slate-900">{ctx}</h3>
           </div>
           <button
             onClick={onClose}
@@ -1107,7 +1108,10 @@ const Services = ({ onOpenService }) => {
   );
 };
 
-const ContactForm = ({ onOpenLead, onOpenContact }) => (
+const ContactForm = ({ onOpenLead, onOpenContact }) => {
+  const [formName, setFormName] = useState("");
+  const [formPhone, setFormPhone] = useState("");
+  return (
   <section id="contact" className="py-10 md:py-24 lg:py-32 bg-white">
     <div className="container mx-auto px-6">
       <div className="bg-slate-950 rounded-[3rem] md:rounded-[4rem] p-6 md:p-20 text-white relative overflow-hidden flex flex-col lg:flex-row gap-8 md:gap-14 shadow-2xl">
@@ -1204,7 +1208,7 @@ const ContactForm = ({ onOpenLead, onOpenContact }) => (
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              onOpenLead("Главная форма контактов");
+              onOpenLead("Главная форма контактов", { name: formName, phone: formPhone });
             }}
             className="space-y-4 md:space-y-6 bg-white/5 p-6 md:p-12 rounded-[2.5rem] border border-white/10 backdrop-blur-sm shadow-inner"
           >
@@ -1216,11 +1220,17 @@ const ContactForm = ({ onOpenLead, onOpenContact }) => (
               <input
                 type="text"
                 placeholder="Ваше имя"
+                value={formName}
+                onChange={(e) => setFormName(e.target.value)}
+                required
                 className="w-full p-5 bg-white/5 rounded-2xl border border-white/10 outline-none focus:border-blue-500 transition-all font-normal"
               />
               <input
                 type="tel"
                 placeholder="Телефон"
+                value={formPhone}
+                onChange={(e) => setFormPhone(e.target.value)}
+                required
                 className="w-full p-5 bg-white/5 rounded-2xl border border-white/10 outline-none focus:border-blue-500 transition-all font-normal"
               />
             </div>
@@ -1232,7 +1242,8 @@ const ContactForm = ({ onOpenLead, onOpenContact }) => (
       </div>
     </div>
   </section>
-);
+  );
+};
 
 const CTAstrip = () => (
   <section className="py-8 md:py-12 bg-blue-600 text-white">
@@ -1905,7 +1916,7 @@ useEffect(() => {
   const openContact = () => setModalState("contact");
   const openPartner = () => setModalState("partner");
   const openBrief = () => setModalState("brief");
-  const openLead = (ctx) => setLeadContext(ctx);
+  const openLead = (ctx, prefill) => setLeadContext(prefill ? { context: ctx, ...prefill } : ctx);
 
 const openService = (key) => setActiveService(key);
 
@@ -2025,7 +2036,7 @@ const closeCalc = () => {
             onOpenLead={openLead}
           />
         )}
-        {leadContext && <LeadModal context={leadContext} onClose={() => setLeadContext(null)} />}
+        {leadContext && <LeadModal leadContext={leadContext} onClose={() => setLeadContext(null)} />}
         {modalState === "partner" && <PartnerModal onClose={() => setModalState(null)} />}
         {modalState === "contact" && <ContactModal onClose={() => setModalState(null)} />}
         {modalState === "brief" && <BriefGeneratorModal onClose={() => setModalState(null)} />}
