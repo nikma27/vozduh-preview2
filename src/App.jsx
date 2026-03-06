@@ -943,7 +943,7 @@ const WhyChooseUsSection = ({ onOpenService, onOpenBrief, onOpenLead }) => {
   ];
 
   return (
-    <section id="why-us" className="py-10 md:py-24 lg:py-32 bg-slate-950 text-white relative overflow-hidden">
+    <section id="why-us" className="py-8 md:py-14 lg:py-20 bg-slate-950 text-white relative overflow-hidden">
       <div
         className="absolute inset-0 z-0 bg-section-engineering"
         style={{
@@ -956,31 +956,31 @@ const WhyChooseUsSection = ({ onOpenService, onOpenBrief, onOpenLead }) => {
       <div className="absolute inset-0 bg-blue-950/40 z-[1]" />
       <div className="absolute inset-0 bg-gradient-to-l from-slate-950 via-slate-950/60 to-transparent z-[2]" />
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
-        <div className="max-w-4xl mb-10 md:mb-16">
-          <h2 className="font-heading text-3xl md:text-5xl font-normal mb-4 md:mb-6 leading-tight uppercase tracking-tighter">
+        <div className="max-w-4xl mb-6 md:mb-10">
+          <h2 className="font-heading text-2xl md:text-4xl font-normal mb-2 md:mb-3 leading-tight uppercase tracking-tighter">
             Почему выбирают нас
           </h2>
-          <p className="font-sans text-slate-400 font-normal text-lg leading-relaxed tracking-body">
+          <p className="font-sans text-slate-400 font-normal text-base leading-relaxed tracking-body">
             Полный цикл: от проекта до сервиса. Мы не просто «вешаем ящики» — создаём решения, которые учитывают архитектуру, бюджет и долгосрочную эффективность.
           </p>
         </div>
 
         {/* Услуги под ключ */}
-        <div className="mb-12 md:mb-16">
-          <h3 className="text-sm font-normal text-blue-400 uppercase tracking-widest mb-6">Услуги под ключ</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className="mb-8 md:mb-10">
+          <h3 className="text-xs font-normal text-blue-400 uppercase tracking-widest mb-4">Услуги под ключ</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
             {services.map((s) => (
               <button
                 key={s.key}
                 type="button"
                 onClick={() => onOpenService(s.key)}
-                className="text-left p-6 md:p-8 bg-white/10 backdrop-blur-md rounded-2xl border border-white/10 hover:bg-white/15 hover:border-blue-500/30 transition-all group"
+                className="text-left p-4 md:p-5 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 hover:bg-white/15 hover:border-blue-500/30 transition-all group"
               >
-                <s.icon size={28} className="text-blue-400 mb-4 group-hover:scale-110 transition-transform" />
-                <h4 className="text-lg font-normal mb-2 uppercase tracking-wider">{s.title}</h4>
-                <p className="text-slate-400 text-sm font-normal leading-relaxed">{s.desc}</p>
-                <span className="inline-flex items-center gap-2 text-xs font-normal uppercase tracking-widest text-blue-400 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                  Подробнее <ArrowRight size={14} />
+                <s.icon size={22} className="text-blue-400 mb-3 group-hover:scale-110 transition-transform" />
+                <h4 className="text-base font-normal mb-1 uppercase tracking-wider">{s.title}</h4>
+                <p className="text-slate-400 text-xs font-normal leading-relaxed">{s.desc}</p>
+                <span className="inline-flex items-center gap-2 text-[10px] font-normal uppercase tracking-widest text-blue-400 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  Подробнее <ArrowRight size={12} />
                 </span>
               </button>
             ))}
@@ -988,10 +988,10 @@ const WhyChooseUsSection = ({ onOpenService, onOpenBrief, onOpenLead }) => {
         </div>
 
         {/* Инжиниринг */}
-        <div className="mb-12 md:mb-16">
-          <h3 className="text-sm font-normal text-blue-400 uppercase tracking-widest mb-6">Профессиональный инжиниринг</h3>
+        <div className="mb-8 md:mb-10">
+          <h3 className="text-xs font-normal text-blue-400 uppercase tracking-widest mb-4">Профессиональный инжиниринг</h3>
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
@@ -1002,55 +1002,55 @@ const WhyChooseUsSection = ({ onOpenService, onOpenBrief, onOpenLead }) => {
                 key={i}
                 variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
                 transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                className="p-6 md:p-8 bg-white/10 backdrop-blur-md rounded-2xl border border-white/10 hover:bg-white/15 transition-all"
+                className="p-4 md:p-5 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 hover:bg-white/15 transition-all"
               >
-                <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white mb-4 shadow-sm">
-                  <s.icon size={24} />
+                <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white mb-3 shadow-sm">
+                  <s.icon size={20} />
                 </div>
-                <h4 className="text-lg font-normal mb-2 uppercase tracking-wider">{s.title}</h4>
-                <p className="text-sm text-slate-400 font-normal leading-relaxed">{s.desc}</p>
+                <h4 className="text-base font-normal mb-1 uppercase tracking-wider">{s.title}</h4>
+                <p className="text-xs text-slate-400 font-normal leading-relaxed">{s.desc}</p>
               </motion.div>
             ))}
           </motion.div>
         </div>
 
         {/* Сервис */}
-        <div className="mb-12 md:mb-16">
-          <h3 className="text-sm font-normal text-blue-400 uppercase tracking-widest mb-6">Сервисное обслуживание</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-8">
+        <div className="mb-8 md:mb-10">
+          <h3 className="text-xs font-normal text-blue-400 uppercase tracking-widest mb-4">Сервисное обслуживание</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
             {serviceItems.map((b) => (
-              <div key={b.h} className="p-6 md:p-8 bg-white/5 rounded-2xl border border-white/10">
-                <div className="text-lg font-normal mb-2 md:mb-3">{b.h}</div>
-                <div className="text-sm text-slate-300 font-normal leading-relaxed">{b.p}</div>
+              <div key={b.h} className="p-4 md:p-5 bg-white/5 rounded-xl border border-white/10">
+                <div className="text-base font-normal mb-1 md:mb-2">{b.h}</div>
+                <div className="text-xs text-slate-300 font-normal leading-relaxed">{b.p}</div>
               </div>
             ))}
           </div>
         </div>
 
         {/* CTA */}
-        <div className="flex flex-col md:flex-row gap-6 md:gap-8">
-          <div className="flex-1 bg-white/10 backdrop-blur-md border border-white/10 rounded-[2.5rem] p-6 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="flex flex-col md:flex-row gap-4 md:gap-6">
+          <div className="flex-1 bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="max-w-xl">
-              <h4 className="text-xl md:text-2xl font-normal mb-2">Нужна помощь с техзаданием?</h4>
-              <p className="text-slate-400 font-normal text-sm">AI-помощник сформирует черновик ТЗ за пару минут.</p>
+              <h4 className="text-lg md:text-xl font-normal mb-1">Нужна помощь с техзаданием?</h4>
+              <p className="text-slate-400 font-normal text-xs">AI-помощник сформирует черновик ТЗ за пару минут.</p>
             </div>
             <button
               onClick={onOpenBrief}
-              className="px-8 py-4 bg-blue-600 text-white rounded-2xl font-normal hover:bg-blue-500 transition-all shadow-xl flex items-center gap-3 shrink-0"
+              className="px-6 py-3 bg-blue-600 text-white rounded-xl font-normal hover:bg-blue-500 transition-all shadow-xl flex items-center gap-2 shrink-0 text-sm"
               type="button"
             >
-              <Sparkles size={20} className="text-blue-200" /> AI-генератор ТЗ
+              <Sparkles size={18} className="text-blue-200" /> AI-генератор ТЗ
             </button>
           </div>
-          <div className="flex-1 bg-white/10 backdrop-blur-md border border-white/10 rounded-[2.5rem] p-6 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex-1 bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="max-w-xl">
-              <h4 className="text-xl md:text-2xl font-normal mb-2">Нужен регламент обслуживания?</h4>
-              <p className="text-slate-400 font-normal text-sm">Подскажем периодичность, состав работ и подготовим КП под ваш объект.</p>
+              <h4 className="text-lg md:text-xl font-normal mb-1">Нужен регламент обслуживания?</h4>
+              <p className="text-slate-400 font-normal text-xs">Подскажем периодичность, состав работ и подготовим КП под ваш объект.</p>
             </div>
             <button
               type="button"
               onClick={() => onOpenLead("Сервис: Обслуживание")}
-              className="px-8 py-4 bg-blue-600 rounded-2xl font-normal hover:bg-blue-500 transition-all shadow-xl shrink-0"
+              className="px-6 py-3 bg-blue-600 rounded-xl font-normal hover:bg-blue-500 transition-all shadow-xl shrink-0 text-sm"
             >
               Запросить сервис
             </button>
