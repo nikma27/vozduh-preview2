@@ -39,6 +39,7 @@ import BrandMarquee from "./components/BrandMarquee";
 import WorksMarquee from "./components/WorksMarquee";
 import Navbar from "./components/sections/Navbar";
 import Hero from "./components/sections/Hero";
+import BenefitsSection from "./components/sections/BenefitsSection";
 import { postLead } from "./api/leads";
 import { fetchGeminiResponse } from "./api/gemini";
 import { complexSolutions } from "./data/solutions";
@@ -2061,6 +2062,10 @@ const closeCalc = () => {
 
       <Reveal>
         <WorksMarquee />
+      </Reveal>
+
+      <Reveal>
+        <BenefitsSection />
       </Reveal>
 
       <Reveal>

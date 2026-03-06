@@ -45,7 +45,19 @@ VITE_TG_BOT_LINK=https://t.me/ТВОЙ_BOT_USERNAME
 
 Кнопка «Воспользуйтесь нашим универсальным ТГ ботом» будет вести на твоего бота.
 
-## 5. Деплой бота (24/7)
+## 5. Gemini API — AI-ответы бота
+
+Без ключа бот отвечает заглушкой. Для умных ответов:
+
+1. Открой [Google AI Studio](https://aistudio.google.com/apikey)
+2. Войди в Google-аккаунт → **Create API Key**
+3. Скопируй ключ и добавь в `vozduh-tg-bot-ing/.env`:
+   ```
+   GEMINI_API_KEY=твой_ключ
+   ```
+4. Перезапусти бота (`Ctrl+C`, затем `npm start`)
+
+## 6. Деплой бота (24/7)
 
 Для постоянной работы разверни бота на:
 - [Railway](https://railway.app)
