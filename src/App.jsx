@@ -974,7 +974,7 @@ const WhyChooseUsSection = ({ onOpenService, onOpenBrief, onOpenLead }) => {
                 key={s.key}
                 type="button"
                 onClick={() => onOpenService(s.key)}
-                className="text-left p-4 md:p-5 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 hover:bg-white/15 hover:border-blue-500/30 transition-all group"
+                className="text-left p-4 md:p-5 bg-white/5 backdrop-blur-xl backdrop-saturate-150 rounded-xl border border-white/20 hover:bg-white/10 hover:border-white/30 transition-all group"
               >
                 <s.icon size={22} className="text-blue-400 mb-3 group-hover:scale-110 transition-transform" />
                 <h4 className="text-base font-normal mb-1 uppercase tracking-wider">{s.title}</h4>
@@ -1002,7 +1002,7 @@ const WhyChooseUsSection = ({ onOpenService, onOpenBrief, onOpenLead }) => {
                 key={i}
                 variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
                 transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                className="p-4 md:p-5 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 hover:bg-white/15 transition-all"
+                className="p-4 md:p-5 bg-white/5 backdrop-blur-xl backdrop-saturate-150 rounded-xl border border-white/20 hover:bg-white/10 hover:border-white/30 transition-all"
               >
                 <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white mb-3 shadow-sm">
                   <s.icon size={20} />
@@ -1019,7 +1019,7 @@ const WhyChooseUsSection = ({ onOpenService, onOpenBrief, onOpenLead }) => {
           <h3 className="text-xs font-normal text-blue-400 uppercase tracking-widest mb-4">Сервисное обслуживание</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
             {serviceItems.map((b) => (
-              <div key={b.h} className="p-4 md:p-5 bg-white/5 rounded-xl border border-white/10">
+              <div key={b.h} className="p-4 md:p-5 bg-white/5 backdrop-blur-xl backdrop-saturate-150 rounded-xl border border-white/20">
                 <div className="text-base font-normal mb-1 md:mb-2">{b.h}</div>
                 <div className="text-xs text-slate-300 font-normal leading-relaxed">{b.p}</div>
               </div>
@@ -1029,7 +1029,7 @@ const WhyChooseUsSection = ({ onOpenService, onOpenBrief, onOpenLead }) => {
 
         {/* CTA */}
         <div className="flex flex-col md:flex-row gap-4 md:gap-6">
-          <div className="flex-1 bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex-1 bg-white/5 backdrop-blur-xl backdrop-saturate-150 border border-white/20 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="max-w-xl">
               <h4 className="text-lg md:text-xl font-normal mb-1">Нужна помощь с техзаданием?</h4>
               <p className="text-slate-400 font-normal text-xs">AI-помощник сформирует черновик ТЗ за пару минут.</p>
@@ -1042,7 +1042,7 @@ const WhyChooseUsSection = ({ onOpenService, onOpenBrief, onOpenLead }) => {
               <Sparkles size={18} className="text-blue-200" /> AI-генератор ТЗ
             </button>
           </div>
-          <div className="flex-1 bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex-1 bg-white/5 backdrop-blur-xl backdrop-saturate-150 border border-white/20 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="max-w-xl">
               <h4 className="text-lg md:text-xl font-normal mb-1">Нужен регламент обслуживания?</h4>
               <p className="text-slate-400 font-normal text-xs">Подскажем периодичность, состав работ и подготовим КП под ваш объект.</p>
