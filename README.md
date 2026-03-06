@@ -26,7 +26,9 @@ npm run preview
 ## Vercel
 В корне есть `vercel.json` с rewrite для SPA-роутинга (чтобы лендинги открывались по прямым ссылкам).
 
-**Публичная ссылка:** https://vozduh-preview2.vercel.app
+**Публичные ссылки:**
+- Production: https://vozduh-preview2.vercel.app
+- Последний деплой: https://vozduh-preview2-8yacawzf9-nikma27s-projects.vercel.app
 
 ## Переменные окружения (опционально)
 Создай файл `.env`:
