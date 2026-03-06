@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
 const Hero = ({ onOpenCalc }) => (
@@ -45,6 +45,14 @@ const Hero = ({ onOpenCalc }) => (
             className="px-10 py-5 bg-white/5 border border-white/20 backdrop-blur-md rounded-full font-normal text-lg hover:bg-white/10 transition-all text-center flex items-center justify-center"
           >
             Наши решения
+          </a>
+          <a
+            href={import.meta.env.VITE_TG_BOT_LINK || "https://t.me/vozduh_nsk_bot"}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-10 py-5 bg-white/5 border border-white/20 backdrop-blur-md rounded-full font-normal text-lg hover:bg-white/10 transition-all text-center flex items-center justify-center gap-3"
+          >
+            <MessageCircle size={20} /> Telegram-консультант
           </a>
         </div>
       </motion.div>

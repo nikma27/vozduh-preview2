@@ -1236,6 +1236,22 @@ const ContactForm = ({ onOpenLead, onOpenContact }) => (
   </section>
 );
 
+const CTAstrip = () => (
+  <section className="py-8 md:py-12 bg-blue-600 text-white">
+    <div className="container mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
+      <p className="font-heading text-xl md:text-2xl font-normal uppercase tracking-tight text-center sm:text-left">
+        Нужна консультация? Звоните
+      </p>
+      <a
+        href="tel:+73832631551"
+        className="px-8 py-4 bg-white text-blue-600 rounded-full font-normal text-lg hover:bg-slate-100 transition-colors shrink-0"
+      >
+        +7 (383) 263-15-51
+      </a>
+    </div>
+  </section>
+);
+
 const Footer = () => (
   <footer className="py-10 md:py-20 lg:py-24 bg-slate-50 border-t border-slate-200">
     <div className="container mx-auto px-6">
@@ -1255,9 +1271,11 @@ const Footer = () => (
               Навигация
             </h4>
             <div className="flex flex-col gap-3 font-normal text-slate-600">
-              <a href="#catalog">Решения</a>
-              <a href="#engineering">Инжиниринг</a>
-              <a href="#partners">Партнерам</a>
+              <a href="#catalog" className="hover:text-blue-600 transition-colors">Решения</a>
+              <a href="#benefits" className="hover:text-blue-600 transition-colors">Почему мы</a>
+              <a href="#engineering" className="hover:text-blue-600 transition-colors">Инжиниринг</a>
+              <a href="#partners" className="hover:text-blue-600 transition-colors">Партнерам</a>
+              <a href="#contact" className="hover:text-blue-600 transition-colors">Контакты</a>
             </div>
           </div>
           <div>
@@ -1265,9 +1283,9 @@ const Footer = () => (
               Клиентам
             </h4>
             <div className="flex flex-col gap-3 font-normal text-slate-600">
-              <span>Договор</span>
-              <span>Сервис</span>
-              <span>Гарантии</span>
+              <a href="#service" className="hover:text-blue-600 transition-colors">Сервис</a>
+              <a href="#benefits" className="hover:text-blue-600 transition-colors">Гарантии</a>
+              <a href="#articles" className="hover:text-blue-600 transition-colors">Статьи</a>
             </div>
           </div>
         </div>
@@ -2090,6 +2108,10 @@ const closeCalc = () => {
 
       <Reveal>
         <ContactForm onOpenLead={openLead} onOpenContact={openContact} />
+      </Reveal>
+
+      <Reveal>
+        <CTAstrip />
       </Reveal>
 
       <Reveal>
