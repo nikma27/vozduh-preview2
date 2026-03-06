@@ -1546,8 +1546,6 @@ const QuickCalcModal = ({ initialTab = "vent", onClose, onOpenLead }) => {
   const [sunny, setSunny] = useState(false);
   const [computers, setComputers] = useState(0);
 
-  useEffect(() => setTab(initialTab), [initialTab]);
-
   const vCfg = useMemo(() => VENT_PRESETS.find((p) => p.key === vPreset) || VENT_PRESETS[0], [vPreset]);
   const aCfg = useMemo(() => AC_PRESETS.find((p) => p.key === aPreset) || AC_PRESETS[0], [aPreset]);
 
@@ -2043,6 +2041,7 @@ const closeCalc = () => {
       
 {calcOpen && (
   <QuickCalcModal
+    key={calcTab}
     initialTab={calcTab}
     onClose={closeCalc}
     onOpenLead={(ctx) => {

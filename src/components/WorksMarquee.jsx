@@ -82,18 +82,16 @@ const WorksMarquee = () => {
 
   const handleMouseDown = (e) => {
     if (e.button !== 0) return;
+    setPressedIndex(null);
     setIsDragging(true);
     dragStart.current = { x: getClientX(e), scroll: scrollPxRef.current };
   };
 
   const handleTouchStart = (e) => {
+    setPressedIndex(null);
     setIsDragging(true);
     dragStart.current = { x: getClientX(e), scroll: scrollPxRef.current };
   };
-
-  useEffect(() => {
-    if (isDragging) setPressedIndex(null);
-  }, [isDragging]);
 
   useEffect(() => {
     if (!isDragging) return;
