@@ -28,7 +28,7 @@ npm run preview
 
 **Публичные ссылки:**
 - Production: https://vozduh-preview2.vercel.app
-- Последний деплой: https://vozduh-preview2-8yacawzf9-nikma27s-projects.vercel.app
+- Последний деплой: https://vozduh-preview-mp1y-72yd489g5-nikma27s-projects.vercel.app
 
 ## Переменные окружения (опционально)
 Создай файл `.env`:
