@@ -1,19 +1,19 @@
-## Cursor Cloud specific instructions
+## Инструкции для Cursor Cloud
 
-This is a Vite + React + Tailwind CSS single-page application for an HVAC company ("Воздух НСК"). There is no backend — the frontend is fully stateless.
+Это одностраничное приложение (SPA) на Vite + React + Tailwind CSS для компании по климатическому оборудованию («Воздух НСК»). Бэкенда нет — фронтенд полностью без состояния.
 
-### Services
+### Сервисы
 
-| Service | Command | Port | Notes |
-|---------|---------|------|-------|
-| Vite Dev Server | `npm run dev` | 5173 | The only required service |
-| n8n (optional) | `npm run n8n` (Docker) or `npm run n8n:run` (npx) | 5678 | Lead form webhook; site works without it |
+| Сервис | Команда | Порт | Примечания |
+|--------|---------|------|------------|
+| Vite Dev Server | `npm run dev` | 5173 | Единственный обязательный сервис |
+| n8n (опционально) | `npm run n8n` (Docker) или `npm run n8n:run` (npx) | 5678 | Вебхук для заявок; сайт работает и без него |
 
-### Key details
+### Основные детали
 
-- **Package manager:** npm (lockfile: `package-lock.json`).
-- **No linter or test framework** is configured in `package.json`. There are no `lint` or `test` scripts.
-- **No database** is required.
-- **Environment variables** (`VITE_LEAD_API`, `VITE_GEMINI_API_KEY`) are optional — the app degrades gracefully without them.
-- **Build:** `npm run build` produces output in `dist/`.
-- See `README.md` for standard setup/run commands.
+- **Пакетный менеджер:** npm (lockfile: `package-lock.json`).
+- **Линтер и тестовый фреймворк не настроены** в `package.json`. Скрипты `lint` и `test` отсутствуют.
+- **База данных не требуется.**
+- **Переменные окружения** (`VITE_LEAD_API`, `VITE_GEMINI_API_KEY`) опциональны — приложение корректно работает без них.
+- **Сборка:** `npm run build` создаёт выходные файлы в `dist/`.
+- Стандартные команды запуска описаны в `README.md`.
