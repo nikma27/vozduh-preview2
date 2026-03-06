@@ -586,9 +586,14 @@ const Navbar = ({ onOpenContact }) => {
 
   useEffect(() => {
     let ticking = false;
+    let lastCall = 0;
+    const THROTTLE_MS = 100;
     const handleScroll = () => {
       if (ticking) return;
+      const now = Date.now();
+      if (now - lastCall < THROTTLE_MS) return;
       ticking = true;
+      lastCall = now;
       requestAnimationFrame(() => {
         setIsScrolled(window.scrollY > 50);
         ticking = false;
@@ -724,25 +729,25 @@ const Hero = ({ onOpenCalc }) => (
       />
     </div>
     <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/70 to-transparent" />
-    <div className="container mx-auto px-6 relative z-10">
-      <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
-        <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-blue-600/20 border border-blue-500/30 text-blue-300 text-[10px] font-normal uppercase tracking-[0.3em] mb-10 backdrop-blur-sm">
+    <div className="container mx-auto px-4 sm:px-6 relative z-10">
+      <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+        <div className="inline-flex items-center gap-3 px-3 py-1.5 sm:px-4 rounded-full bg-blue-600/20 border border-blue-500/30 text-blue-300 text-[10px] font-normal uppercase tracking-[0.2em] sm:tracking-[0.3em] mb-6 md:mb-10 backdrop-blur-sm">
           <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
           Проектирование • Поставка • Монтаж • Сервис
         </div>
 
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-normal leading-[0.95] tracking-tight mb-10">
+        <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-normal leading-[0.95] tracking-tight mb-6 md:mb-10">
           Климат{" "}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
             как искусство
           </span>
         </h1>
 
-        <p className="max-w-2xl text-lg md:text-xl font-normal text-slate-500 mb-12 leading-relaxed">
+        <p className="max-w-2xl text-base md:text-lg lg:text-xl font-normal text-slate-500 mb-8 md:mb-12 leading-relaxed">
           Проектирование, монтаж и сервис систем вентиляции, кондиционирования, дымоудаления, автоматизации для жилых, коммерческих и промышленных объектов.
         </p>
 
-        <div className="flex flex-wrap gap-5">
+        <div className="flex flex-wrap gap-3 md:gap-5">
           <button
             onClick={() => onOpenCalc("vent")}
             className="px-10 py-5 bg-blue-600 rounded-full font-normal text-lg flex items-center gap-3 hover:bg-blue-500 transition-all shadow-2xl shadow-blue-600/30"
@@ -930,7 +935,7 @@ const TurkovCatalogModal = ({ onClose, onOpenCategory }) =>
 const TurkovPromo = ({ onOpenCategory, onOpenLead, onOpenTurkovCatalog }) => (
   <section
     id="turkov"
-    className="py-12 md:py-20 relative overflow-hidden"
+    className="py-10 md:py-20 relative overflow-hidden"
     style={{ backgroundColor: "#0f172a" }}
   >
     <div
@@ -1028,9 +1033,9 @@ const Catalog = ({ onOpenSolution }) => {
   const items = useMemo(() => complexSolutions.filter((s) => s.segment === segment), [segment]);
 
   return (
-    <section id="catalog" className="py-14 md:py-32 bg-white">
-      <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-10 md:mb-20 gap-6 md:gap-10">
+    <section id="catalog" className="py-10 md:py-24 lg:py-32 bg-white">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-8 md:mb-20 gap-4 md:gap-10">
           <div className="max-w-xl">
             <h2 className="font-heading text-4xl md:text-6xl font-normal text-slate-900 mb-4 md:mb-6 uppercase tracking-tight leading-tight">
               Комплексный подход
@@ -1075,7 +1080,7 @@ const Catalog = ({ onOpenSolution }) => {
               variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } }}
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               onClick={() => onOpenSolution(item)}
-              className="group relative h-[360px] md:h-[480px] rounded-[2.5rem] overflow-hidden cursor-pointer bg-slate-100 shadow-sm hover:shadow-2xl transition-all border border-slate-100"
+              className="group relative h-[280px] sm:h-[320px] md:h-[400px] lg:h-[480px] rounded-2xl md:rounded-[2.5rem] overflow-hidden cursor-pointer bg-slate-100 shadow-sm hover:shadow-2xl transition-all border border-slate-100"
             >
               <img
                 src={item.image}
@@ -1113,7 +1118,7 @@ const EngineeringSection = ({ onOpenBrief }) => {
   ];
 
   return (
-    <section id="engineering" className="py-14 md:py-32 bg-slate-950 text-white relative overflow-hidden">
+    <section id="engineering" className="py-10 md:py-24 lg:py-32 bg-slate-950 text-white relative overflow-hidden">
       <div
         className="absolute inset-0 z-0"
         style={{
@@ -1125,8 +1130,8 @@ const EngineeringSection = ({ onOpenBrief }) => {
       />
       <div className="absolute inset-0 bg-blue-950/40 z-[1]" />
       <div className="absolute inset-0 bg-gradient-to-l from-slate-950 via-slate-950/60 to-transparent z-[2]" />
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="max-w-4xl mb-10 md:mb-20 text-center mx-auto">
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
+        <div className="max-w-4xl mb-8 md:mb-20 text-center mx-auto">
           <h2 className="font-heading text-3xl md:text-5xl font-normal mb-4 md:mb-6 leading-tight uppercase tracking-tighter">
             Профессиональный инжиниринг
           </h2>
@@ -1136,7 +1141,7 @@ const EngineeringSection = ({ onOpenBrief }) => {
         </div>
 
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-8 mb-10 md:mb-20"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 mb-8 md:mb-20"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
@@ -1189,7 +1194,7 @@ const PartnersSection = ({ onOpenPartner }) => {
   ];
 
   return (
-    <section id="partners" className="py-12 md:py-28 bg-white text-slate-900 relative overflow-hidden">
+    <section id="partners" className="py-10 md:py-20 lg:py-28 bg-white text-slate-900 relative overflow-hidden">
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-8 md:mb-16 max-w-3xl mx-auto">
           <h2 className="font-heading text-3xl md:text-5xl font-normal mb-3 md:mb-5 tracking-tight leading-tight">
@@ -1262,7 +1267,7 @@ const Services = ({ onOpenService }) => {
   ];
 
   return (
-    <section id="services" className="py-14 md:py-24 bg-white border-t border-slate-100">
+    <section id="services" className="py-10 md:py-24 bg-white border-t border-slate-100">
       <div className="container mx-auto px-6">
         <div className="text-center mb-8 md:mb-16">
           <h2 className="font-heading text-3xl md:text-4xl font-normal text-slate-900 tracking-tight leading-tight">Услуги под ключ</h2>
@@ -1292,7 +1297,7 @@ const Services = ({ onOpenService }) => {
 };
 
 const ContactForm = ({ onOpenLead, onOpenContact }) => (
-  <section id="contact" className="py-14 md:py-32 bg-white">
+  <section id="contact" className="py-10 md:py-24 lg:py-32 bg-white">
     <div className="container mx-auto px-6">
       <div className="bg-slate-950 rounded-[3rem] md:rounded-[4rem] p-6 md:p-20 text-white relative overflow-hidden flex flex-col lg:flex-row gap-8 md:gap-14 shadow-2xl">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-blue-600/10 skew-x-12 translate-x-24" />
@@ -1398,7 +1403,7 @@ const ContactForm = ({ onOpenLead, onOpenContact }) => (
 );
 
 const Footer = () => (
-  <footer className="py-12 md:py-24 bg-slate-50 border-t border-slate-200">
+  <footer className="py-10 md:py-20 lg:py-24 bg-slate-50 border-t border-slate-200">
     <div className="container mx-auto px-6">
       <div className="flex flex-col md:flex-row justify-between border-b border-slate-200 pb-8 md:pb-12 mb-8 md:mb-12 gap-6 md:gap-10">
         <div>
@@ -1993,7 +1998,7 @@ const ArticleModal = ({ article, onClose }) => {
 };
 
 const ArticlesSection = ({ onOpenArticle }) => (
-  <section id="articles" className="py-14 md:py-24 bg-white">
+  <section id="articles" className="py-10 md:py-24 bg-white">
     <div className="container mx-auto px-6">
       <div className="max-w-3xl mb-8 md:mb-12">
         <div className="text-xs font-normal text-blue-600 uppercase tracking-widest mb-3 md:mb-4">Полезное</div>
@@ -2031,7 +2036,7 @@ const ArticlesSection = ({ onOpenArticle }) => (
 
 // --- Сервисное обслуживание ---
 const ServiceSection = ({ onOpenLead }) => (
-  <section id="service" className="py-14 md:py-24 bg-slate-950 text-white">
+  <section id="service" className="py-10 md:py-24 bg-slate-950 text-white">
     <div className="container mx-auto px-6">
       <div className="max-w-4xl mb-8 md:mb-14">
         <div className="text-xs font-normal text-blue-400 uppercase tracking-widest mb-3 md:mb-4">Сервис</div>
@@ -2078,9 +2083,14 @@ const BackToTop = () => {
   const [show, setShow] = useState(false);
   useEffect(() => {
     let ticking = false;
+    let lastCall = 0;
+    const THROTTLE_MS = 100;
     const onScroll = () => {
       if (ticking) return;
+      const now = Date.now();
+      if (now - lastCall < THROTTLE_MS) return;
       ticking = true;
+      lastCall = now;
       requestAnimationFrame(() => {
         setShow(window.scrollY > 600);
         ticking = false;
@@ -2113,14 +2123,14 @@ const BackToTop = () => {
 // --- Reveal wrapper для плавных анимаций секций ---
 const Reveal = ({ children }) => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.15, margin: "-50px" });
+  const isInView = useInView(ref, { once: true, amount: 0.08, margin: "-40px" });
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 32 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      viewport={{ once: true, amount: 0.08 }}
+      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
       className={`section-reveal transition-all duration-500 ${isInView ? "is-visible" : ""}`}
     >
       {children}

@@ -36,6 +36,7 @@ const NASHI_IMAGES = [
 
 const WorksMarquee = () => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [pressedIndex, setPressedIndex] = useState(null);
   const trackRef = useRef(null);
   const [scrollPx, setScrollPx] = useState(0);
   const scrollPxRef = useRef(0);
@@ -91,6 +92,10 @@ const WorksMarquee = () => {
   };
 
   useEffect(() => {
+    if (isDragging) setPressedIndex(null);
+  }, [isDragging]);
+
+  useEffect(() => {
     if (!isDragging) return;
     const half = halfWidthRef.current;
     const onMove = (e) => {
@@ -103,7 +108,7 @@ const WorksMarquee = () => {
       onMove(e);
       e.cancelable && e.preventDefault();
     };
-    const onUp = () => setIsDragging(false);
+    const onUp = () => { setIsDragging(false); setPressedIndex(null); };
     window.addEventListener("mousemove", onMove);
     window.addEventListener("mouseup", onUp);
     window.addEventListener("touchmove", onTouchMove, { passive: false });
@@ -119,8 +124,8 @@ const WorksMarquee = () => {
   }, [isDragging]);
 
   return (
-    <section id="works" className="py-14 md:py-24 bg-white overflow-hidden">
-      <div className="container mx-auto px-6 mb-6 md:mb-10">
+    <section id="works" className="py-10 md:py-24 bg-white overflow-hidden">
+      <div className="container mx-auto px-4 sm:px-6 mb-4 md:mb-10">
         <h2 className="text-3xl md:text-4xl font-light tracking-tight text-slate-900">
           Наши работы
         </h2>
@@ -134,7 +139,8 @@ const WorksMarquee = () => {
         style={{ cursor: isDragging ? "grabbing" : "grab" }}
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}
-        onMouseLeave={() => setHoveredIndex(null)}
+        onMouseLeave={() => { setHoveredIndex(null); setPressedIndex(null); }}
+        onPointerLeave={() => setPressedIndex(null)}
         onDragStart={(e) => e.preventDefault()}
       >
         <div
@@ -144,22 +150,26 @@ const WorksMarquee = () => {
         >
           {allImages.map((src, i) => {
             const isThisHovered = hoveredIndex === i;
+            const isThisPressed = pressedIndex === i;
             const shouldDim = hoveredIndex !== null && hoveredIndex !== i;
 
             return (
               <div
                 key={`${src}-${i}`}
-                className="relative shrink-0 w-[308px] md:w-[396px] h-[198px] md:h-[242px] rounded-2xl overflow-hidden cursor-pointer"
+                className="relative shrink-0 w-[260px] sm:w-[308px] md:w-[396px] h-[160px] sm:h-[198px] md:h-[242px] rounded-2xl overflow-hidden cursor-pointer"
                 style={{ zIndex: isThisHovered ? 10 : 1 }}
                 onMouseEnter={() => setHoveredIndex(i)}
                 onMouseLeave={() => setHoveredIndex(null)}
+                onPointerDown={() => setPressedIndex(i)}
+                onPointerUp={() => setPressedIndex(null)}
+                onPointerCancel={() => setPressedIndex(null)}
               >
                 <motion.div
                   className="w-full h-full rounded-2xl overflow-hidden"
                   initial={false}
                   animate={{
-                    scale: isThisHovered ? 1.1 : 1,
-                    transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] },
+                    scale: isThisHovered ? 1.05 : 1,
+                    transition: { duration: 0.25, ease: [0.22, 1, 0.36, 1] },
                   }}
                 >
                   <img
@@ -172,9 +182,13 @@ const WorksMarquee = () => {
                 <motion.div
                   className="absolute inset-0 pointer-events-none rounded-2xl"
                   animate={{
-                    backgroundColor: shouldDim ? "rgba(15, 23, 42, 0.35)" : "rgba(15, 23, 42, 0)",
+                    backgroundColor: isThisPressed
+                      ? "rgba(15, 23, 42, 0.4)"
+                      : shouldDim
+                        ? "rgba(15, 23, 42, 0.35)"
+                        : "rgba(15, 23, 42, 0)",
                   }}
-                  transition={{ duration: 0.3 }}
+                  transition={{ duration: 0.15 }}
                 />
               </div>
             );
