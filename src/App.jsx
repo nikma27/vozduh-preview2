@@ -921,16 +921,30 @@ const Catalog = ({ onOpenSolution }) => {
   );
 };
 
-const EngineeringSection = ({ onOpenBrief }) => {
+/**
+ * Объединённая секция «Почему выбирают нас»: услуги под ключ, инжиниринг, сервис
+ */
+const WhyChooseUsSection = ({ onOpenService, onOpenBrief, onOpenLead }) => {
   const services = [
-    { icon: Calculator, title: "Теплотехнический расчет", desc: "Расчет теплопритоков и теплопотерь здания." },
-    { icon: Wind, title: "Расчет воздухообмена", desc: "Определение кратности обмена воздуха согласно нормам." },
+    { key: "vent", icon: Wind, title: "Вентиляция", desc: "Проектирование, поставка, монтаж и пусконаладка систем любой сложности." },
+    { key: "ac", icon: Snowflake, title: "Кондиционирование", desc: "Бытовые и коммерческие системы охлаждения: от подбора до сервиса." },
+    { key: "auto", icon: Settings, title: "Автоматизация", desc: "Диспетчеризация, умный дом, управление климатом и энергоэффективность." },
+    { key: "smoke", icon: Fan, title: "Дымоудаление", desc: "Системы противодымной вентиляции и подпора воздуха для безопасности." },
+  ];
+  const engineering = [
+    { icon: Calculator, title: "Теплотехнический расчёт", desc: "Расчёт теплопритоков и теплопотерь здания." },
+    { icon: Wind, title: "Расчёт воздухообмена", desc: "Определение кратности обмена воздуха согласно нормам." },
     { icon: Layers, title: "BIM-моделирование", desc: "Создание 3D-модели систем в Revit." },
     { icon: FileText, title: "Рабочая документация", desc: "Оформление полного комплекта чертежей." },
   ];
+  const serviceItems = [
+    { h: "Диагностика", p: "Проверка режимов, датчиков, автоматики, протечек, уровня шума и вибраций." },
+    { h: "Чистка и дезинфекция", p: "Фильтры, теплообменники, дренаж, внутренние блоки, воздуховоды и решётки." },
+    { h: "Пусконаладка и настройка", p: "Балансировка расхода воздуха, настройка контроллеров, рекомендации по эксплуатации." },
+  ];
 
   return (
-    <section id="engineering" className="py-10 md:py-24 lg:py-32 bg-slate-950 text-white relative overflow-hidden">
+    <section id="why-us" className="py-10 md:py-24 lg:py-32 bg-slate-950 text-white relative overflow-hidden">
       <div
         className="absolute inset-0 z-0 bg-section-engineering"
         style={{
@@ -943,50 +957,105 @@ const EngineeringSection = ({ onOpenBrief }) => {
       <div className="absolute inset-0 bg-blue-950/40 z-[1]" />
       <div className="absolute inset-0 bg-gradient-to-l from-slate-950 via-slate-950/60 to-transparent z-[2]" />
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
-        <div className="max-w-4xl mb-8 md:mb-20 text-center mx-auto">
+        <div className="max-w-4xl mb-10 md:mb-16">
           <h2 className="font-heading text-3xl md:text-5xl font-normal mb-4 md:mb-6 leading-tight uppercase tracking-tighter">
-            Профессиональный инжиниринг
+            Почему выбирают нас
           </h2>
           <p className="font-sans text-slate-400 font-normal text-lg leading-relaxed tracking-body">
-            Мы не просто «вешаем ящики», а создаем проект, который учитывает архитектуру, бюджет и долгосрочную эффективность.
+            Полный цикл: от проекта до сервиса. Мы не просто «вешаем ящики» — создаём решения, которые учитывают архитектуру, бюджет и долгосрочную эффективность.
           </p>
         </div>
 
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 mb-8 md:mb-20"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
-        >
-          {services.map((s, i) => (
-            <motion.div
-              key={i}
-              variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="p-8 bg-white/10 backdrop-blur-md rounded-3xl border border-white/10 hover:bg-white/15 transition-all group"
-            >
-              <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white mb-6 shadow-sm group-hover:scale-110 transition-all">
-                <s.icon size={24} />
-              </div>
-              <h4 className="text-lg font-normal mb-3 uppercase tracking-wider">{s.title}</h4>
-              <p className="text-sm text-slate-400 font-normal leading-relaxed">{s.desc}</p>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        <div className="bg-white/10 backdrop-blur-md border border-white/10 rounded-[3rem] p-6 md:p-16 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-10">
-          <div className="max-w-xl">
-            <h3 className="text-2xl md:text-3xl font-normal mb-3 md:mb-4">Нужна помощь с техзаданием?</h3>
-            <p className="text-slate-400 font-normal">AI-помощник сформирует черновик ТЗ за пару минут.</p>
+        {/* Услуги под ключ */}
+        <div className="mb-12 md:mb-16">
+          <h3 className="text-sm font-normal text-blue-400 uppercase tracking-widest mb-6">Услуги под ключ</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            {services.map((s) => (
+              <button
+                key={s.key}
+                type="button"
+                onClick={() => onOpenService(s.key)}
+                className="text-left p-6 md:p-8 bg-white/10 backdrop-blur-md rounded-2xl border border-white/10 hover:bg-white/15 hover:border-blue-500/30 transition-all group"
+              >
+                <s.icon size={28} className="text-blue-400 mb-4 group-hover:scale-110 transition-transform" />
+                <h4 className="text-lg font-normal mb-2 uppercase tracking-wider">{s.title}</h4>
+                <p className="text-slate-400 text-sm font-normal leading-relaxed">{s.desc}</p>
+                <span className="inline-flex items-center gap-2 text-xs font-normal uppercase tracking-widest text-blue-400 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                  Подробнее <ArrowRight size={14} />
+                </span>
+              </button>
+            ))}
           </div>
-          <button
-            onClick={onOpenBrief}
-            className="px-10 py-5 bg-blue-600 text-white rounded-2xl font-normal hover:bg-blue-500 transition-all shadow-xl flex items-center gap-3 shrink-0"
-            type="button"
+        </div>
+
+        {/* Инжиниринг */}
+        <div className="mb-12 md:mb-16">
+          <h3 className="text-sm font-normal text-blue-400 uppercase tracking-widest mb-6">Профессиональный инжиниринг</h3>
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
           >
-            <Sparkles size={20} className="text-blue-200" /> Попробовать AI-генератор
-          </button>
+            {engineering.map((s, i) => (
+              <motion.div
+                key={i}
+                variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                className="p-6 md:p-8 bg-white/10 backdrop-blur-md rounded-2xl border border-white/10 hover:bg-white/15 transition-all"
+              >
+                <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white mb-4 shadow-sm">
+                  <s.icon size={24} />
+                </div>
+                <h4 className="text-lg font-normal mb-2 uppercase tracking-wider">{s.title}</h4>
+                <p className="text-sm text-slate-400 font-normal leading-relaxed">{s.desc}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* Сервис */}
+        <div className="mb-12 md:mb-16">
+          <h3 className="text-sm font-normal text-blue-400 uppercase tracking-widest mb-6">Сервисное обслуживание</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-8">
+            {serviceItems.map((b) => (
+              <div key={b.h} className="p-6 md:p-8 bg-white/5 rounded-2xl border border-white/10">
+                <div className="text-lg font-normal mb-2 md:mb-3">{b.h}</div>
+                <div className="text-sm text-slate-300 font-normal leading-relaxed">{b.p}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div className="flex flex-col md:flex-row gap-6 md:gap-8">
+          <div className="flex-1 bg-white/10 backdrop-blur-md border border-white/10 rounded-[2.5rem] p-6 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="max-w-xl">
+              <h4 className="text-xl md:text-2xl font-normal mb-2">Нужна помощь с техзаданием?</h4>
+              <p className="text-slate-400 font-normal text-sm">AI-помощник сформирует черновик ТЗ за пару минут.</p>
+            </div>
+            <button
+              onClick={onOpenBrief}
+              className="px-8 py-4 bg-blue-600 text-white rounded-2xl font-normal hover:bg-blue-500 transition-all shadow-xl flex items-center gap-3 shrink-0"
+              type="button"
+            >
+              <Sparkles size={20} className="text-blue-200" /> AI-генератор ТЗ
+            </button>
+          </div>
+          <div className="flex-1 bg-white/10 backdrop-blur-md border border-white/10 rounded-[2.5rem] p-6 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="max-w-xl">
+              <h4 className="text-xl md:text-2xl font-normal mb-2">Нужен регламент обслуживания?</h4>
+              <p className="text-slate-400 font-normal text-sm">Подскажем периодичность, состав работ и подготовим КП под ваш объект.</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => onOpenLead("Сервис: Обслуживание")}
+              className="px-8 py-4 bg-blue-600 rounded-2xl font-normal hover:bg-blue-500 transition-all shadow-xl shrink-0"
+            >
+              Запросить сервис
+            </button>
+          </div>
         </div>
       </div>
     </section>
@@ -1049,64 +1118,6 @@ const PartnersSection = ({ onOpenPartner }) => {
   );
 };
 
-
-const Services = ({ onOpenService }) => {
-  const services = [
-    {
-      key: "vent",
-      icon: Wind,
-      title: "Вентиляция",
-      desc: "Проектирование, поставка, монтаж и пусконаладка систем любой сложности.",
-    },
-    {
-      key: "ac",
-      icon: Snowflake,
-      title: "Кондиционирование",
-      desc: "Бытовые и коммерческие системы охлаждения: от подбора до сервиса.",
-    },
-    {
-      key: "auto",
-      icon: Settings,
-      title: "Автоматизация",
-      desc: "Диспетчеризация, умный дом, управление климатом и энергоэффективность.",
-    },
-    {
-      key: "smoke",
-      icon: Fan,
-      title: "Дымоудаление",
-      desc: "Системы противодымной вентиляции и подпора воздуха для безопасности.",
-    },
-  ];
-
-  return (
-    <section id="services" className="py-10 md:py-24 bg-white border-t border-slate-100">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-8 md:mb-16">
-          <h2 className="font-heading text-3xl md:text-4xl font-normal text-slate-900 tracking-tight leading-tight">Услуги под ключ</h2>
-          <p className="font-sans text-slate-600 font-normal mt-2 md:mt-3 leading-relaxed tracking-body">Нажмите на услугу, чтобы увидеть детали и состав работ.</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {services.map((s) => (
-            <button
-              key={s.key}
-              type="button"
-              onClick={() => onOpenService(s.key)}
-              className="text-left p-6 md:p-8 bg-slate-50 rounded-2xl hover:shadow-xl transition-all border border-slate-100 group hover:border-blue-200"
-            >
-              <s.icon size={32} className="text-blue-600 mb-4 md:mb-6 group-hover:scale-110 transition-transform" />
-              <h3 className="text-xl font-normal mb-2 md:mb-3">{s.title}</h3>
-              <p className="text-slate-600 text-sm font-normal">{s.desc}</p>
-              <div className="mt-6 text-xs font-normal uppercase tracking-widest text-blue-600 inline-flex items-center gap-2">
-                Подробнее <ArrowRight size={14} />
-              </div>
-            </button>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
 
 const ContactForm = ({ onOpenLead, onOpenContact }) => {
   const [formName, setFormName] = useState("");
@@ -1282,7 +1293,7 @@ const Footer = () => (
             <div className="flex flex-col gap-3 font-normal text-slate-600">
               <a href="#catalog" className="hover:text-blue-600 transition-colors">Решения</a>
               <a href="#benefits" className="hover:text-blue-600 transition-colors">Почему мы</a>
-              <a href="#engineering" className="hover:text-blue-600 transition-colors">Инжиниринг</a>
+              <a href="#why-us" className="hover:text-blue-600 transition-colors">Почему выбирают нас</a>
               <a href="#partners" className="hover:text-blue-600 transition-colors">Партнерам</a>
               <a href="#contact" className="hover:text-blue-600 transition-colors">Контакты</a>
             </div>
@@ -1292,7 +1303,7 @@ const Footer = () => (
               Клиентам
             </h4>
             <div className="flex flex-col gap-3 font-normal text-slate-600">
-              <a href="#service" className="hover:text-blue-600 transition-colors">Сервис</a>
+              <a href="#why-us" className="hover:text-blue-600 transition-colors">Услуги и сервис</a>
               <a href="#benefits" className="hover:text-blue-600 transition-colors">Гарантии</a>
               <a href="#catalog" className="hover:text-blue-600 transition-colors">Решения</a>
             </div>
@@ -1776,50 +1787,6 @@ const QuickCalcModal = ({ initialTab = "vent", onClose, onOpenLead }) => {
  * 5) App
  */
 
-// --- Сервисное обслуживание ---
-const ServiceSection = ({ onOpenLead }) => (
-  <section id="service" className="py-10 md:py-24 bg-slate-950 text-white">
-    <div className="container mx-auto px-6">
-      <div className="max-w-4xl mb-8 md:mb-14">
-        <div className="text-xs font-normal text-blue-400 uppercase tracking-widest mb-3 md:mb-4">Сервис</div>
-        <h2 className="font-heading text-4xl md:text-5xl font-normal tracking-tight leading-tight">Обслуживание вентиляции и кондиционирования</h2>
-        <p className="font-sans text-slate-300 font-normal mt-2 md:mt-4 leading-relaxed tracking-body">
-          Регулярный сервис продлевает срок службы оборудования, сохраняет эффективность и предотвращает поломки в сезон.
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-8">
-        {[
-          { h: "Диагностика", p: "Проверка режимов, датчиков, автоматики, протечек, уровня шума и вибраций." },
-          { h: "Чистка и дезинфекция", p: "Фильтры, теплообменники, дренаж, внутренние блоки, воздуховоды и решётки." },
-          { h: "Пусконаладка и настройка", p: "Балансировка расхода воздуха, настройка контроллеров, рекомендации по эксплуатации." },
-        ].map((b) => (
-          <div key={b.h} className="p-6 md:p-8 bg-white/5 rounded-[2rem] border border-white/10">
-            <div className="text-lg font-normal mb-2 md:mb-3">{b.h}</div>
-            <div className="text-sm text-slate-300 font-normal leading-relaxed">{b.p}</div>
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-8 md:mt-12 bg-white/5 border border-white/10 rounded-[2.5rem] p-6 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8">
-        <div className="max-w-2xl">
-          <div className="text-2xl font-normal">Нужен регламент обслуживания?</div>
-          <div className="text-slate-300 font-normal mt-2">
-            Подскажем периодичность, состав работ и подготовим коммерческое предложение под ваш объект.
-          </div>
-        </div>
-        <button
-          type="button"
-          onClick={() => onOpenLead("Сервис: Обслуживание")}
-          className="px-10 py-4 bg-blue-600 rounded-2xl font-normal hover:bg-blue-500 transition-all shadow-xl"
-        >
-          Запросить сервис
-        </button>
-      </div>
-    </div>
-  </section>
-);
-
 // --- Кнопка наверх ---
 const BackToTop = () => {
   const [show, setShow] = useState(false);
@@ -1976,15 +1943,11 @@ const closeCalc = () => {
       </Reveal>
 
       <Reveal>
-        <EngineeringSection onOpenBrief={openBrief} />
-      </Reveal>
-
-      <Reveal>
-        <Services onOpenService={openService} />
-      </Reveal>
-
-      <Reveal>
-        <ServiceSection onOpenLead={openLead} />
+        <WhyChooseUsSection
+          onOpenService={openService}
+          onOpenBrief={openBrief}
+          onOpenLead={openLead}
+        />
       </Reveal>
 
       <Reveal>
