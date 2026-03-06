@@ -29,7 +29,6 @@ import {
   Ruler,
   Filter,
   ArrowUp,
-  BookOpen,
   Shield,
   Package,
   BadgeCheck,
@@ -44,12 +43,11 @@ import { postLead } from "./api/leads";
 import { fetchGeminiResponse } from "./api/gemini";
 import { complexSolutions } from "./data/solutions";
 import { turkovCategories } from "./data/turkov";
-import { ARTICLES } from "./data/articles";
 import { VENT_PRESETS, AC_PRESETS, round1, pickNearestKW } from "./data/presets";
 import { SERVICE_INFO } from "./data/services";
 
 /**
- * 1) Data - imported from ./data/ (solutions, turkov, articles, presets, services)
+ * 1) Data - imported from ./data/ (solutions, turkov, presets, services)
  */
 
 /**
@@ -1285,7 +1283,7 @@ const Footer = () => (
             <div className="flex flex-col gap-3 font-normal text-slate-600">
               <a href="#service" className="hover:text-blue-600 transition-colors">Сервис</a>
               <a href="#benefits" className="hover:text-blue-600 transition-colors">Гарантии</a>
-              <a href="#articles" className="hover:text-blue-600 transition-colors">Статьи</a>
+              <a href="#catalog" className="hover:text-blue-600 transition-colors">Решения</a>
             </div>
           </div>
         </div>
@@ -1769,123 +1767,6 @@ const QuickCalcModal = ({ initialTab = "vent", onClose, onOpenLead }) => {
  * 5) App
  */
 
-const SchemaCard = ({ title }) => (
-  <div className="relative w-full rounded-3xl p-6 bg-white/35 backdrop-blur-xl border border-white/40 shadow-sm">
-    <div className="text-[10px] font-normal uppercase tracking-widest text-slate-600 mb-2">Схема</div>
-    <div className="text-lg font-normal text-slate-900">{title}</div>
-
-    <div className="mt-6 aspect-[4/3] rounded-2xl bg-gradient-to-br from-blue-50 to-emerald-50 border border-white/60 flex items-center justify-center overflow-hidden">
-      <svg viewBox="0 0 400 300" className="w-full h-full">
-        <defs>
-          <linearGradient id="g" x1="0" x2="1">
-            <stop offset="0" stopColor="#60a5fa" stopOpacity="0.35" />
-            <stop offset="1" stopColor="#34d399" stopOpacity="0.35" />
-          </linearGradient>
-        </defs>
-        <rect x="40" y="70" width="320" height="180" rx="24" fill="url(#g)" stroke="#94a3b8" strokeOpacity="0.35" />
-        <circle cx="120" cy="160" r="28" fill="#60a5fa" fillOpacity="0.35" />
-        <circle cx="200" cy="160" r="28" fill="#34d399" fillOpacity="0.35" />
-        <circle cx="280" cy="160" r="28" fill="#60a5fa" fillOpacity="0.35" />
-        <path d="M40 120 H360" stroke="#94a3b8" strokeOpacity="0.35" strokeWidth="6" />
-        <path d="M40 200 H360" stroke="#94a3b8" strokeOpacity="0.25" strokeWidth="6" />
-        <path d="M70 60 L110 90" stroke="#60a5fa" strokeWidth="10" strokeLinecap="round" />
-        <path d="M330 240 L290 210" stroke="#34d399" strokeWidth="10" strokeLinecap="round" />
-      </svg>
-    </div>
-  </div>
-);
-
-const ArticleModal = ({ article, onClose }) => {
-  if (!article) return null;
-
-  return createPortal(
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 font-sans">
-      <div className="absolute inset-0 bg-slate-900/70 backdrop-blur-md" onClick={onClose} />
-      <motion.div
-        initial={{ opacity: 0, y: 18 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 18 }}
-        className="relative z-10 bg-white w-full max-w-5xl rounded-[2.5rem] overflow-hidden shadow-2xl max-h-[90vh] flex flex-col"
-      >
-        <div className="p-6 md:p-8 border-b border-slate-100 flex items-start justify-between">
-          <div className="max-w-3xl">
-            <div className="text-[10px] font-normal uppercase tracking-widest text-blue-600 mb-2">Статья</div>
-            <h3 className="text-2xl md:text-3xl font-normal text-slate-900">{article.title}</h3>
-            <p className="text-slate-600 font-normal mt-2">{article.excerpt}</p>
-          </div>
-          <button type="button" onClick={onClose} className="p-2 rounded-xl hover:bg-slate-50">
-            <X size={22} className="text-slate-600" />
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-0 overflow-hidden flex-1">
-          {/* sticky схема (за матовым стеклом) */}
-          <div className="md:col-span-2 bg-gradient-to-b from-slate-50 to-white p-6 md:p-8 border-b md:border-b-0 md:border-r border-slate-100">
-            <div className="md:sticky md:top-6">
-              <SchemaCard title={article.schemaTitle} />
-            </div>
-          </div>
-
-          {/* текст */}
-          <div className="md:col-span-3 p-6 md:p-10 overflow-y-auto">
-            <div className="prose prose-slate max-w-none">
-              {article.body.map((p, i) => (
-                <p key={i} className="text-slate-700 font-normal leading-relaxed">
-                  {p}
-                </p>
-              ))}
-              <div className="mt-8 p-6 rounded-3xl bg-slate-50 border border-slate-100">
-                <div className="text-sm font-normal text-slate-900 mb-2">Нужен расчёт под ваш объект?</div>
-                <p className="text-slate-600 font-normal text-sm">
-                  Оставьте заявку — наши специалисты свяжутся с вами и проконсультируют по всем интересующим вас вопросам.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </motion.div>
-    </div>,
-    document.body
-  );
-};
-
-const ArticlesSection = ({ onOpenArticle }) => (
-  <section id="articles" className="py-10 md:py-24 bg-white">
-    <div className="container mx-auto px-6">
-      <div className="max-w-3xl mb-8 md:mb-12">
-        <div className="text-xs font-normal text-blue-600 uppercase tracking-widest mb-3 md:mb-4">Полезное</div>
-        <h2 className="font-heading text-4xl md:text-5xl font-normal text-slate-900 tracking-tight leading-tight flex items-center gap-3">
-          <BookOpen className="text-blue-600" size={28} /> Статьи
-        </h2>
-        <p className="font-sans text-slate-600 font-normal mt-2 md:mt-4 leading-relaxed tracking-body">
-          Короткие материалы для понимания: что выбрать, как работает вентиляция и почему кондиционер не заменяет свежий воздух.
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-8">
-        {ARTICLES.map((a) => (
-          <button
-            key={a.id}
-            type="button"
-            onClick={() => onOpenArticle(a)}
-            className="text-left group bg-slate-50 border border-slate-100 rounded-[2rem] overflow-hidden hover:shadow-xl transition-all"
-          >
-            <div className="h-44 overflow-hidden">
-              <img src={a.image} alt={a.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-            </div>
-            <div className="p-5 md:p-7">
-              <div className="text-[10px] font-normal uppercase tracking-widest text-slate-500 mb-2">Статья</div>
-              <div className="text-xl font-normal text-slate-900 mb-2 md:mb-3">{a.title}</div>
-              <div className="text-sm text-slate-600 font-normal leading-relaxed line-clamp-3">{a.excerpt}</div>
-              <div className="mt-5 text-xs font-normal uppercase tracking-widest text-blue-600">Читать →</div>
-            </div>
-          </button>
-        ))}
-      </div>
-    </div>
-  </section>
-);
-
 // --- Сервисное обслуживание ---
 const ServiceSection = ({ onOpenLead }) => (
   <section id="service" className="py-10 md:py-24 bg-slate-950 text-white">
@@ -1999,7 +1880,6 @@ function MainSite() {
 const [activeService, setActiveService] = useState(null);
 const [calcOpen, setCalcOpen] = useState(false);
 const [calcTab, setCalcTab] = useState("vent");
-const [activeArticle, setActiveArticle] = useState(null);
 useEffect(() => {
   const applyFromUrl = () => {
     const sp = new URLSearchParams(window.location.search);
@@ -2014,7 +1894,7 @@ useEffect(() => {
   return () => window.removeEventListener("popstate", applyFromUrl);
 }, []);
 
-const modalOpen = turkovCatalogOpen || activeTurkovCategory || modalState || leadContext || activeSolution || activeService || calcOpen || activeArticle;
+const modalOpen = turkovCatalogOpen || activeTurkovCategory || modalState || leadContext || activeSolution || activeService || calcOpen;
 useEffect(() => {
   if (modalOpen) document.body.style.overflow = "hidden";
   else document.body.style.overflow = "";
@@ -2099,10 +1979,6 @@ const closeCalc = () => {
       </Reveal>
 
       <Reveal>
-        <ArticlesSection onOpenArticle={setActiveArticle} />
-      </Reveal>
-
-      <Reveal>
         <PartnersSection onOpenPartner={openPartner} />
       </Reveal>
 
@@ -2174,9 +2050,6 @@ const closeCalc = () => {
       openLead(ctx);
     }}
   />
-)}
-{activeArticle && (
-  <ArticleModal article={activeArticle} onClose={() => setActiveArticle(null)} />
 )}
 </AnimatePresence>
     </motion.div>
