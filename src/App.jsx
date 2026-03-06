@@ -38,7 +38,6 @@ import BrandMarquee from "./components/BrandMarquee";
 import WorksMarquee from "./components/WorksMarquee";
 import Navbar from "./components/sections/Navbar";
 import Hero from "./components/sections/Hero";
-import BenefitsSection from "./components/sections/BenefitsSection";
 import { postLead } from "./api/leads";
 import { fetchGeminiResponse } from "./api/gemini";
 import { complexSolutions } from "./data/solutions";
@@ -1292,7 +1291,6 @@ const Footer = () => (
             </h4>
             <div className="flex flex-col gap-3 font-normal text-slate-600">
               <a href="#catalog" className="hover:text-blue-600 transition-colors">Решения</a>
-              <a href="#benefits" className="hover:text-blue-600 transition-colors">Почему мы</a>
               <a href="#why-us" className="hover:text-blue-600 transition-colors">Почему выбирают нас</a>
               <a href="#partners" className="hover:text-blue-600 transition-colors">Партнерам</a>
               <a href="#contact" className="hover:text-blue-600 transition-colors">Контакты</a>
@@ -1304,7 +1302,6 @@ const Footer = () => (
             </h4>
             <div className="flex flex-col gap-3 font-normal text-slate-600">
               <a href="#why-us" className="hover:text-blue-600 transition-colors">Услуги и сервис</a>
-              <a href="#benefits" className="hover:text-blue-600 transition-colors">Гарантии</a>
               <a href="#catalog" className="hover:text-blue-600 transition-colors">Решения</a>
             </div>
           </div>
@@ -1936,10 +1933,6 @@ const closeCalc = () => {
 
       <Reveal>
         <WorksMarquee />
-      </Reveal>
-
-      <Reveal>
-        <BenefitsSection />
       </Reveal>
 
       <Reveal>
