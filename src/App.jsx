@@ -447,7 +447,7 @@ const openAssistant = () => {
 
       <BackToTop />
 
-      <ClimateAssistant openSignal={assistantOpenSignal} />
+      <ClimateAssistant openSignal={assistantOpenSignal} onOpenBrief={openBrief} />
 
       <AnimatePresence>
         {activeSolution && (
