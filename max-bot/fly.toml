@@ -1,0 +1,16 @@
+# Fly.io — для деплоя: fly launch (один раз), fly deploy
+app = "vozduh-max-bot"
+
+[build]
+  [build.args]
+    NODE_ENV = "production"
+
+[env]
+  NODE_ENV = "production"
+
+[[vm]]
+  memory = "256mb"
+  cpu_kind = "shared"
+  cpus = 1
+
+# Бот не слушает порт — Fly не требует http_service

@@ -1,0 +1,11 @@
+# Render.com — альтернатива Railway
+# Создай Web Service, укажи Root Directory: max-bot
+services:
+  - type: worker
+    name: vozduh-max-bot
+    runtime: node
+    buildCommand: npm install
+    startCommand: node index.js
+    envVars:
+      - key: MAX_BOT_TOKEN
+        sync: false  # добавить вручную в Render Dashboard
