@@ -3,7 +3,7 @@ import { Loader2, MessageCircle, Send, Sparkles, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { fetchGeminiResponse } from "../../api/gemini";
 
-const ClimateAssistant = () => {
+const ClimateAssistant = ({ openSignal = 0 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
     {
@@ -20,6 +20,11 @@ const ClimateAssistant = () => {
   useEffect(() => {
     if (isOpen) scrollToBottom();
   }, [messages, isOpen]);
+
+  useEffect(() => {
+    if (!openSignal) return;
+    setIsOpen(true);
+  }, [openSignal]);
 
   const handleSend = async (e) => {
     e.preventDefault();

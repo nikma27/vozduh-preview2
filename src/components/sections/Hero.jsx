@@ -1,9 +1,8 @@
 import React from "react";
 import { ArrowRight, MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
-import { getSafeTelegramLink } from "../../utils/safeExternalUrl";
 
-const Hero = ({ onOpenCalc }) => (
+const Hero = ({ onOpenCalc, onOpenAssistant, onOpenBrief }) => (
   <section className="relative h-[100vh] flex items-center overflow-hidden bg-slate-900 text-white">
     <div className="absolute inset-0 opacity-40">
       <img
@@ -46,14 +45,20 @@ const Hero = ({ onOpenCalc }) => (
           >
             Наши решения
           </a>
-          <a
-            href={getSafeTelegramLink(import.meta.env.VITE_TG_BOT_LINK)}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            type="button"
+            onClick={onOpenAssistant}
             className="px-10 py-5 bg-emerald-500/90 hover:bg-emerald-500 border border-emerald-400/30 rounded-full font-normal text-lg text-white transition-all text-center flex items-center justify-center gap-3 shadow-lg shadow-emerald-500/20"
           >
-            <MessageCircle size={20} /> Telegram-консультант
-          </a>
+            <MessageCircle size={20} /> AI-консультант на сайте
+          </button>
+          <button
+            type="button"
+            onClick={onOpenBrief}
+            className="px-10 py-5 bg-white/5 border border-white/20 backdrop-blur-md rounded-full font-normal text-lg hover:bg-white/10 transition-all text-center flex items-center justify-center gap-3"
+          >
+            <ArrowRight size={20} /> AI-генератор ТЗ
+          </button>
         </div>
       </motion.div>
     </div>

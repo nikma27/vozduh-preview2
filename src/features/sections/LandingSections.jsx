@@ -12,7 +12,6 @@ import {
   MessageCircle,
   Package,
   Phone,
-  Send,
   Settings,
   Shield,
   Snowflake,
@@ -23,7 +22,6 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { complexSolutions } from "../../data/solutions";
-import { getSafeTelegramLink } from "../../utils/safeExternalUrl";
 
 export const TurkovPromo = ({ onOpenLead, onOpenTurkovCatalog }) => (
   <section
@@ -395,7 +393,7 @@ export const PartnersSection = ({ onOpenPartner }) => {
   );
 };
 
-export const ContactForm = ({ onOpenLead, onOpenContact }) => {
+export const ContactForm = ({ onOpenLead, onOpenContact, onOpenAssistant, onOpenBrief }) => {
   const [formName, setFormName] = useState("");
   const [formPhone, setFormPhone] = useState("");
 
@@ -455,11 +453,11 @@ export const ContactForm = ({ onOpenLead, onOpenContact }) => {
 
             <div className="flex gap-4 flex-wrap">
               <button
-                onClick={() => onOpenLead("Контакты: Telegram")}
+                onClick={onOpenAssistant}
                 className="px-8 py-4 bg-blue-600 rounded-2xl font-normal flex items-center gap-3 hover:bg-blue-500 transition-all shadow-xl shadow-blue-600/20 tracking-wide text-sm"
                 type="button"
               >
-                <Send size={20} /> Telegram
+                <MessageCircle size={20} /> AI-консультант на сайте
               </button>
               <button
                 onClick={onOpenContact}
@@ -470,26 +468,25 @@ export const ContactForm = ({ onOpenLead, onOpenContact }) => {
               </button>
             </div>
 
-            <a
-              href={getSafeTelegramLink(import.meta.env.VITE_TG_BOT_LINK)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-6 block p-6 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-blue-500/30 transition-all group"
+            <button
+              type="button"
+              onClick={onOpenBrief}
+              className="mt-6 w-full text-left p-6 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-blue-500/30 transition-all group"
             >
               <div className="flex items-start gap-4">
                 <div className="p-3 bg-blue-600/20 rounded-xl text-blue-400 shrink-0 group-hover:bg-blue-600/30 transition-colors">
-                  <MessageCircle size={28} />
+                  <Sparkles size={28} />
                 </div>
                 <div>
                   <h4 className="font-normal text-white mb-2 uppercase tracking-wide">
-                    Воспользуйтесь нашим универсальным ТГ ботом техническим консультантом
+                    Встроенный AI-генератор ТЗ прямо на сайте
                   </h4>
                   <p className="text-slate-400 text-sm font-normal">
-                    Ответит на все ваши вопросы по вентиляции, кондиционированию и климатическому оборудованию.
+                    Откроем форму, соберём параметры объекта и сгенерируем черновик технического задания без перехода в мессенджер.
                   </p>
                 </div>
               </div>
-            </a>
+            </button>
           </div>
 
           <div className="lg:w-1/2 relative z-10 flex flex-col justify-center">

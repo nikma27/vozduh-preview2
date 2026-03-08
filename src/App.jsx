@@ -329,6 +329,7 @@ function MainSite() {
 const [activeService, setActiveService] = useState(null);
 const [calcOpen, setCalcOpen] = useState(false);
 const [calcTab, setCalcTab] = useState("vent");
+const [assistantOpenSignal, setAssistantOpenSignal] = useState(0);
 useEffect(() => {
   const applyFromUrl = () => {
     const sp = new URLSearchParams(window.location.search);
@@ -384,12 +385,16 @@ const closeCalc = () => {
   });
 };
 
+const openAssistant = () => {
+  setAssistantOpenSignal((prev) => prev + 1);
+};
+
 
 
   return (
     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="font-sans text-slate-800 antialiased bg-white selection:bg-blue-200 selection:text-blue-900 overflow-x-hidden">
       <Navbar onOpenContact={openContact} />
-      <Hero onOpenCalc={openCalc} />
+      <Hero onOpenCalc={openCalc} onOpenAssistant={openAssistant} onOpenBrief={openBrief} />
 
       <Reveal>
         <Catalog onOpenSolution={setActiveSolution} />
@@ -424,7 +429,12 @@ const closeCalc = () => {
       </Reveal>
 
       <Reveal>
-        <ContactForm onOpenLead={openLead} onOpenContact={openContact} />
+        <ContactForm
+          onOpenLead={openLead}
+          onOpenContact={openContact}
+          onOpenAssistant={openAssistant}
+          onOpenBrief={openBrief}
+        />
       </Reveal>
 
       <Reveal>
@@ -437,7 +447,7 @@ const closeCalc = () => {
 
       <BackToTop />
 
-      <ClimateAssistant />
+      <ClimateAssistant openSignal={assistantOpenSignal} />
 
       <AnimatePresence>
         {activeSolution && (
