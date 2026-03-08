@@ -25,10 +25,11 @@ npm run preview
 
 ## Vercel
 В корне есть `vercel.json` с rewrite для SPA-роутинга (чтобы лендинги открывались по прямым ссылкам).
+Деплой выполняется через **Vercel Git Integration** (один стабильный путь).
+GitHub Actions в репозитории выполняет только CI-проверки (`lint`, `test`, `build`).
 
 **Публичные ссылки:**
 - Production: https://vozduh-preview2.vercel.app
-- Последний деплой: https://vozduh-preview-mp1y-bjm211a6q-nikma27s-projects.vercel.app
 
 ## Переменные окружения (опционально)
 Создай файл `.env`:

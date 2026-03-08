@@ -1,8 +1,11 @@
 # Автоматический деплой на Vercel
 
-## Способ 1: Vercel + GitHub (рекомендуется)
+## Единый стабильный путь (рекомендуется): Vercel + Git Integration
 
-Самый простой вариант — связать репозиторий с Vercel:
+В проекте оставлен один источник деплоя: интеграция Vercel с GitHub.
+GitHub Actions выполняет только CI-проверки (`lint`, `test`, `build`) и не деплоит.
+
+### Настройка один раз
 
 1. Создайте репозиторий на [GitHub](https://github.com/new).
 2. Выполните в проекте:
@@ -19,22 +22,16 @@
 5. Настройки можно оставить по умолчанию (Vite определяется автоматически).
 6. Нажмите **Deploy**.
 
-После этого каждый `git push` в `main` будет автоматически обновлять сайт на Vercel.
+После этого каждый `git push` в `main` автоматически обновляет production на Vercel.
 
----
+### Рабочий цикл сейчас
 
-## Способ 2: GitHub Actions
+1. Вы пушите код в `main`.
+2. GitHub Actions запускает CI (качество кода).
+3. Vercel Git Integration независимо выполняет деплой.
 
-Если нужен деплой через GitHub Actions:
+### Как проверить деплой
 
-1. Подключите проект к Vercel:
-   ```bash
-   npx vercel link
-   ```
-   Выберите scope и создайте или привяжите проект.
-
-2. Добавьте секреты в GitHub: **Settings** → **Secrets and variables** → **Actions**:
-   - `VERCEL_TOKEN` — [Create Token](https://vercel.com/account/tokens)
-   - `VERCEL_ORG_ID` и `VERCEL_PROJECT_ID` — из `.vercel/project.json` после `vercel link`
-
-3. Каждый `git push` в `main` или `master` запустит деплой.
+1. Откройте проект в Vercel Dashboard.
+2. Проверьте, что последний deployment имеет статус `Ready`.
+3. Откройте production-домен (например, `https://vozduh-preview2.vercel.app`).
