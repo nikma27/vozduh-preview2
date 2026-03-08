@@ -44,6 +44,7 @@ import { complexSolutions } from "./data/solutions";
 import { turkovCategories } from "./data/turkov";
 import { VENT_PRESETS, AC_PRESETS, round1, pickNearestKW } from "./data/presets";
 import { SERVICE_INFO } from "./data/services";
+import { getSafeTelegramLink } from "./utils/safeExternalUrl";
 
 /**
  * 1) Data - imported from ./data/ (solutions, turkov, presets, services)
@@ -52,16 +53,6 @@ import { SERVICE_INFO } from "./data/services";
 /**
  * 2) Modals
  */
-const ModalShell = ({ onClose, children, z = 150 }) => (
-  <div className={`fixed inset-0 z-[${z}] flex items-center justify-center p-4 font-sans`}>
-    <div
-      className="absolute inset-0 bg-slate-900/60 backdrop-blur-md"
-      onClick={onClose}
-    />
-    {children}
-  </div>
-);
-
 const ContactModal = ({ onClose, title = "Оставить заявку" }) => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -1193,7 +1184,7 @@ const ContactForm = ({ onOpenLead, onOpenContact }) => {
           </div>
 
           <a
-            href={import.meta.env.VITE_TG_BOT_LINK || "https://t.me/vozduh_nsk_bot"}
+            href={getSafeTelegramLink(import.meta.env.VITE_TG_BOT_LINK)}
             target="_blank"
             rel="noopener noreferrer"
             className="mt-6 block p-6 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-blue-500/30 transition-all group"

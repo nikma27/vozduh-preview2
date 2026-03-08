@@ -1,7 +1,7 @@
 # Воздух НСК — сайт (Vite + React + Tailwind)
 
 ## Что добавлено в этой версии
-- Шрифт **Montserrat** (Google Fonts).
+- Шрифты **Roboto / Roboto Mono** (Google Fonts).
 - **Быстрый калькулятор**: ориентировочный расчёт воздухообмена (приток/вытяжка) и мощности кондиционера.
 - В шапке: **Проектирование • Поставка • Монтаж • Сервис**.
 - «**Услуги под ключ**» — каждая карточка открывает **информационное окно**.
@@ -13,7 +13,7 @@
 
 ## Запуск локально
 ```bash
-npm i
+npm ci
 npm run dev
 ```
 
@@ -35,4 +35,5 @@ npm run preview
 ```
 VITE_LEAD_API=https://your-api.example.com
 VITE_GEMINI_API_KEY=...
+VITE_GEMINI_MODEL=gemini-2.5-flash
 ```

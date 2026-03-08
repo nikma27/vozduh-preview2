@@ -1,6 +1,7 @@
 import React from "react";
 import { ArrowRight, MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
+import { getSafeTelegramLink } from "../../utils/safeExternalUrl";
 
 const Hero = ({ onOpenCalc }) => (
   <section className="relative h-[100vh] flex items-center overflow-hidden bg-slate-900 text-white">
@@ -9,7 +10,6 @@ const Hero = ({ onOpenCalc }) => (
         src="/photos/photo_10_2026-03-02_12-37-33.jpg"
         className="w-full h-full object-cover hero-bg-img md:object-center"
         alt="Background"
-        fetchPriority="high"
         decoding="async"
       />
     </div>
@@ -47,7 +47,7 @@ const Hero = ({ onOpenCalc }) => (
             Наши решения
           </a>
           <a
-            href={import.meta.env.VITE_TG_BOT_LINK || "https://t.me/vozduh_nsk_bot"}
+            href={getSafeTelegramLink(import.meta.env.VITE_TG_BOT_LINK)}
             target="_blank"
             rel="noopener noreferrer"
             className="px-10 py-5 bg-emerald-500/90 hover:bg-emerald-500 border border-emerald-400/30 rounded-full font-normal text-lg text-white transition-all text-center flex items-center justify-center gap-3 shadow-lg shadow-emerald-500/20"
