@@ -28,16 +28,17 @@ import {
   UserCheck,
   Ruler,
   Filter,
-  ArrowUp,
   Shield,
   Package,
   BadgeCheck,
 } from "lucide-react";
-import { AnimatePresence, motion, useInView } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import BrandMarquee from "./components/BrandMarquee";
 import WorksMarquee from "./components/WorksMarquee";
 import Navbar from "./components/sections/Navbar";
 import Hero from "./components/sections/Hero";
+import BackToTop from "./shared/ui/BackToTop";
+import Reveal from "./shared/ui/Reveal";
 import { postLead } from "./api/leads";
 import { fetchGeminiResponse } from "./api/gemini";
 import { complexSolutions } from "./data/solutions";
@@ -1775,65 +1776,6 @@ const QuickCalcModal = ({ initialTab = "vent", onClose, onOpenLead }) => {
  * 5) App
  */
 
-// --- Кнопка наверх ---
-const BackToTop = () => {
-  const [show, setShow] = useState(false);
-  useEffect(() => {
-    let ticking = false;
-    let lastCall = 0;
-    const THROTTLE_MS = 100;
-    const onScroll = () => {
-      if (ticking) return;
-      const now = Date.now();
-      if (now - lastCall < THROTTLE_MS) return;
-      ticking = true;
-      lastCall = now;
-      requestAnimationFrame(() => {
-        setShow(window.scrollY > 600);
-        ticking = false;
-      });
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-  return (
-    <AnimatePresence>
-      {show && (
-        <motion.button
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 10 }}
-          type="button"
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-6 left-6 z-50 p-3 rounded-full bg-slate-900 text-white shadow-xl hover:bg-blue-600 transition-colors"
-          aria-label="Наверх"
-        >
-          <ArrowUp size={20} />
-        </motion.button>
-      )}
-    
-</AnimatePresence>
-  );
-};
-
-// --- Reveal wrapper для плавных анимаций секций ---
-const Reveal = ({ children }) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.08, margin: "-40px" });
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.08 }}
-      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-      className={`section-reveal transition-all duration-500 ${isInView ? "is-visible" : ""}`}
-    >
-      {children}
-    </motion.div>
-  );
-};
 function MainSite() {
   const [activeSolution, setActiveSolution] = useState(null);
   const [activeTurkovCategory, setActiveTurkovCategory] = useState(null);
