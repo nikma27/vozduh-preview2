@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import { motion } from "framer-motion";
 
 const NASHI_IMAGES = [
   "/nashi/photo_2007@27-07-2023_16-03-39.jpg",
@@ -41,9 +40,11 @@ const WorksMarquee = () => {
   const [scrollPx, setScrollPx] = useState(0);
   const scrollPxRef = useRef(0);
   const [isDragging, setIsDragging] = useState(false);
-  const dragStart = useRef({ x: 0, scroll: 0 });
+  const dragStart = useRef({ x: 0, y: 0, scroll: 0 });
   const rafRef = useRef(null);
   const lastTimeRef = useRef(0);
+  const moveRafRef = useRef(null);
+  const pendingScrollRef = useRef(0);
 
   const allImages = [...NASHI_IMAGES, ...NASHI_IMAGES];
   const halfWidthRef = useRef(0);
@@ -59,7 +60,9 @@ const WorksMarquee = () => {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReducedMotion) return;
     const animate = (t) => {
-      if (isDragging || hoveredIndex !== null) return;
+      if (isDragging || hoveredIndex !== null) {
+        return;
+      }
       const dt = t - lastTimeRef.current;
       lastTimeRef.current = t;
       const half = halfWidthRef.current;
@@ -79,34 +82,53 @@ const WorksMarquee = () => {
   }, [isDragging, hoveredIndex]);
 
   const getClientX = (e) => (e.touches ? e.touches[0].clientX : e.clientX);
+  const getClientY = (e) => (e.touches ? e.touches[0].clientY : e.clientY);
+
+  const scheduleScrollCommit = (next) => {
+    scrollPxRef.current = next;
+    pendingScrollRef.current = next;
+    if (moveRafRef.current) return;
+    moveRafRef.current = requestAnimationFrame(() => {
+      setScrollPx(pendingScrollRef.current);
+      moveRafRef.current = null;
+    });
+  };
 
   const handleMouseDown = (e) => {
     if (e.button !== 0) return;
     setPressedIndex(null);
     setIsDragging(true);
-    dragStart.current = { x: getClientX(e), scroll: scrollPxRef.current };
+    dragStart.current = { x: getClientX(e), y: e.clientY ?? 0, scroll: scrollPxRef.current };
   };
 
   const handleTouchStart = (e) => {
     setPressedIndex(null);
     setIsDragging(true);
-    dragStart.current = { x: getClientX(e), scroll: scrollPxRef.current };
+    dragStart.current = { x: getClientX(e), y: e.touches?.[0]?.clientY ?? 0, scroll: scrollPxRef.current };
   };
 
   useEffect(() => {
     if (!isDragging) return;
     const half = halfWidthRef.current;
     const onMove = (e) => {
-      const dx = getClientX(e) - dragStart.current.x;
+      const pointX = getClientX(e);
+      const pointY = getClientY(e) ?? 0;
+      const dx = pointX - dragStart.current.x;
       const next = Math.max(-half, Math.min(0, dragStart.current.scroll + dx));
-      scrollPxRef.current = next;
-      setScrollPx(next);
+      scheduleScrollCommit(next);
     };
     const onTouchMove = (e) => {
+      const dx = getClientX(e) - dragStart.current.x;
+      const dy = getClientY(e) - dragStart.current.y;
+      const horizontalIntent = Math.abs(dx) > Math.abs(dy) + 6;
+      if (!horizontalIntent) return;
       onMove(e);
-      e.cancelable && e.preventDefault();
+      if (e.cancelable) e.preventDefault();
     };
-    const onUp = () => { setIsDragging(false); setPressedIndex(null); };
+    const onUp = () => {
+      setIsDragging(false);
+      setPressedIndex(null);
+    };
     window.addEventListener("mousemove", onMove);
     window.addEventListener("mouseup", onUp);
     window.addEventListener("touchmove", onTouchMove, { passive: false });
@@ -118,6 +140,10 @@ const WorksMarquee = () => {
       window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("touchend", onUp);
       window.removeEventListener("touchcancel", onUp);
+      if (moveRafRef.current) {
+        cancelAnimationFrame(moveRafRef.current);
+        moveRafRef.current = null;
+      }
     };
   }, [isDragging]);
 
@@ -133,7 +159,7 @@ const WorksMarquee = () => {
       </div>
 
       <div
-        className="relative flex overflow-x-hidden select-none touch-pan-x"
+        className="relative flex overflow-x-hidden select-none touch-pan-y"
         style={{ cursor: isDragging ? "grabbing" : "grab" }}
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}
@@ -162,12 +188,11 @@ const WorksMarquee = () => {
                 onPointerUp={() => setPressedIndex(null)}
                 onPointerCancel={() => setPressedIndex(null)}
               >
-                <motion.div
+                <div
                   className="w-full h-full rounded-2xl overflow-hidden"
-                  initial={false}
-                  animate={{
-                    scale: isThisHovered ? 1.05 : 1,
-                    transition: { duration: 0.25, ease: [0.22, 1, 0.36, 1] },
+                  style={{
+                    transform: isThisHovered ? "scale(1.05)" : "scale(1)",
+                    transition: "transform 250ms cubic-bezier(0.22, 1, 0.36, 1)",
                   }}
                 >
                   <img
@@ -176,17 +201,17 @@ const WorksMarquee = () => {
                     className="w-full h-full object-cover rounded-2xl"
                     loading="lazy"
                   />
-                </motion.div>
-                <motion.div
+                </div>
+                <div
                   className="absolute inset-0 pointer-events-none rounded-2xl"
-                  animate={{
+                  style={{
                     backgroundColor: isThisPressed
                       ? "rgba(15, 23, 42, 0.4)"
                       : shouldDim
                         ? "rgba(15, 23, 42, 0.35)"
                         : "rgba(15, 23, 42, 0)",
+                    transition: "background-color 150ms linear",
                   }}
-                  transition={{ duration: 0.15 }}
                 />
               </div>
             );

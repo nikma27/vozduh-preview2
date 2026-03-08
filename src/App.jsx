@@ -27,6 +27,9 @@ import BackToTop from "./shared/ui/BackToTop";
 import Reveal from "./shared/ui/Reveal";
 import { turkovCategories } from "./data/turkov";
 
+const PANEL_TRANSITION = { duration: 0.22, ease: [0.22, 1, 0.36, 1] };
+const OVERLAY_TRANSITION = { duration: 0.18, ease: "linear" };
+
 /**
  * 1) Data - imported from ./data/ (solutions, turkov, presets, services)
  */
@@ -42,10 +45,15 @@ const SolutionDetailModal = ({ solution, onClose, onOpenLead }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
+        transition={OVERLAY_TRANSITION}
         onClick={onClose}
-        className="absolute inset-0 bg-slate-900/60 backdrop-blur-xl"
+        className="absolute inset-0 bg-slate-900/60 modal-backdrop"
       />
       <motion.div
+        initial={{ opacity: 0, y: 16, scale: 0.985 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 16, scale: 0.985 }}
+        transition={PANEL_TRANSITION}
         className="bg-white w-full max-w-5xl md:rounded-[2.5rem] relative z-10 overflow-hidden shadow-2xl flex flex-col md:flex-row h-full md:h-[80vh] max-h-[900px]"
       >
         <div className="md:w-5/12 relative h-64 md:h-auto overflow-hidden flex-shrink-0">
@@ -134,10 +142,15 @@ const TurkovCategoryModal = ({ category, onClose, onOpenLead }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
+        transition={OVERLAY_TRANSITION}
         onClick={onClose}
-        className="absolute inset-0 bg-slate-900/60 backdrop-blur-xl"
+        className="absolute inset-0 bg-slate-900/60 modal-backdrop"
       />
       <motion.div
+        initial={{ opacity: 0, y: 16, scale: 0.985 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 16, scale: 0.985 }}
+        transition={PANEL_TRANSITION}
         className="bg-white w-full max-w-2xl md:rounded-[2.5rem] relative z-10 overflow-hidden shadow-2xl"
       >
         <div className="relative h-40 md:h-48 overflow-hidden bg-gradient-to-br from-slate-800 to-slate-600 flex items-center justify-center">
@@ -243,12 +256,20 @@ const TurkovCategoryModal = ({ category, onClose, onOpenLead }) => {
 const TurkovCatalogModal = ({ onClose, onOpenCategory }) =>
   createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 font-sans overflow-hidden">
-      <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-xl" onClick={onClose} />
       <motion.div
-        initial={{ opacity: 0, scale: 0.96 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.96 }}
-        className="relative z-10 w-full max-w-6xl max-h-[85dvh] overflow-hidden rounded-xl md:rounded-[2rem] bg-gradient-to-br from-blue-400/25 via-blue-600/30 to-slate-950 text-white shadow-2xl"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={OVERLAY_TRANSITION}
+        className="absolute inset-0 bg-slate-950/60 modal-backdrop"
+        onClick={onClose}
+      />
+      <motion.div
+        initial={{ opacity: 0, y: 12, scale: 0.985 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 12, scale: 0.985 }}
+        transition={PANEL_TRANSITION}
+        className="relative z-10 w-full max-w-6xl max-h-[85dvh] overflow-hidden rounded-xl md:rounded-[2rem] bg-gradient-to-br from-blue-400/25 via-blue-600/30 to-slate-950 text-white shadow-2xl modal-panel"
       >
         <button
           type="button"

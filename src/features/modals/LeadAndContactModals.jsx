@@ -5,6 +5,9 @@ import { motion } from "framer-motion";
 import { postLead } from "../../api/leads";
 import { fetchGeminiResponse } from "../../api/gemini";
 
+const PANEL_TRANSITION = { duration: 0.22, ease: [0.22, 1, 0.36, 1] };
+const OVERLAY_TRANSITION = { duration: 0.18, ease: "linear" };
+
 export const ContactModal = ({ onClose, title = "Оставить заявку" }) => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -28,12 +31,20 @@ export const ContactModal = ({ onClose, title = "Оставить заявку" 
 
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 font-sans">
-      <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md" onClick={onClose} />
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 20 }}
-        className="relative z-10 bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={OVERLAY_TRANSITION}
+        className="absolute inset-0 bg-slate-900/60 modal-backdrop"
+        onClick={onClose}
+      />
+      <motion.div
+        initial={{ opacity: 0, y: 18, scale: 0.985 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 18, scale: 0.985 }}
+        transition={PANEL_TRANSITION}
+        className="relative z-10 bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl modal-panel"
       >
         <div className="p-8">
           <div className="flex justify-between items-center mb-6">
@@ -129,12 +140,20 @@ export const PartnerModal = ({ onClose }) => {
 
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 font-sans">
-      <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md" onClick={onClose} />
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        className="relative z-10 bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={OVERLAY_TRANSITION}
+        className="absolute inset-0 bg-slate-900/60 modal-backdrop"
+        onClick={onClose}
+      />
+      <motion.div
+        initial={{ opacity: 0, y: 18, scale: 0.985 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 18, scale: 0.985 }}
+        transition={PANEL_TRANSITION}
+        className="relative z-10 bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl modal-panel"
       >
         <div className="p-8">
           <div className="flex justify-between items-start mb-6">
@@ -255,13 +274,21 @@ export const BriefGeneratorModal = ({ onClose }) => {
 
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 font-sans">
-      <div className="absolute inset-0 bg-slate-900/70 backdrop-blur-md" onClick={onClose} />
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={OVERLAY_TRANSITION}
+        className="absolute inset-0 bg-slate-900/70 modal-backdrop"
+        onClick={onClose}
+      />
 
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.9 }}
-        className="relative z-10 bg-white rounded-[2rem] w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]"
+        initial={{ opacity: 0, y: 18, scale: 0.985 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 18, scale: 0.985 }}
+        transition={PANEL_TRANSITION}
+        className="relative z-10 bg-white rounded-[2rem] w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh] modal-panel"
       >
         <div className="bg-slate-900 p-6 flex justify-between items-center text-white">
           <div className="flex items-center gap-3">
@@ -366,14 +393,16 @@ export const LeadModal = ({ onClose, leadContext }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
+        transition={OVERLAY_TRANSITION}
         onClick={onClose}
-        className="absolute inset-0 bg-slate-900/80 backdrop-blur-md"
+        className="absolute inset-0 bg-slate-900/80 modal-backdrop"
       />
       <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-white rounded-3xl w-full max-w-md relative z-10 p-8 shadow-2xl"
+        initial={{ opacity: 0, y: 18, scale: 0.985 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 18, scale: 0.985 }}
+        transition={PANEL_TRANSITION}
+        className="bg-white rounded-3xl w-full max-w-md relative z-10 p-8 shadow-2xl modal-panel"
       >
         <div className="flex justify-between items-start mb-6">
           <div>

@@ -4,6 +4,17 @@ import { motion, useInView } from "framer-motion";
 const Reveal = ({ children }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.08, margin: "-40px" });
+  const shouldUseLightReveal =
+    typeof window !== "undefined" &&
+    (window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      window.matchMedia("(hover: none), (pointer: coarse)").matches);
+  if (shouldUseLightReveal) {
+    return (
+      <div ref={ref} className="section-reveal is-visible">
+        {children}
+      </div>
+    );
+  }
 
   return (
     <motion.div

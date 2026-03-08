@@ -5,6 +5,9 @@ import { motion } from "framer-motion";
 import { SERVICE_INFO } from "../../data/services";
 import { AC_PRESETS, VENT_PRESETS, pickNearestKW, round1 } from "../../data/presets";
 
+const PANEL_TRANSITION = { duration: 0.22, ease: [0.22, 1, 0.36, 1] };
+const OVERLAY_TRANSITION = { duration: 0.18, ease: "linear" };
+
 export const ServiceInfoModal = ({ serviceKey, onClose, onOpenLead }) => {
   const item = SERVICE_INFO[serviceKey];
   if (!item) return null;
@@ -12,12 +15,20 @@ export const ServiceInfoModal = ({ serviceKey, onClose, onOpenLead }) => {
 
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 font-sans">
-      <div className="absolute inset-0 bg-slate-900/70 backdrop-blur-md" onClick={onClose} />
       <motion.div
-        initial={{ opacity: 0, y: 16, scale: 0.98 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={OVERLAY_TRANSITION}
+        className="absolute inset-0 bg-slate-900/70 modal-backdrop"
+        onClick={onClose}
+      />
+      <motion.div
+        initial={{ opacity: 0, y: 16, scale: 0.985 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 16, scale: 0.98 }}
-        className="relative z-10 bg-white rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl"
+        exit={{ opacity: 0, y: 16, scale: 0.985 }}
+        transition={PANEL_TRANSITION}
+        className="relative z-10 bg-white rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl modal-panel"
       >
         <div className="p-6 md:p-8 border-b border-slate-100 flex items-start justify-between gap-6">
           <div className="flex items-start gap-4">
@@ -127,13 +138,21 @@ export const QuickCalcModal = ({ initialTab = "vent", onClose, onOpenLead }) => 
 
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 font-sans">
-      <div className="absolute inset-0 bg-slate-900/70 backdrop-blur-md" onClick={onClose} />
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={OVERLAY_TRANSITION}
+        className="absolute inset-0 bg-slate-900/70 modal-backdrop"
+        onClick={onClose}
+      />
 
       <motion.div
-        initial={{ opacity: 0, y: 12, scale: 0.98 }}
+        initial={{ opacity: 0, y: 12, scale: 0.985 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 12, scale: 0.98 }}
-        className="relative z-10 bg-white rounded-[2rem] w-full max-w-3xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]"
+        exit={{ opacity: 0, y: 12, scale: 0.985 }}
+        transition={PANEL_TRANSITION}
+        className="relative z-10 bg-white rounded-[2rem] w-full max-w-3xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh] modal-panel"
       >
         <div className="bg-slate-900 p-5 md:p-6 flex justify-between items-center text-white">
           <div className="flex items-center gap-3">
