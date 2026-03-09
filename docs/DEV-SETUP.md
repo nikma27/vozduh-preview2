@@ -38,4 +38,5 @@
 Скопируйте `.env.example` в `.env` и при необходимости задайте:
 
 - `VITE_LEAD_API` — URL вебхука для заявок (n8n)
-- `VITE_GEMINI_API_KEY` — ключ для AI‑генератора ТЗ
+- `VITE_YANDEX_FOLDER_ID` — id каталога Yandex Cloud для YandexGPT
+- `VITE_YANDEX_API_KEY` (или `VITE_YANDEX_IAM_TOKEN`) — авторизация YandexGPT

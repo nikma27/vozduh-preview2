@@ -46,7 +46,7 @@ vozduh-updated-fixed3photo/
 │   │
 │   ├── api/                        # Внешние API
 │   │   ├── leads.js                # postLead() — отправка заявок на VITE_LEAD_API
-│   │   └── gemini.js               # fetchGeminiResponse() — AI-чат (Gemini)
+│   │   └── gemini.js               # fetchGeminiResponse() — AI-чат (YandexGPT, legacy name)
 │   │
 │   ├── data/                       # Константы и справочники
 │   │   ├── solutions.js            # complexSolutions — каталог решений
@@ -90,7 +90,7 @@ vozduh-updated-fixed3photo/
 | `vite.config.js` | → `index.html`, `src/` | Сборка и dev-сервер |
 | `postcss.config.cjs` | → `tailwind.config.cjs` | Обработка CSS |
 | `leads.js` | → `VITE_LEAD_API` (n8n) | Отправка заявок |
-| `gemini.js` | → `VITE_GEMINI_API_KEY` | AI-помощник |
+| `gemini.js` | → `VITE_YANDEX_FOLDER_ID` + (`VITE_YANDEX_API_KEY`/`VITE_YANDEX_IAM_TOKEN`) | AI-помощник |
 
 ## Команды
 

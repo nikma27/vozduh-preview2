@@ -102,7 +102,7 @@ sequenceDiagram
 
     User->>UI: Вопрос в AI-чате
     UI->>API: fetchGeminiResponse(query)
-    API-->>UI: Ответ Gemini
+    API-->>UI: Ответ YandexGPT
     UI-->>User: Отображение ответа
 ```
 
@@ -155,5 +155,5 @@ graph LR
 - **Lucide React** — иконки
 - **Vite** — сборка
 - **Tailwind CSS** — стили
-- **Gemini API** — AI-помощник (опционально)
+- **YandexGPT API** — AI-помощник (опционально)
 - **Lead API** — приём заявок (VITE_LEAD_API)

@@ -14,7 +14,7 @@
 - **Пакетный менеджер:** npm (lockfile: `package-lock.json`).
 - **Линтер и тесты настроены**: доступны скрипты `npm run lint` (ESLint) и `npm run test` (Vitest).
 - **База данных не требуется.**
-- **Переменные окружения:** `VITE_GEMINI_API_KEY` опциональна (AI отключается), `VITE_LEAD_API` для production обязательна (в dev работает demo-режим).
+- **Переменные окружения:** для AI используются `VITE_YANDEX_FOLDER_ID` + (`VITE_YANDEX_API_KEY` или `VITE_YANDEX_IAM_TOKEN`) — опционально; `VITE_LEAD_API` для production обязательна (в dev работает demo-режим).
 - **Сборка:** `npm run build` создаёт выходные файлы в `dist/`.
 - Стандартные команды запуска описаны в `README.md`.
 
