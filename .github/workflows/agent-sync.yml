@@ -4,17 +4,12 @@ on:
   push:
     branches:
       - workflow-init-byb
-      - cursor/workflow-7f49
-    paths-ignore:
-      - "README.md"
-      - "DEPLOY.md"
-      - ".github/workflows/**"
   workflow_dispatch:
     inputs:
       direction:
         description: "Sync direction"
         required: true
-        default: both
+        default: local_to_cloud
         type: choice
         options:
           - local_to_cloud
@@ -34,7 +29,7 @@ jobs:
     name: Sync workflow-init-byb -> cursor/workflow-7f49
     runs-on: ubuntu-latest
     if: >
-      (github.event_name == 'push' && github.ref_name == 'workflow-init-byb' && github.actor != 'github-actions[bot]') ||
+      (github.event_name == 'push' && github.ref_name == 'workflow-init-byb') ||
       (github.event_name == 'workflow_dispatch' && (inputs.direction == 'local_to_cloud' || inputs.direction == 'both'))
     steps:
       - name: Checkout repository
@@ -55,8 +50,8 @@ jobs:
     name: Sync cursor/workflow-7f49 -> workflow-init-byb
     runs-on: ubuntu-latest
     if: >
-      (github.event_name == 'push' && github.ref_name == 'cursor/workflow-7f49' && github.actor != 'github-actions[bot]') ||
-      (github.event_name == 'workflow_dispatch' && (inputs.direction == 'cloud_to_local' || inputs.direction == 'both'))
+      github.event_name == 'workflow_dispatch' &&
+      (inputs.direction == 'cloud_to_local' || inputs.direction == 'both')
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
