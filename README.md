@@ -29,7 +29,7 @@ npm run preview
 GitHub Actions в репозитории выполняет только CI-проверки (`lint`, `test`, `build`).
 
 **Публичные ссылки:**
-- Production: https://vozduh-preview2.vercel.app
+- Production: https://codex53-audit-workflow.vercel.app
 
 ## Переменные окружения (опционально)
 Создай файл `.env`:
