@@ -1,0 +1,63 @@
+name: Agent Branch Sync
+
+on:
+  push:
+    branches:
+      - workflow-init-byb
+      - cursor/workflow-7f49
+  workflow_dispatch:
+    inputs:
+      direction:
+        description: "Sync direction"
+        required: true
+        default: both
+        type: choice
+        options:
+          - local_to_cloud
+          - cloud_to_local
+          - both
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: agent-sync-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sync_local_to_cloud:
+    name: Sync workflow-init-byb -> cursor/workflow-7f49
+    runs-on: ubuntu-latest
+    if: >
+      (github.event_name == 'push' && github.ref_name == 'workflow-init-byb') ||
+      (github.event_name == 'workflow_dispatch' && (inputs.direction == 'local_to_cloud' || inputs.direction == 'both'))
+    steps:
+      - name: Create or update PR local -> cloud
+        uses: repo-sync/pull-request@v2
+        with:
+          source_branch: workflow-init-byb
+          destination_branch: cursor/workflow-7f49
+          pr_title: "chore(sync): workflow-init-byb -> cursor/workflow-7f49"
+          pr_body: |
+            Automated sync PR from local agent branch to cloud agent branch.
+            This keeps both agents aligned without force-push.
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  sync_cloud_to_local:
+    name: Sync cursor/workflow-7f49 -> workflow-init-byb
+    runs-on: ubuntu-latest
+    if: >
+      (github.event_name == 'push' && github.ref_name == 'cursor/workflow-7f49') ||
+      (github.event_name == 'workflow_dispatch' && (inputs.direction == 'cloud_to_local' || inputs.direction == 'both'))
+    steps:
+      - name: Create or update PR cloud -> local
+        uses: repo-sync/pull-request@v2
+        with:
+          source_branch: cursor/workflow-7f49
+          destination_branch: workflow-init-byb
+          pr_title: "chore(sync): cursor/workflow-7f49 -> workflow-init-byb"
+          pr_body: |
+            Automated sync PR from cloud agent branch to local agent branch.
+            This keeps both agents aligned without force-push.
+          github_token: ${{ secrets.GITHUB_TOKEN }}

@@ -34,4 +34,4 @@ GitHub Actions выполняет только CI-проверки (`lint`, `tes
 
 1. Откройте проект в Vercel Dashboard.
 2. Проверьте, что последний deployment имеет статус `Ready`.
-3. Откройте production-домен (например, `https://vozduh-preview2.vercel.app`).
+3. Откройте production-домен (например, `https://codex53-audit-workflow.vercel.app`).
