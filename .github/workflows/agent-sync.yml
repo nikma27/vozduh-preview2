@@ -5,6 +5,10 @@ on:
     branches:
       - workflow-init-byb
       - cursor/workflow-7f49
+    paths-ignore:
+      - "README.md"
+      - "DEPLOY.md"
+      - ".github/workflows/**"
   workflow_dispatch:
     inputs:
       direction:
@@ -30,7 +34,7 @@ jobs:
     name: Sync workflow-init-byb -> cursor/workflow-7f49
     runs-on: ubuntu-latest
     if: >
-      (github.event_name == 'push' && github.ref_name == 'workflow-init-byb') ||
+      (github.event_name == 'push' && github.ref_name == 'workflow-init-byb' && github.actor != 'github-actions[bot]') ||
       (github.event_name == 'workflow_dispatch' && (inputs.direction == 'local_to_cloud' || inputs.direction == 'both'))
     steps:
       - name: Checkout repository
@@ -51,7 +55,7 @@ jobs:
     name: Sync cursor/workflow-7f49 -> workflow-init-byb
     runs-on: ubuntu-latest
     if: >
-      (github.event_name == 'push' && github.ref_name == 'cursor/workflow-7f49') ||
+      (github.event_name == 'push' && github.ref_name == 'cursor/workflow-7f49' && github.actor != 'github-actions[bot]') ||
       (github.event_name == 'workflow_dispatch' && (inputs.direction == 'cloud_to_local' || inputs.direction == 'both'))
     steps:
       - name: Checkout repository
