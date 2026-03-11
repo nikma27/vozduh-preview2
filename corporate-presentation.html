@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Воздух НСК - Корпоративная Презентация</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome для иконок -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F1F5F9;
+            margin: 0;
+            overflow: hidden; /* Запрет скролла всей страницы, скролл только внутри слайда если нужно */
+        }
+
+        /* Плавные переходы для слайдов */
+        .slide {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+            z-index: 10;
+        }
+
+        .slide.prev {
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+
+        /* Маска для первого слайда (вырез) */
+        .circle-mask {
+            clip-path: circle(75% at 100% 50%);
+        }
+    </style>
+</head>
+<body class="flex flex-col h-screen text-slate-800">
+
+    <!-- Header (Верхнее меню) -->
+    <header class="flex justify-between items-center px-4 md:px-8 py-4 md:py-5 bg-white shadow-sm z-20 shrink-0">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-[#2563EB] rounded-full flex items-center justify-center shadow-md">
+                <i class="fa-solid fa-wind text-white text-lg"></i>
+            </div>
+            <span class="text-2xl font-bold tracking-tight text-[#1E293B]">
+                ВОЗДУХ<span class="text-[#2563EB]">НСК</span>
+            </span>
+        </div>
+        
+        <!-- Навигация -->
+        <div class="hidden md:flex gap-10 text-xs font-bold text-slate-400 uppercase tracking-widest">
+            <div class="nav-link transition-colors cursor-pointer text-[#1E3A8A] border-b-2 border-[#2563EB] pb-1" onclick="goToSlide(0)">Главная</div>
+            <div class="nav-link transition-colors cursor-pointer hover:text-slate-600" onclick="goToSlide(1)">Проблематика</div>
+            <div class="nav-link transition-colors cursor-pointer hover:text-slate-600" onclick="goToSlide(2)">Решение</div>
+            <div class="nav-link transition-colors cursor-pointer hover:text-slate-600" onclick="goToSlide(3)">TURKOV</div>
+            <div class="nav-link transition-colors cursor-pointer hover:text-slate-600" onclick="goToSlide(4)">Процесс</div>
+        </div>
+    </header>
+
+    <!-- Главный контейнер (Окно презентации) -->
+    <main class="flex-1 relative bg-white shadow-2xl mx-2 md:mx-12 my-4 md:my-6 rounded-xl overflow-hidden z-10 border border-slate-200">
+        
+        <!-- СЛАЙД 1: ГЛАВНЫЙ -->
+        <div class="slide active absolute inset-0 bg-white flex items-center w-full h-full" id="slide-0">
+            <!-- Фото справа с дугообразным вырезом (чистый CSS) -->
+            <div class="absolute right-0 top-0 w-[50%] h-full bg-slate-100 hidden md:block overflow-hidden">
+                <div class="w-full h-full bg-cover bg-center opacity-80" style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80');"></div>
+                <!-- Огромный белый круг, создающий вырез -->
+                <div class="absolute top-1/2 -left-[50%] -translate-y-1/2 w-[100%] aspect-square bg-white rounded-full"></div>
+            </div>
+            
+            <!-- Синий текстовый блок -->
+            <div class="relative z-10 w-full md:w-[60%] pl-6 md:pl-20 py-10">
+                <div class="bg-[#1E3A8A] p-8 md:p-16 rounded-r-[60px] shadow-2xl relative overflow-hidden">
+                    <!-- Декоративный круг -->
+                    <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-white/10 rounded-full"></div>
+                    
+                    <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight relative z-10">
+                        Корпоративный <br/>
+                        <span class="text-[#60A5FA]">Климат</span>
+                    </h1>
+                    <p class="text-sm lg:text-lg text-blue-100 tracking-widest uppercase font-semibold relative z-10 mb-8">
+                        Инженерные системы под ключ
+                    </p>
+                    <div class="w-24 h-1 bg-[#2563EB] mb-8 relative z-10"></div>
+                    <p class="text-blue-50 font-light max-w-md relative z-10 leading-relaxed text-sm md:text-base">
+                        Проектирование, поставка и монтаж систем вентиляции и кондиционирования в Новосибирске. Умные решения для бизнеса и жизни.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- СЛАЙД 2: ПРОБЛЕМАТИКА -->
+        <div class="slide absolute inset-0 bg-white flex flex-col md:flex-row items-center p-6 md:p-20 overflow-y-auto w-full h-full" id="slide-1">
+            <div class="w-full md:w-1/2 pr-0 md:pr-16 z-10 mb-8 md:mb-0">
+                <h2 class="text-3xl md:text-4xl font-bold text-[#1E3A8A] mb-10">Стандартный подход устарел</h2>
+                <div class="space-y-8">
+                    <div class="flex gap-4">
+                        <div class="w-2 h-2 mt-2 rounded-full bg-red-500 shrink-0"></div>
+                        <div>
+                            <h4 class="text-lg font-bold text-slate-900">Духота и шум</h4>
+                            <p class="text-slate-500 mt-1 text-sm leading-relaxed">Результат подбора оборудования «на глаз» и зауженных воздуховодов. Отсутствие аэродинамического расчета.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-2 h-2 mt-2 rounded-full bg-red-500 shrink-0"></div>
+                        <div>
+                            <h4 class="text-lg font-bold text-slate-900">Космические счета за отопление</h4>
+                            <p class="text-slate-500 mt-1 text-sm leading-relaxed">Установка приточных систем без рекуперации буквально выдувает ваши деньги на улицу зимой.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-2 h-2 mt-2 rounded-full bg-red-500 shrink-0"></div>
+                        <div>
+                            <h4 class="text-lg font-bold text-slate-900">Испорченный ремонт</h4>
+                            <p class="text-slate-500 mt-1 text-sm leading-relaxed">Ошибки монтажа "по месту" без BIM-проекта приводят к конденсату, плесени и пересечениям с трубами.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="w-full md:w-1/2 h-64 md:h-full relative flex items-center justify-center mt-10 md:mt-0">
+                <!-- Декоративные круги -->
+                <div class="absolute right-0 top-10 w-96 h-96 bg-[#F1F5F9] rounded-full hidden md:block"></div>
+                <div class="absolute right-20 bottom-10 w-64 h-64 bg-[#2563EB]/5 rounded-full hidden md:block"></div>
+                
+                <!-- Круглое фото с толстой рамкой -->
+                <div class="relative w-64 h-64 md:w-80 md:h-80 rounded-full border-[12px] border-white shadow-xl overflow-hidden z-10">
+                    <div class="w-full h-full bg-cover bg-center grayscale mix-blend-multiply" style="background-image: url('https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=800&q=80');"></div>
+                </div>
+                
+                <!-- Синяя плашка внахлест -->
+                <div class="absolute bottom-0 md:bottom-1/4 left-0 md:left-10 bg-[#1E3A8A] text-white p-6 rounded-xl shadow-lg z-20 w-48 border-l-4 border-[#2563EB]">
+                    <span class="text-xs uppercase tracking-widest text-blue-300 font-bold block mb-1">Проблема</span>
+                    <span class="text-xl md:text-2xl font-bold leading-tight">90% систем неэффективны</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- СЛАЙД 3: РЕШЕНИЕ -->
+        <div class="slide absolute inset-0 bg-white flex flex-col justify-end overflow-hidden w-full h-full" id="slide-2">
+            <!-- Темно-синий фон внизу -->
+            <div class="absolute bottom-0 left-0 w-full h-[60%] md:h-[55%] bg-[#1E3A8A] rounded-tr-[80px] md:rounded-tr-[120px]"></div>
+            
+            <div class="relative z-10 flex flex-col md:flex-row px-6 md:px-20 gap-8 md:gap-16 mb-10 md:mb-20 h-full md:h-auto pt-10 md:pt-0">
+                <!-- Текст слева над синим -->
+                <div class="flex-1 text-white md:pt-10">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">Комплексный инжиниринг</h2>
+                    <div class="w-16 h-1 bg-[#2563EB] mb-8"></div>
+                    <p class="text-blue-100 leading-relaxed text-sm md:text-lg mb-8">
+                        Мы берем на себя полный цикл создания инженерных систем: от первичного замера и согласования дизайна до финального пуска.
+                    </p>
+                    <ul class="space-y-4">
+                        <li class="flex items-center gap-3 text-sm font-medium"><i class="fa-solid fa-circle-check text-[#60A5FA] text-lg"></i> Трехмерное проектирование (BIM)</li>
+                        <li class="flex items-center gap-3 text-sm font-medium"><i class="fa-solid fa-circle-check text-[#60A5FA] text-lg"></i> Сохранение тепла до 85%</li>
+                        <li class="flex items-center gap-3 text-sm font-medium"><i class="fa-solid fa-circle-check text-[#60A5FA] text-lg"></i> Собственные штатные бригады</li>
+                    </ul>
+                </div>
+
+                <!-- Белая карточка решения внахлест -->
+                <div class="flex-1 bg-white rounded-3xl p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.15)] transform translate-y-0 md:-translate-y-16 border-t-8 border-[#2563EB]">
+                    <div class="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center mb-8">
+                        <i class="fa-solid fa-bullseye text-[#2563EB] text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-[#1E3A8A] mb-4">Математическая точность</h3>
+                    <p class="text-slate-500 leading-relaxed mb-8 text-sm md:text-base">
+                        Мы не делаем "на глаз". Производим строгий аэродинамический расчет, который гарантирует абсолютную тишину, правильный воздухообмен и отсутствие сквозняков в помещениях.
+                    </p>
+                    <button class="px-6 py-3 md:py-4 rounded-full bg-[#1E3A8A] text-white text-sm font-bold uppercase tracking-wider hover:bg-[#2563EB] transition-colors w-full shadow-lg">
+                        Рассчитать проект
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- СЛАЙД 4: ОБОРУДОВАНИЕ -->
+        <div class="slide absolute inset-0 bg-white p-6 md:p-20 flex flex-col justify-center overflow-y-auto w-full h-full" id="slide-3">
+            <div class="mb-10 md:mb-16">
+                <span class="text-[#2563EB] font-bold tracking-widest uppercase text-xs md:text-sm mb-2 block">Оборудование</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-[#1E3A8A]">Флагманские решения TURKOV</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                <!-- Карточка 1 -->
+                <div class="bg-slate-50 rounded-xl p-6 md:p-8 border border-slate-200 relative overflow-hidden hover:shadow-xl transition-shadow">
+                    <div class="absolute top-0 left-0 w-full h-2 bg-[#2563EB]"></div>
+                    <div class="flex justify-between items-center mb-6 mt-2">
+                        <div class="p-3 bg-white shadow-sm rounded-lg">
+                            <i class="fa-solid fa-fire text-[#2563EB] text-xl"></i>
+                        </div>
+                        <span class="text-3xl font-black text-slate-200">85%</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-[#1E3A8A] mb-3">Рекуперация</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">Энтальпийные рекуператоры возвращают тепло и влагу, радикально экономя ваши деньги на отоплении.</p>
+                </div>
+                
+                <!-- Карточка 2 -->
+                <div class="bg-slate-50 rounded-xl p-6 md:p-8 border border-slate-200 relative overflow-hidden hover:shadow-xl transition-shadow">
+                    <div class="absolute top-0 left-0 w-full h-2 bg-[#2563EB]"></div>
+                    <div class="flex justify-between items-center mb-6 mt-2">
+                        <div class="p-3 bg-white shadow-sm rounded-lg">
+                            <i class="fa-solid fa-snowflake text-[#2563EB] text-xl"></i>
+                        </div>
+                        <span class="text-3xl font-black text-slate-200">-35°C</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-[#1E3A8A] mb-3">Стабильность</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">Гарантированная работа установок в сибирские морозы без риска обмерзания и отключений.</p>
+                </div>
+
+                <!-- Карточка 3 -->
+                <div class="bg-slate-50 rounded-xl p-6 md:p-8 border border-slate-200 relative overflow-hidden hover:shadow-xl transition-shadow">
+                    <div class="absolute top-0 left-0 w-full h-2 bg-[#2563EB]"></div>
+                    <div class="flex justify-between items-center mb-6 mt-2">
+                        <div class="p-3 bg-white shadow-sm rounded-lg">
+                            <i class="fa-solid fa-microchip text-[#2563EB] text-xl"></i>
+                        </div>
+                        <span class="text-3xl font-black text-slate-200">Smart</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-[#1E3A8A] mb-3">Автоматика</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">Встроенная умная автоматика, удобное управление со смартфона и интеграция с системами умного дома.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- СЛАЙД 5: ЭТАПЫ -->
+        <div class="slide absolute inset-0 bg-white p-6 md:p-20 flex flex-col justify-center overflow-y-auto w-full h-full" id="slide-4">
+            <div class="text-center mb-10 md:mb-16">
+                <span class="text-[#2563EB] font-bold tracking-widest uppercase text-xs md:text-sm mb-2 block">Этапы</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-[#1E3A8A]">Процесс работы</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+                <!-- Шаг 1 -->
+                <div class="flex flex-col group">
+                    <div class="w-full aspect-[16/9] md:aspect-[4/3] bg-slate-100 relative overflow-hidden mb-4 md:mb-6 rounded-t-xl border-b-4 border-[#2563EB]">
+                        <div class="absolute inset-0 bg-cover bg-center opacity-60 grayscale group-hover:grayscale-0 transition-all duration-500" style="background-image: url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=800&q=80');"></div>
+                        <div class="absolute top-4 left-4 w-12 h-12 bg-white rounded-full flex items-center justify-center font-black text-[#1E3A8A] text-xl shadow-lg z-10">01</div>
+                    </div>
+                    <div class="px-2">
+                        <h3 class="text-xl font-bold text-[#1E3A8A] mb-2">Проектирование</h3>
+                        <p class="text-sm text-slate-500">Разработка 3D BIM-модели, расчет аэродинамики и интеграция с дизайном интерьера.</p>
+                    </div>
+                </div>
+
+                <!-- Шаг 2 -->
+                <div class="flex flex-col group">
+                    <div class="w-full aspect-[16/9] md:aspect-[4/3] bg-slate-100 relative overflow-hidden mb-4 md:mb-6 rounded-t-xl border-b-4 border-[#2563EB]">
+                        <div class="absolute inset-0 bg-cover bg-center opacity-60 grayscale group-hover:grayscale-0 transition-all duration-500" style="background-image: url('https://images.unsplash.com/photo-1580983546535-71708892d6e3?auto=format&fit=crop&w=800&q=80');"></div>
+                        <div class="absolute top-4 left-4 w-12 h-12 bg-white rounded-full flex items-center justify-center font-black text-[#1E3A8A] text-xl shadow-lg z-10">02</div>
+                    </div>
+                    <div class="px-2">
+                        <h3 class="text-xl font-bold text-[#1E3A8A] mb-2">Поставка</h3>
+                        <p class="text-sm text-slate-500">Прямые поставки оборудования по ценам завода-изготовителя со 100% гарантией.</p>
+                    </div>
+                </div>
+
+                <!-- Шаг 3 -->
+                <div class="flex flex-col group">
+                    <div class="w-full aspect-[16/9] md:aspect-[4/3] bg-slate-100 relative overflow-hidden mb-4 md:mb-6 rounded-t-xl border-b-4 border-[#2563EB]">
+                        <div class="absolute inset-0 bg-cover bg-center opacity-60 grayscale group-hover:grayscale-0 transition-all duration-500" style="background-image: url('https://images.unsplash.com/photo-1541888086925-eb99496185bf?auto=format&fit=crop&w=800&q=80');"></div>
+                        <div class="absolute top-4 left-4 w-12 h-12 bg-white rounded-full flex items-center justify-center font-black text-[#1E3A8A] text-xl shadow-lg z-10">03</div>
+                    </div>
+                    <div class="px-2">
+                        <h3 class="text-xl font-bold text-[#1E3A8A] mb-2">Монтаж</h3>
+                        <p class="text-sm text-slate-500">Чистая установка штатными бригадами, пусконаладка и инструктаж заказчика.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Нижняя панель (Футер / Контролы) -->
+    <footer class="flex justify-between items-center px-4 md:px-8 py-4 md:py-5 bg-white border-t border-slate-200 z-20 shrink-0">
+        <div id="counter" class="text-xs font-bold text-slate-400 tracking-widest uppercase">
+            Слайд 1 / 5
+        </div>
+        <div class="flex gap-4">
+            <button id="prevBtn" class="w-12 h-12 flex items-center justify-center rounded-full border border-[#1E3A8A] transition-colors opacity-30 cursor-not-allowed text-[#1E3A8A]">
+                <i class="fa-solid fa-chevron-left text-sm"></i>
+            </button>
+            <button id="nextBtn" class="w-12 h-12 flex items-center justify-center rounded-full bg-[#2563EB] text-white hover:bg-[#1E3A8A] transition-colors shadow-lg shadow-blue-500/30 cursor-pointer">
+                <i class="fa-solid fa-chevron-right text-sm"></i>
+            </button>
+        </div>
+    </footer>
+
+    <!-- Скрипт переключения (Ванильный JS) -->
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const counter = document.getElementById('counter');
+        const totalSlides = slides.length;
+        
+        let currentSlide = 0;
+
+        function updateSlider() {
+            // Обновляем слайды
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active', 'prev');
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                } else if (index < currentSlide) {
+                    slide.classList.add('prev');
+                }
+            });
+
+            // Обновляем навигацию в шапке
+            navLinks.forEach((link, index) => {
+                if (index === currentSlide) {
+                    link.className = 'nav-link transition-colors cursor-pointer text-[#1E3A8A] border-b-2 border-[#2563EB] pb-1';
+                } else {
+                    link.className = 'nav-link transition-colors cursor-pointer hover:text-slate-600 text-slate-400';
+                }
+            });
+
+            // Обновляем счетчик
+            counter.innerText = `Слайд ${currentSlide + 1} / ${totalSlides}`;
+
+            // Обновляем состояние кнопок
+            if (currentSlide === 0) {
+                prevBtn.className = 'w-12 h-12 flex items-center justify-center rounded-full border border-[#1E3A8A] transition-colors opacity-30 cursor-not-allowed text-[#1E3A8A]';
+                prevBtn.disabled = true;
+            } else {
+                prevBtn.className = 'w-12 h-12 flex items-center justify-center rounded-full border border-[#1E3A8A] text-[#1E3A8A] hover:bg-slate-50 transition-colors cursor-pointer';
+                prevBtn.disabled = false;
+            }
+
+            if (currentSlide === totalSlides - 1) {
+                nextBtn.className = 'w-12 h-12 flex items-center justify-center rounded-full bg-[#2563EB] text-white transition-colors opacity-30 cursor-not-allowed';
+                nextBtn.disabled = true;
+            } else {
+                nextBtn.className = 'w-12 h-12 flex items-center justify-center rounded-full bg-[#2563EB] text-white hover:bg-[#1E3A8A] transition-colors shadow-lg shadow-blue-500/30 cursor-pointer';
+                nextBtn.disabled = false;
+            }
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateSlider();
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlider();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlider();
+            }
+        });
+
+        // Инициализация
+        updateSlider();
+    </script>
+</body>
+</html>
