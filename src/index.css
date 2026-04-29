@@ -5,13 +5,8 @@
 @tailwind components;
 @tailwind utilities;
 
-html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
   .marquee-track { animation: none; }
-}
-@media (hover: none), (pointer: coarse) {
-  html { scroll-behavior: auto; }
 }
 ::-webkit-scrollbar { display: none !important; width: 0; height: 0; }
 html, body { -ms-overflow-style: none; scrollbar-width: none; }
@@ -133,13 +128,14 @@ body { font-weight: 300; }
   transform: translateZ(0);
 }
 
-/* На мобильных уменьшаем blur для производительности */
+/* На мобильных отключаем backdrop-filter для производительности */
 @media (max-width: 768px) {
-  .backdrop-blur-md { -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
-  .backdrop-blur-xl { -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+  .backdrop-blur-sm { -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .backdrop-blur-md { -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .backdrop-blur-xl { -webkit-backdrop-filter: none; backdrop-filter: none; }
   .modal-backdrop {
-    -webkit-backdrop-filter: blur(3px);
-    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 }
 

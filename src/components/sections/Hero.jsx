@@ -10,6 +10,7 @@ const Hero = ({ onOpenCalc, onOpenAssistant, onOpenBrief }) => (
         className="w-full h-full object-cover hero-bg-img md:object-center"
         alt="Background"
         decoding="async"
+        loading="lazy"
       />
     </div>
     <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/70 to-transparent" />
