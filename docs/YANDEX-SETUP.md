@@ -29,18 +29,19 @@
 В `.env` основного проекта добавь:
 
 ```env
-VITE_YANDEX_FOLDER_ID=b1gxxxxxxxxxxxxxxxxxx
-VITE_YANDEX_API_KEY=AQVNxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+YANDEX_FOLDER_ID=b1gxxxxxxxxxxxxxxxxxx
+YANDEX_API_KEY=AQVNxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 # или вместо API key:
-# VITE_YANDEX_IAM_TOKEN=t1.xxxxxxxxx
+# YANDEX_IAM_TOKEN=t1.xxxxxxxxx
 # модель (опционально):
-# VITE_YANDEX_GPT_MODEL=yandexgpt-lite
+# YANDEX_GPT_MODEL=yandexgpt-lite
 ```
 
 ## 3. Где используется в проекте
 
-- `src/api/gemini.js` - вызов Yandex GPT API (историческое имя файла сохранено).
-- AI-консультант и AI-генератор ТЗ в интерфейсе сайта используют этот API-слой.
+- `api/yandexgpt.js` — серверный прокси к YandexGPT (секреты остаются на сервере).
+- `src/api/gemini.js` — клиентская обёртка, обращается к `/api/yandexgpt`.
+- AI-консультант и AI-генератор ТЗ в интерфейсе сайта используют этот слой.
 
 ## 4. Модели Yandex GPT
 
@@ -62,8 +63,8 @@ VITE_YANDEX_API_KEY=AQVNxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 При деплое сайта (Vercel/другая платформа) добавь переменные окружения:
 
-- `VITE_YANDEX_FOLDER_ID`
-- `VITE_YANDEX_API_KEY` (или `VITE_YANDEX_IAM_TOKEN`)
+- `YANDEX_FOLDER_ID`
+- `YANDEX_API_KEY` (или `YANDEX_IAM_TOKEN`)
 
 Секреты не должны попадать в git.
 

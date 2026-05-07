@@ -1,6 +1,6 @@
 ## Инструкции для Cursor Cloud
 
-Это одностраничное приложение (SPA) на Vite + React + Tailwind CSS для компании по климатическому оборудованию («Воздух НСК»). Бэкенда нет — фронтенд полностью без состояния.
+Это одностраничное приложение (SPA) на Vite + React + Tailwind CSS для компании по климатическому оборудованию («Воздух НСК»). Для AI используется серверный прокси `/api/yandexgpt` (serverless-функция).
 
 ### Сервисы
 
@@ -14,7 +14,7 @@
 - **Пакетный менеджер:** npm (lockfile: `package-lock.json`).
 - **Линтер и тесты настроены**: доступны скрипты `npm run lint` (ESLint) и `npm run test` (Vitest).
 - **База данных не требуется.**
-- **Переменные окружения:** для AI используются `VITE_YANDEX_FOLDER_ID` + (`VITE_YANDEX_API_KEY` или `VITE_YANDEX_IAM_TOKEN`) — опционально; `VITE_LEAD_API` для production обязательна (в dev работает demo-режим).
+- **Переменные окружения:** `VITE_LEAD_API` для production обязательна (в dev работает demo-режим); для AI используются серверные `YANDEX_FOLDER_ID` + (`YANDEX_API_KEY` или `YANDEX_IAM_TOKEN`).
 - **Сборка:** `npm run build` создаёт выходные файлы в `dist/`.
 - Стандартные команды запуска описаны в `README.md`.
 

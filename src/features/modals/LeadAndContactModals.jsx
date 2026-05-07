@@ -11,19 +11,21 @@ const OVERLAY_TRANSITION = { duration: 0.18, ease: "linear" };
 export const ContactModal = ({ onClose, title = "Оставить заявку" }) => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (loading) return;
+    setError("");
     setLoading(true);
     try {
       await postLead({ type: "contact", context: title, name, phone });
       setSubmitted(true);
       setTimeout(onClose, 1600);
     } catch {
-      alert("Не удалось отправить заявку. Попробуйте ещё раз.");
+      setError("Не удалось отправить заявку. Попробуйте ещё раз.");
     } finally {
       setLoading(false);
     }
@@ -85,6 +87,11 @@ export const ContactModal = ({ onClose, title = "Оставить заявку" 
               >
                 {loading ? "Отправляем..." : "Жду звонка"}
               </button>
+              {error && (
+                <p role="alert" className="text-xs text-red-600 text-center">
+                  {error}
+                </p>
+              )}
               <p className="text-[10px] text-center text-slate-500">
                 Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности
               </p>
@@ -107,12 +114,14 @@ export const PartnerModal = ({ onClose }) => {
   });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const setField = (k, v) => setForm((p) => ({ ...p, [k]: v }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (loading) return;
+    setError("");
     setLoading(true);
     try {
       await postLead({
@@ -125,7 +134,7 @@ export const PartnerModal = ({ onClose }) => {
       setSubmitted(true);
       setTimeout(onClose, 1800);
     } catch {
-      alert("Не удалось отправить анкету. Попробуйте ещё раз.");
+      setError("Не удалось отправить анкету. Попробуйте ещё раз.");
     } finally {
       setLoading(false);
     }
@@ -227,6 +236,11 @@ export const PartnerModal = ({ onClose }) => {
               >
                 {loading ? "Отправляем..." : "Отправить анкету"}
               </button>
+              {error && (
+                <p role="alert" className="text-xs text-red-600 text-center">
+                  {error}
+                </p>
+              )}
             </form>
           )}
         </div>
@@ -241,6 +255,7 @@ export const BriefGeneratorModal = ({ onClose }) => {
   const [formData, setFormData] = useState({ type: "", area: "", height: "", people: "" });
   const [generatedBrief, setGeneratedBrief] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const onKeyDown = (e) => {
@@ -258,6 +273,7 @@ export const BriefGeneratorModal = ({ onClose }) => {
   }, [onClose]);
 
   const handleGenerate = async () => {
+    setError("");
     setIsLoading(true);
     const prompt = `Составь ТЗ на вентиляцию. Объект: ${formData.type}, Площадь: ${formData.area}м2, Высота потолков: ${formData.height}м, Количество людей: ${formData.people}. Кратко и профессионально.`;
     const systemPrompt = "Ты — ведущий инженер-проектировщик систем ОВиК.";
@@ -265,8 +281,8 @@ export const BriefGeneratorModal = ({ onClose }) => {
       const response = await fetchGeminiResponse(prompt, systemPrompt);
       setGeneratedBrief(response);
       setStep(2);
-    } catch (error) {
-      console.error(error);
+    } catch {
+      setError("Не удалось сформировать ТЗ. Попробуйте ещё раз.");
     } finally {
       setIsLoading(false);
     }
@@ -342,6 +358,11 @@ export const BriefGeneratorModal = ({ onClose }) => {
               >
                 {isLoading ? <Loader2 className="animate-spin" /> : "Сформировать черновик ТЗ"}
               </button>
+              {error && (
+                <p role="alert" className="text-xs text-red-600 text-center">
+                  {error}
+                </p>
+              )}
             </div>
           ) : (
             <div className="space-y-6">
@@ -369,19 +390,21 @@ export const LeadModal = ({ onClose, leadContext }) => {
   const ctx = typeof leadContext === "string" ? leadContext : leadContext?.context ?? "";
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [name, setName] = useState(typeof leadContext === "object" ? (leadContext?.name ?? "") : "");
   const [phone, setPhone] = useState(typeof leadContext === "object" ? (leadContext?.phone ?? "") : "");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (loading) return;
+    setError("");
     setLoading(true);
     try {
       await postLead({ type: "lead", context: ctx, name, phone });
       setSubmitted(true);
       setTimeout(onClose, 1600);
     } catch {
-      alert("Не удалось отправить заявку. Попробуйте ещё раз.");
+      setError("Не удалось отправить заявку. Попробуйте ещё раз.");
     } finally {
       setLoading(false);
     }
@@ -452,6 +475,11 @@ export const LeadModal = ({ onClose, leadContext }) => {
             >
               {loading ? "Отправляем..." : "Запросить подбор"}
             </button>
+            {error && (
+              <p role="alert" className="text-xs text-red-600 text-center">
+                {error}
+              </p>
+            )}
             <p className="text-[10px] text-center text-slate-500">
               Нажимая кнопку, вы подтверждаете отправку данных
             </p>

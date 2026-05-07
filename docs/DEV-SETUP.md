@@ -38,5 +38,5 @@
 Скопируйте `.env.example` в `.env` и при необходимости задайте:
 
 - `VITE_LEAD_API` — URL вебхука для заявок (n8n)
-- `VITE_YANDEX_FOLDER_ID` — id каталога Yandex Cloud для YandexGPT
-- `VITE_YANDEX_API_KEY` (или `VITE_YANDEX_IAM_TOKEN`) — авторизация YandexGPT
+- `YANDEX_FOLDER_ID` — id каталога Yandex Cloud для YandexGPT (серверная переменная)
+- `YANDEX_API_KEY` (или `YANDEX_IAM_TOKEN`) — авторизация YandexGPT (серверная переменная)

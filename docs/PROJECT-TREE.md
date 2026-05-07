@@ -29,15 +29,15 @@ vozduh-updated-fixed3photo/
 │   │   ├── photo_10_2026-03-02_12-37-33.jpg
 │   │   ├── photo_5_2026-03-02_12-38-04.jpg
 │   │   └── turkov-bg.png
-│   ├── nashi/                      # Фото «Наши работы» (~60 файлов)
+│   ├── nashi/                      # Фото «Наши работы»
 │   ├── turkov-catalogue-images/    # Изображения каталога TURKOV
 │   │   ├── Cover_bg_8.webp
 │   │   └── turkov-img-*.jpg
 │   ├── icons/                      # SVG-иконки (ветер, термометр, и т.д.)
 │   └── articles/                   # Иллюстрации к статьям
 │
-├── scripts/
-│   └── extract-pdf-images.js      # Утилита извлечения изображений из PDF
+├── api/
+│   └── yandexgpt.js                 # Serverless proxy к YandexGPT (серверные env YANDEX_*)
 │
 ├── src/
 │   ├── main.jsx                    # Точка входа: монтирует React в #root
@@ -46,7 +46,7 @@ vozduh-updated-fixed3photo/
 │   │
 │   ├── api/                        # Внешние API
 │   │   ├── leads.js                # postLead() — отправка заявок на VITE_LEAD_API
-│   │   └── gemini.js               # fetchGeminiResponse() — AI-чат (YandexGPT, legacy name)
+│   │   └── gemini.js               # fetchGeminiResponse() — AI-чат через /api/yandexgpt
 │   │
 │   ├── data/                       # Константы и справочники
 │   │   ├── solutions.js            # complexSolutions — каталог решений
@@ -90,7 +90,7 @@ vozduh-updated-fixed3photo/
 | `vite.config.js` | → `index.html`, `src/` | Сборка и dev-сервер |
 | `postcss.config.cjs` | → `tailwind.config.cjs` | Обработка CSS |
 | `leads.js` | → `VITE_LEAD_API` (n8n) | Отправка заявок |
-| `gemini.js` | → `VITE_YANDEX_FOLDER_ID` + (`VITE_YANDEX_API_KEY`/`VITE_YANDEX_IAM_TOKEN`) | AI-помощник |
+| `gemini.js` | → `/api/yandexgpt` + `YANDEX_*` env | AI-помощник |
 
 ## Команды
 
