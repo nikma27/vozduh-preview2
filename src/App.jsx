@@ -30,14 +30,35 @@ import BackToTop from "./shared/ui/BackToTop";
 import Reveal from "./shared/ui/Reveal";
 import useCalcUrlSync from "./shared/hooks/useCalcUrlSync";
 import useLockBodyScroll from "./shared/hooks/useLockBodyScroll";
-import useModalManager from "./shared/hooks/useModalManager";
 
 function MainSite() {
-  const modalManager = useModalManager();
+  const [activeSolution, setActiveSolution] = useState(null);
+  const [activeTurkovCategory, setActiveTurkovCategory] = useState(null);
+  const [turkovCatalogOpen, setTurkovCatalogOpen] = useState(false);
+  const [leadContext, setLeadContext] = useState(null);
+  const [modalState, setModalState] = useState(null);
+  const [activeService, setActiveService] = useState(null);
   const [assistantOpenSignal, setAssistantOpenSignal] = useState(0);
   const { calcOpen, calcTab, openCalc, closeCalc } = useCalcUrlSync();
 
-  useLockBodyScroll(Boolean(modalManager.modalOpen || calcOpen));
+  const modalOpen =
+    turkovCatalogOpen ||
+    activeTurkovCategory ||
+    modalState ||
+    leadContext ||
+    activeSolution ||
+    activeService ||
+    calcOpen;
+
+  useLockBodyScroll(Boolean(modalOpen));
+
+  const openContact = () => setModalState("contact");
+  const openPartner = () => setModalState("partner");
+  const openBrief = () => setModalState("brief");
+  const openLead = (ctx, prefill) =>
+    setLeadContext(prefill ? { context: ctx, ...prefill } : ctx);
+
+  const openService = (key) => setActiveService(key);
 
   const openAssistant = () => {
     setAssistantOpenSignal((prev) => prev + 1);
@@ -50,22 +71,18 @@ function MainSite() {
       transition={{ duration: 0.6 }}
       className="font-sans text-slate-800 antialiased bg-white selection:bg-blue-200 selection:text-blue-900 overflow-x-hidden"
     >
-      <Navbar onOpenContact={modalManager.openContact} />
-      <Hero
-        onOpenCalc={openCalc}
-        onOpenAssistant={openAssistant}
-        onOpenBrief={modalManager.openBrief}
-      />
+      <Navbar onOpenContact={openContact} />
+      <Hero onOpenCalc={openCalc} onOpenAssistant={openAssistant} onOpenBrief={openBrief} />
 
       <Reveal>
-        <Catalog onOpenSolution={modalManager.openSolution} />
+        <Catalog onOpenSolution={setActiveSolution} />
       </Reveal>
 
       <Reveal>
         <TurkovPromo
-          onOpenCategory={modalManager.openTurkovCategory}
-          onOpenLead={modalManager.openLead}
-          onOpenTurkovCatalog={modalManager.openTurkovCatalog}
+          onOpenCategory={setActiveTurkovCategory}
+          onOpenLead={openLead}
+          onOpenTurkovCatalog={() => setTurkovCatalogOpen(true)}
         />
       </Reveal>
 
@@ -79,22 +96,22 @@ function MainSite() {
 
       <Reveal>
         <WhyChooseUsSection
-          onOpenService={modalManager.openService}
-          onOpenBrief={modalManager.openBrief}
-          onOpenLead={modalManager.openLead}
+          onOpenService={openService}
+          onOpenBrief={openBrief}
+          onOpenLead={openLead}
         />
       </Reveal>
 
       <Reveal>
-        <PartnersSection onOpenPartner={modalManager.openPartner} />
+        <PartnersSection onOpenPartner={openPartner} />
       </Reveal>
 
       <Reveal>
         <ContactForm
-          onOpenLead={modalManager.openLead}
-          onOpenContact={modalManager.openContact}
+          onOpenLead={openLead}
+          onOpenContact={openContact}
           onOpenAssistant={openAssistant}
-          onOpenBrief={modalManager.openBrief}
+          onOpenBrief={openBrief}
         />
       </Reveal>
 
@@ -108,37 +125,39 @@ function MainSite() {
 
       <BackToTop />
 
-      <ClimateAssistant openSignal={assistantOpenSignal} onOpenBrief={modalManager.openBrief} />
+      <ClimateAssistant openSignal={assistantOpenSignal} onOpenBrief={openBrief} />
 
       <AnimatePresence>
-        {modalManager.modal?.kind === "solution" && (
+        {activeSolution && (
           <SolutionDetailModal
-            solution={modalManager.modal.solution}
-            onClose={modalManager.closeModal}
-            onOpenLead={modalManager.openLead}
+            solution={activeSolution}
+            onClose={() => setActiveSolution(null)}
+            onOpenLead={openLead}
           />
         )}
-        {modalManager.modal?.kind === "turkovCatalog" && (
+        {turkovCatalogOpen && (
           <TurkovCatalogModal
-            onClose={modalManager.closeTurkovCatalog}
-            onOpenCategory={modalManager.openTurkovCategory}
+            onClose={() => setTurkovCatalogOpen(false)}
+            onOpenCategory={(item) => {
+              setTurkovCatalogOpen(false);
+              setActiveTurkovCategory(item);
+            }}
           />
         )}
-        {modalManager.modal?.kind === "turkovCategory" && (
+        {activeTurkovCategory && (
           <TurkovCategoryModal
-            category={modalManager.modal.category}
-            onClose={modalManager.closeTurkovCategory}
-            onOpenLead={modalManager.openLead}
+            category={activeTurkovCategory}
+            onClose={() => {
+              setActiveTurkovCategory(null);
+              setTurkovCatalogOpen(true);
+            }}
+            onOpenLead={openLead}
           />
         )}
-        {modalManager.modal?.kind === "lead" && (
-          <LeadModal leadContext={modalManager.modal.leadContext} onClose={modalManager.closeModal} />
-        )}
-        {modalManager.modal?.kind === "partner" && <PartnerModal onClose={modalManager.closeModal} />}
-        {modalManager.modal?.kind === "contact" && <ContactModal onClose={modalManager.closeModal} />}
-        {modalManager.modal?.kind === "brief" && (
-          <BriefGeneratorModal onClose={modalManager.closeModal} />
-        )}
+        {leadContext && <LeadModal leadContext={leadContext} onClose={() => setLeadContext(null)} />}
+        {modalState === "partner" && <PartnerModal onClose={() => setModalState(null)} />}
+        {modalState === "contact" && <ContactModal onClose={() => setModalState(null)} />}
+        {modalState === "brief" && <BriefGeneratorModal onClose={() => setModalState(null)} />}
 
         {calcOpen && (
           <QuickCalcModal
@@ -147,16 +166,19 @@ function MainSite() {
             onClose={closeCalc}
             onOpenLead={(ctx) => {
               closeCalc();
-              modalManager.openLead(ctx);
+              openLead(ctx);
             }}
           />
         )}
 
-        {modalManager.modal?.kind === "service" && (
+        {activeService && (
           <ServiceInfoModal
-            serviceKey={modalManager.modal.serviceKey}
-            onClose={modalManager.closeModal}
-            onOpenLead={modalManager.openLead}
+            serviceKey={activeService}
+            onClose={() => setActiveService(null)}
+            onOpenLead={(ctx) => {
+              setActiveService(null);
+              openLead(ctx);
+            }}
           />
         )}
       </AnimatePresence>
