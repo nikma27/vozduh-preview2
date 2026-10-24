@@ -14,6 +14,7 @@ export const complexSolutions = [
       "Комфортная прохлада без сквозняков: тихие инверторные системы и аккуратная интеграция в интерьер.",
     image:
       "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1600&q=80",
+    fallbackImage: "/photos/ac-apartment-wide.jpg",
     details: [
       {
         title: "Инверторные системы",
@@ -47,6 +48,7 @@ export const complexSolutions = [
       "Свежий воздух 24/7 при закрытых окнах. Фильтрация пыли, аллергенов и контроль CO₂.",
     image:
       "https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?auto=format&fit=crop&w=1600&q=80",
+    fallbackImage: "/photos/home-vent-diffuser.jpg",
     details: [
       {
         title: "Бризеры",
@@ -134,6 +136,7 @@ export const complexSolutions = [
       "Офисы, отели, торговые залы: энергоэффективность и централизованное управление.",
     image:
       "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1600&q=80",
+    fallbackImage: "/photos/engineering-room-wide.jpg",
     details: [
       {
         title: "VRF/VRV",
@@ -192,6 +195,7 @@ export const complexSolutions = [
       "Технологическое охлаждение оборудования и складов. Мегаваттные мощности.",
     image:
       "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&w=1600&q=80",
+    fallbackImage: "/photos/industrial-gallery.jpg",
     details: [
       {
         title: "Модульные чиллеры",

@@ -24,6 +24,7 @@ import { motion } from "framer-motion";
 import { complexSolutions } from "../../data/solutions";
 import { formatPhoneInput } from "../../api/leads";
 import { formatPhoneInput } from "../../api/leads";
+import { formatPhoneInput } from "../../api/leads";
 
 export const TurkovPromo = ({ onOpenLead, onOpenTurkovCatalog }) => (
   <section
@@ -177,6 +178,12 @@ export const Catalog = ({ onOpenSolution }) => {
             >
               <img
                 src={item.image}
+                onError={(e) => {
+                  const fb = item.fallbackImage || "/photos/engineering-room-wide.jpg";
+                  if (!e.currentTarget.src.endsWith(fb)) {
+                    e.currentTarget.src = fb;
+                  }
+                }}
                 className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 md:duration-700 group-hover:scale-110"
                 alt={item.title}
                 loading="lazy"

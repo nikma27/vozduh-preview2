@@ -57,7 +57,17 @@ const SolutionDetailModal = ({ solution, onClose, onOpenLead }) => {
         className="bg-white w-full max-w-5xl md:rounded-[2.5rem] relative z-10 overflow-hidden shadow-2xl flex flex-col md:flex-row h-full md:h-[80vh] max-h-[900px]"
       >
         <div className="md:w-5/12 relative h-64 md:h-auto overflow-hidden flex-shrink-0">
-          <img src={solution.image} className="w-full h-full object-cover" alt={solution.title} />
+          <img
+            src={solution.image}
+            onError={(e) => {
+              const fb = solution.fallbackImage || "/photos/engineering-room-wide.jpg";
+              if (!e.currentTarget.src.endsWith(fb)) {
+                e.currentTarget.src = fb;
+              }
+            }}
+            className="w-full h-full object-cover"
+            alt={solution.title}
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent" />
           <div className="absolute bottom-10 left-10 text-white">
             <Icon size={40} className="mb-4 opacity-50" />
@@ -70,7 +80,12 @@ const SolutionDetailModal = ({ solution, onClose, onOpenLead }) => {
             <span className="text-xs font-normal text-blue-600 uppercase tracking-widest">
               Инженерное решение
             </span>
-            <button onClick={onClose} type="button" className="p-2 hover:bg-slate-50 rounded-full">
+            <button
+              onClick={onClose}
+              type="button"
+              aria-label="Закрыть"
+              className="p-2 hover:bg-slate-50 rounded-full"
+            >
               <X size={24} />
             </button>
           </div>
@@ -165,7 +180,12 @@ const TurkovCategoryModal = ({ category, onClose, onOpenLead }) => {
         <div className="p-6 md:p-10 overflow-y-auto max-h-[70vh]">
           <div className="flex justify-between items-center mb-6">
             <span className="text-xs font-normal text-blue-600 uppercase tracking-widest">TURKOV</span>
-            <button onClick={onClose} type="button" className="p-2 hover:bg-slate-50 rounded-full">
+            <button
+              onClick={onClose}
+              type="button"
+              aria-label="Закрыть"
+              className="p-2 hover:bg-slate-50 rounded-full"
+            >
               <X size={24} />
             </button>
           </div>
@@ -276,6 +296,7 @@ const TurkovCatalogModal = ({ onClose, onOpenCategory }) =>
         <button
           type="button"
           onClick={onClose}
+          aria-label="Закрыть"
           className="absolute top-2 right-2 sm:top-3 sm:right-3 z-20 p-1.5 rounded-lg bg-blue-500/20 hover:bg-blue-500/30 text-white transition-colors"
         >
           <X size={18} />
@@ -398,6 +419,33 @@ function MainSite() {
       sp.delete("tab");
     });
   };
+
+  useEffect(() => {
+    if (!modalOpen) return;
+    const onKeyDown = (e) => {
+      if (e.key !== "Escape") return;
+      if (leadContext) setLeadContext(null);
+      else if (modalState) setModalState(null);
+      else if (calcOpen) closeCalc();
+      else if (activeService) setActiveService(null);
+      else if (activeTurkovCategory) {
+        setActiveTurkovCategory(null);
+        setTurkovCatalogOpen(true);
+      } else if (turkovCatalogOpen) setTurkovCatalogOpen(false);
+      else if (activeSolution) setActiveSolution(null);
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [
+    modalOpen,
+    leadContext,
+    modalState,
+    calcOpen,
+    activeService,
+    activeTurkovCategory,
+    turkovCatalogOpen,
+    activeSolution,
+  ]);
 
   const openAssistant = () => {
     setAssistantOpenSignal((prev) => prev + 1);
