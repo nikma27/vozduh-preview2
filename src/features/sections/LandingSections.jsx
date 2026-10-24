@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { complexSolutions } from "../../data/solutions";
+import { formatPhoneInput } from "../../api/leads";
 
 export const TurkovPromo = ({ onOpenLead, onOpenTurkovCatalog }) => (
   <section
@@ -514,7 +515,7 @@ export const ContactForm = ({ onOpenLead, onOpenContact, onOpenAssistant, onOpen
                   type="tel"
                   placeholder="Телефон"
                   value={formPhone}
-                  onChange={(e) => setFormPhone(e.target.value)}
+                  onChange={(e) => setFormPhone(formatPhoneInput(e.target.value))}
                   required
                   className="w-full p-5 bg-white/5 rounded-2xl border border-white/10 outline-none focus:border-blue-500 transition-all font-normal"
                 />

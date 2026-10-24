@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { CheckCircle2, Loader2, Sparkles, X } from "lucide-react";
 import { motion } from "framer-motion";
-import { postLead } from "../../api/leads";
+import { formatPhoneInput, isValidPhone, postLead } from "../../api/leads";
 import { fetchGeminiResponse } from "../../api/gemini";
 
 const PANEL_TRANSITION = { duration: 0.22, ease: [0.22, 1, 0.36, 1] };
@@ -13,17 +13,26 @@ export const ContactModal = ({ onClose, title = "Оставить заявку" 
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [hp, setHp] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (loading) return;
+    setErrorMsg("");
+
+    if (!isValidPhone(phone)) {
+      setErrorMsg("Введите корректный номер телефона (+7 и 10 цифр).");
+      return;
+    }
+
     setLoading(true);
     try {
-      await postLead({ type: "contact", context: title, name, phone });
+      await postLead({ type: "contact", context: title, name: name.trim(), phone, hp });
       setSubmitted(true);
       setTimeout(onClose, 1600);
     } catch {
-      alert("Не удалось отправить заявку. Попробуйте ещё раз.");
+      setErrorMsg("Не удалось отправить заявку. Попробуйте ещё раз.");
     } finally {
       setLoading(false);
     }
@@ -64,6 +73,16 @@ export const ContactModal = ({ onClose, title = "Оставить заявку" 
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <input
+                type="text"
+                name="website"
+                value={hp}
+                onChange={(e) => setHp(e.target.value)}
+                tabIndex={-1}
+                autoComplete="off"
+                className="hidden"
+                aria-hidden="true"
+              />
+              <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 type="text"
@@ -73,12 +92,18 @@ export const ContactModal = ({ onClose, title = "Оставить заявку" 
               />
               <input
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={(e) => {
+                  setPhone(formatPhoneInput(e.target.value));
+                  if (errorMsg) setErrorMsg("");
+                }}
                 type="tel"
                 required
                 placeholder="+7 (___) ___-__-__"
                 className="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 font-normal text-user-msg"
               />
+              {errorMsg && (
+                <p className="text-xs text-red-600 font-normal">{errorMsg}</p>
+              )}
               <button
                 disabled={loading}
                 className="w-full py-4 bg-slate-900 text-white rounded-xl font-normal disabled:opacity-60"
@@ -105,6 +130,8 @@ export const PartnerModal = ({ onClose }) => {
     role: "designer",
     activity: "",
   });
+  const [hp, setHp] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -113,19 +140,27 @@ export const PartnerModal = ({ onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (loading) return;
+    setErrorMsg("");
+
+    if (!isValidPhone(form.phone)) {
+      setErrorMsg("Введите корректный номер телефона (+7 и 10 цифр).");
+      return;
+    }
+
     setLoading(true);
     try {
       await postLead({
         type: "partner",
         context: "Анкета партнера",
-        name: form.fio,
+        name: form.fio.trim(),
         phone: form.phone,
         payload: form,
+        hp,
       });
       setSubmitted(true);
       setTimeout(onClose, 1800);
     } catch {
-      alert("Не удалось отправить анкету. Попробуйте ещё раз.");
+      setErrorMsg("Не удалось отправить анкету. Попробуйте ещё раз.");
     } finally {
       setLoading(false);
     }
@@ -178,6 +213,16 @@ export const PartnerModal = ({ onClose }) => {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
+              <input
+                type="text"
+                name="website"
+                value={hp}
+                onChange={(e) => setHp(e.target.value)}
+                tabIndex={-1}
+                autoComplete="off"
+                className="hidden"
+                aria-hidden="true"
+              />
               <div className="grid grid-cols-2 gap-2">
                 {roles.map(([key, label]) => (
                   <button
@@ -215,11 +260,17 @@ export const PartnerModal = ({ onClose }) => {
               <input
                 type="tel"
                 required
-                placeholder="Телефон"
+                placeholder="+7 (___) ___-__-__"
                 className="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 text-user-msg"
                 value={form.phone}
-                onChange={(e) => setField("phone", e.target.value)}
+                onChange={(e) => {
+                  setField("phone", formatPhoneInput(e.target.value));
+                  if (errorMsg) setErrorMsg("");
+                }}
               />
+              {errorMsg && (
+                <p className="text-xs text-red-600 font-normal">{errorMsg}</p>
+              )}
               <button
                 type="submit"
                 disabled={loading}
@@ -247,13 +298,8 @@ export const BriefGeneratorModal = ({ onClose }) => {
       if (e.key === "Escape") onClose();
     };
     document.addEventListener("keydown", onKeyDown);
-
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
     return () => {
       document.removeEventListener("keydown", onKeyDown);
-      document.body.style.overflow = prevOverflow;
     };
   }, [onClose]);
 
@@ -310,24 +356,28 @@ export const BriefGeneratorModal = ({ onClose }) => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <input
                   type="text"
+                  value={formData.type}
                   className="p-4 bg-slate-50 rounded-xl border-none outline-none focus:ring-2 focus:ring-blue-500 text-user-msg"
                   placeholder="Тип объекта (Кафе, офис...)"
                   onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                 />
                 <input
                   type="number"
+                  value={formData.area}
                   className="p-4 bg-slate-50 rounded-xl border-none outline-none focus:ring-2 focus:ring-blue-500 text-user-msg"
                   placeholder="Площадь (м2)"
                   onChange={(e) => setFormData({ ...formData, area: e.target.value })}
                 />
                 <input
                   type="number"
+                  value={formData.height}
                   className="p-4 bg-slate-50 rounded-xl border-none outline-none focus:ring-2 focus:ring-blue-500 text-user-msg"
                   placeholder="Высота потолков (м)"
                   onChange={(e) => setFormData({ ...formData, height: e.target.value })}
                 />
                 <input
                   type="number"
+                  value={formData.people}
                   className="p-4 bg-slate-50 rounded-xl border-none outline-none focus:ring-2 focus:ring-blue-500 text-user-msg"
                   placeholder="Кол-во людей"
                   onChange={(e) => setFormData({ ...formData, people: e.target.value })}
@@ -337,7 +387,7 @@ export const BriefGeneratorModal = ({ onClose }) => {
               <button
                 type="button"
                 onClick={handleGenerate}
-                disabled={isLoading || !formData.type}
+                disabled={isLoading || !formData.type.trim()}
                 className="w-full py-4 bg-blue-600 text-white rounded-xl font-normal flex justify-center items-center gap-2 mt-4 transition-all hover:bg-blue-700 disabled:opacity-50"
               >
                 {isLoading ? <Loader2 className="animate-spin" /> : "Сформировать черновик ТЗ"}
@@ -370,25 +420,38 @@ export const LeadModal = ({ onClose, leadContext }) => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState(typeof leadContext === "object" ? (leadContext?.name ?? "") : "");
-  const [phone, setPhone] = useState(typeof leadContext === "object" ? (leadContext?.phone ?? "") : "");
+  const [phone, setPhone] = useState(
+    typeof leadContext === "object" && leadContext?.phone
+      ? formatPhoneInput(leadContext.phone)
+      : ""
+  );
+  const [hp, setHp] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (loading) return;
+    setErrorMsg("");
+
+    if (!isValidPhone(phone)) {
+      setErrorMsg("Введите корректный номер телефона (+7 и 10 цифр).");
+      return;
+    }
+
     setLoading(true);
     try {
-      await postLead({ type: "lead", context: ctx, name, phone });
+      await postLead({ type: "lead", context: ctx, name: name.trim(), phone, hp });
       setSubmitted(true);
       setTimeout(onClose, 1600);
     } catch {
-      alert("Не удалось отправить заявку. Попробуйте ещё раз.");
+      setErrorMsg("Не удалось отправить заявку. Попробуйте ещё раз.");
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-[120] flex items-center justify-center p-4">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 font-sans">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -431,6 +494,16 @@ export const LeadModal = ({ onClose, leadContext }) => {
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <input
+              type="text"
+              name="website"
+              value={hp}
+              onChange={(e) => setHp(e.target.value)}
+              tabIndex={-1}
+              autoComplete="off"
+              className="hidden"
+              aria-hidden="true"
+            />
+            <input
               value={name}
               onChange={(e) => setName(e.target.value)}
               type="text"
@@ -440,12 +513,18 @@ export const LeadModal = ({ onClose, leadContext }) => {
             />
             <input
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={(e) => {
+                setPhone(formatPhoneInput(e.target.value));
+                if (errorMsg) setErrorMsg("");
+              }}
               type="tel"
               required
               placeholder="+7 (___) ___-__-__"
               className="w-full p-4 bg-slate-50 rounded-xl border border-slate-100 outline-none focus:ring-2 focus:ring-blue-500 font-normal text-user-msg transition-all"
             />
+            {errorMsg && (
+              <p className="text-xs text-red-600 font-normal">{errorMsg}</p>
+            )}
             <button
               disabled={loading}
               className="w-full py-4 bg-slate-900 text-white rounded-xl font-normal hover:bg-blue-600 transition-all disabled:opacity-60"
@@ -458,6 +537,7 @@ export const LeadModal = ({ onClose, leadContext }) => {
           </form>
         )}
       </motion.div>
-    </div>
+    </div>,
+    document.body
   );
 };

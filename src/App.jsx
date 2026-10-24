@@ -39,7 +39,7 @@ const OVERLAY_TRANSITION = { duration: 0.18, ease: "linear" };
  */
 const SolutionDetailModal = ({ solution, onClose, onOpenLead }) => {
   const Icon = solution.icon;
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 md:p-6 font-sans">
       <motion.div
         initial={{ opacity: 0 }}
@@ -126,7 +126,8 @@ const SolutionDetailModal = ({ solution, onClose, onOpenLead }) => {
           </div>
         </div>
       </motion.div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
@@ -136,7 +137,7 @@ const SolutionDetailModal = ({ solution, onClose, onOpenLead }) => {
 const TurkovCategoryModal = ({ category, onClose, onOpenLead }) => {
   const [openSheet, setOpenSheet] = useState(null);
   const infoSheets = category.infoSheets || [];
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 md:p-6 font-sans">
       <motion.div
         initial={{ opacity: 0 }}
@@ -249,7 +250,8 @@ const TurkovCategoryModal = ({ category, onClose, onOpenLead }) => {
           </div>
         </div>
       </motion.div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
@@ -326,73 +328,88 @@ function MainSite() {
   const [leadContext, setLeadContext] = useState(null);
   const [modalState, setModalState] = useState(null);
 
-const [activeService, setActiveService] = useState(null);
-const [calcOpen, setCalcOpen] = useState(false);
-const [calcTab, setCalcTab] = useState("vent");
-const [assistantOpenSignal, setAssistantOpenSignal] = useState(0);
-useEffect(() => {
-  const applyFromUrl = () => {
-    const sp = new URLSearchParams(window.location.search);
-    if (sp.get("calc") === "1") {
-      setCalcOpen(true);
-      setCalcTab(sp.get("tab") === "ac" ? "ac" : "vent");
-    }
-  };
+  const [activeService, setActiveService] = useState(null);
+  const [calcOpen, setCalcOpen] = useState(false);
+  const [calcTab, setCalcTab] = useState("vent");
+  const [assistantOpenSignal, setAssistantOpenSignal] = useState(0);
 
-  applyFromUrl();
-  window.addEventListener("popstate", applyFromUrl);
-  return () => window.removeEventListener("popstate", applyFromUrl);
-}, []);
+  useEffect(() => {
+    const applyFromUrl = () => {
+      const sp = new URLSearchParams(window.location.search);
+      if (sp.get("calc") === "1") {
+        setCalcOpen(true);
+        setCalcTab(sp.get("tab") === "ac" ? "ac" : "vent");
+      }
+    };
 
-const modalOpen = turkovCatalogOpen || activeTurkovCategory || modalState || leadContext || activeSolution || activeService || calcOpen;
-useEffect(() => {
-  if (modalOpen) document.body.style.overflow = "hidden";
-  else document.body.style.overflow = "";
-  return () => { document.body.style.overflow = ""; };
-}, [modalOpen]);
-// 'contact' | 'partner' | 'brief'
+    applyFromUrl();
+    window.addEventListener("popstate", applyFromUrl);
+    return () => window.removeEventListener("popstate", applyFromUrl);
+  }, []);
 
+  const modalOpen =
+    turkovCatalogOpen ||
+    activeTurkovCategory ||
+    modalState ||
+    leadContext ||
+    activeSolution ||
+    activeService ||
+    calcOpen;
+
+  useEffect(() => {
+    if (modalOpen) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [modalOpen]);
+
+  // 'contact' | 'partner' | 'brief'
   const openContact = () => setModalState("contact");
   const openPartner = () => setModalState("partner");
   const openBrief = () => setModalState("brief");
-  const openLead = (ctx, prefill) => setLeadContext(prefill ? { context: ctx, ...prefill } : ctx);
+  const openLead = (ctx, prefill) =>
+    setLeadContext(prefill ? { context: ctx, ...prefill } : ctx);
 
-const openService = (key) => setActiveService(key);
+  const openService = (key) => setActiveService(key);
 
-const setUrlParams = (mutate, replace = true) => {
-  const url = new URL(window.location.href);
-  mutate(url.searchParams);
-  const qs = url.searchParams.toString();
-  const next = `${url.pathname}${qs ? `?${qs}` : ""}${url.hash}`;
-  window.history[replace ? "replaceState" : "pushState"]({}, "", next);
-};
+  const setUrlParams = (mutate, replace = true) => {
+    const url = new URL(window.location.href);
+    mutate(url.searchParams);
+    const qs = url.searchParams.toString();
+    const next = `${url.pathname}${qs ? `?${qs}` : ""}${url.hash}`;
+    window.history[replace ? "replaceState" : "pushState"]({}, "", next);
+  };
 
-const openCalc = (tab = "vent") => {
-  const t = tab === "ac" ? "ac" : "vent";
-  setCalcTab(t);
-  setCalcOpen(true);
-  setUrlParams((sp) => {
-    sp.set("calc", "1");
-    sp.set("tab", t);
-  });
-};
+  const openCalc = (tab = "vent") => {
+    const t = tab === "ac" ? "ac" : "vent";
+    setCalcTab(t);
+    setCalcOpen(true);
+    setUrlParams((sp) => {
+      sp.set("calc", "1");
+      sp.set("tab", t);
+    });
+  };
 
-const closeCalc = () => {
-  setCalcOpen(false);
-  setUrlParams((sp) => {
-    sp.delete("calc");
-    sp.delete("tab");
-  });
-};
+  const closeCalc = () => {
+    setCalcOpen(false);
+    setUrlParams((sp) => {
+      sp.delete("calc");
+      sp.delete("tab");
+    });
+  };
 
-const openAssistant = () => {
-  setAssistantOpenSignal((prev) => prev + 1);
-};
-
-
+  const openAssistant = () => {
+    setAssistantOpenSignal((prev) => prev + 1);
+  };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="font-sans text-slate-800 antialiased bg-white selection:bg-blue-200 selection:text-blue-900 overflow-x-hidden">
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="font-sans text-slate-800 antialiased bg-white selection:bg-blue-200 selection:text-blue-900 overflow-x-hidden"
+    >
       <Navbar onOpenContact={openContact} />
       <Hero onOpenCalc={openCalc} onOpenAssistant={openAssistant} onOpenBrief={openBrief} />
 
@@ -476,34 +493,42 @@ const openAssistant = () => {
             onOpenLead={openLead}
           />
         )}
-        {leadContext && <LeadModal leadContext={leadContext} onClose={() => setLeadContext(null)} />}
-        {modalState === "partner" && <PartnerModal onClose={() => setModalState(null)} />}
-        {modalState === "contact" && <ContactModal onClose={() => setModalState(null)} />}
-        {modalState === "brief" && <BriefGeneratorModal onClose={() => setModalState(null)} />}
-      
-{calcOpen && (
-  <QuickCalcModal
-    key={calcTab}
-    initialTab={calcTab}
-    onClose={closeCalc}
-    onOpenLead={(ctx) => {
-      closeCalc();
-      openLead(ctx);
-    }}
-  />
-)}
+        {leadContext && (
+          <LeadModal leadContext={leadContext} onClose={() => setLeadContext(null)} />
+        )}
+        {modalState === "partner" && (
+          <PartnerModal onClose={() => setModalState(null)} />
+        )}
+        {modalState === "contact" && (
+          <ContactModal onClose={() => setModalState(null)} />
+        )}
+        {modalState === "brief" && (
+          <BriefGeneratorModal onClose={() => setModalState(null)} />
+        )}
 
-{activeService && (
-  <ServiceInfoModal
-    serviceKey={activeService}
-    onClose={() => setActiveService(null)}
-    onOpenLead={(ctx) => {
-      setActiveService(null);
-      openLead(ctx);
-    }}
-  />
-)}
-</AnimatePresence>
+        {calcOpen && (
+          <QuickCalcModal
+            key={calcTab}
+            initialTab={calcTab}
+            onClose={closeCalc}
+            onOpenLead={(ctx) => {
+              closeCalc();
+              openLead(ctx);
+            }}
+          />
+        )}
+
+        {activeService && (
+          <ServiceInfoModal
+            serviceKey={activeService}
+            onClose={() => setActiveService(null)}
+            onOpenLead={(ctx) => {
+              setActiveService(null);
+              openLead(ctx);
+            }}
+          />
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
