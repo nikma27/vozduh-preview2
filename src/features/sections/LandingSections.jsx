@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
   BadgeCheck,
@@ -22,9 +22,13 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { complexSolutions } from "../../data/solutions";
-import { formatPhoneInput } from "../../api/leads";
-import { formatPhoneInput } from "../../api/leads";
-import { formatPhoneInput } from "../../api/leads";
+import {
+  formatPhoneInput,
+  getLeadDraft,
+  isValidPhone,
+  postLead,
+  saveLeadDraft,
+} from "../../api/leads";
 
 export const TurkovPromo = ({ onOpenLead, onOpenTurkovCatalog }) => (
   <section
@@ -403,8 +407,46 @@ export const PartnersSection = ({ onOpenPartner }) => {
 };
 
 export const ContactForm = ({ onOpenLead, onOpenContact, onOpenAssistant, onOpenBrief }) => {
-  const [formName, setFormName] = useState("");
-  const [formPhone, setFormPhone] = useState("");
+  const draft = useMemo(() => getLeadDraft(), []);
+  const [formName, setFormName] = useState(draft.name || "");
+  const [formPhone, setFormPhone] = useState(draft.phone ? formatPhoneInput(draft.phone) : "");
+  const [hp, setHp] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  useEffect(() => {
+    saveLeadDraft({ name: formName, phone: formPhone });
+  }, [formName, formPhone]);
+
+  const handleDirectSubmit = async (e) => {
+    e.preventDefault();
+    if (loading) return;
+    setErrorMsg("");
+
+    if (!isValidPhone(formPhone)) {
+      setErrorMsg("Введите корректный номер телефона (+7 и 10 цифр).");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await postLead({
+        type: "contact",
+        context: "Главная форма контактов",
+        name: formName.trim(),
+        phone: formPhone,
+        hp,
+      });
+      setSubmitted(true);
+      setTimeout(() => setSubmitted(false), 5000);
+    } catch {
+      // Fallback: open LeadModal if user prefers modal flow
+      onOpenLead("Главная форма контактов", { name: formName, phone: formPhone });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <section id="contact" className="py-10 md:py-24 lg:py-32 bg-white">
@@ -500,37 +542,67 @@ export const ContactForm = ({ onOpenLead, onOpenContact, onOpenAssistant, onOpen
 
           <div className="lg:w-1/2 relative z-10 flex flex-col justify-center">
             <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                onOpenLead("Главная форма контактов", { name: formName, phone: formPhone });
-              }}
+              onSubmit={handleDirectSubmit}
               className="space-y-4 md:space-y-6 bg-white/5 p-6 md:p-12 rounded-[2.5rem] border border-white/10 backdrop-blur-sm shadow-inner"
             >
               <h3 className="text-2xl md:text-3xl font-normal mb-2 uppercase">Заказать звонок</h3>
               <p className="text-slate-500 text-sm font-normal">
                 Оставьте контакты — перезвоним и сделаем первичный подбор.
               </p>
-              <div className="space-y-4">
-                <input
-                  type="text"
-                  placeholder="Ваше имя"
-                  value={formName}
-                  onChange={(e) => setFormName(e.target.value)}
-                  required
-                  className="w-full p-5 bg-white/5 rounded-2xl border border-white/10 outline-none focus:border-blue-500 transition-all font-normal"
-                />
-                <input
-                  type="tel"
-                  placeholder="Телефон"
-                  value={formPhone}
-                  onChange={(e) => setFormPhone(formatPhoneInput(e.target.value))}
-                  required
-                  className="w-full p-5 bg-white/5 rounded-2xl border border-white/10 outline-none focus:border-blue-500 transition-all font-normal"
-                />
-              </div>
-              <button className="w-full py-5 bg-white text-slate-900 rounded-[2rem] font-normal text-lg hover:bg-blue-400 hover:text-white transition-all shadow-2xl">
-                Отправить данные
-              </button>
+              <input
+                type="text"
+                name="website"
+                value={hp}
+                onChange={(e) => setHp(e.target.value)}
+                tabIndex={-1}
+                autoComplete="off"
+                className="hidden"
+                aria-hidden="true"
+              />
+              {submitted ? (
+                <div className="py-8 text-center space-y-3">
+                  <CheckCircle2 size={48} className="text-green-400 mx-auto" />
+                  <p className="text-xl font-normal text-white">Заявка сохранена и отправлена!</p>
+                  <p className="text-sm text-slate-400">Инженер свяжется с вами в ближайшее время.</p>
+                </div>
+              ) : (
+                <>
+                  <div className="space-y-4">
+                    <input
+                      type="text"
+                      placeholder="Ваше имя"
+                      maxLength={100}
+                      value={formName}
+                      onChange={(e) => setFormName(e.target.value)}
+                      required
+                      className="w-full p-5 bg-white/5 rounded-2xl border border-white/10 outline-none focus:border-blue-500 transition-all font-normal"
+                    />
+                    <input
+                      type="tel"
+                      placeholder="Телефон"
+                      value={formPhone}
+                      onChange={(e) => {
+                        setFormPhone(formatPhoneInput(e.target.value));
+                        if (errorMsg) setErrorMsg("");
+                      }}
+                      required
+                      className="w-full p-5 bg-white/5 rounded-2xl border border-white/10 outline-none focus:border-blue-500 transition-all font-normal"
+                    />
+                  </div>
+                  {errorMsg && (
+                    <p className="text-xs text-red-400 font-normal">{errorMsg}</p>
+                  )}
+                  <button
+                    disabled={loading}
+                    className="w-full py-5 bg-white text-slate-900 rounded-[2rem] font-normal text-lg hover:bg-blue-400 hover:text-white transition-all shadow-2xl disabled:opacity-60"
+                  >
+                    {loading ? "Отправляем..." : "Отправить данные"}
+                  </button>
+                  <p className="text-[10px] text-center text-slate-500">
+                    Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности (152-ФЗ)
+                  </p>
+                </>
+              )}
             </form>
           </div>
         </div>

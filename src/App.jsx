@@ -26,6 +26,7 @@ import {
 import BackToTop from "./shared/ui/BackToTop";
 import Reveal from "./shared/ui/Reveal";
 import { turkovCategories } from "./data/turkov";
+import { captureUtmParams, flushPendingLeads } from "./api/leads";
 
 const PANEL_TRANSITION = { duration: 0.22, ease: [0.22, 1, 0.36, 1] };
 const OVERLAY_TRANSITION = { duration: 0.18, ease: "linear" };
@@ -364,8 +365,14 @@ function MainSite() {
     };
 
     applyFromUrl();
+    captureUtmParams();
+    flushPendingLeads();
     window.addEventListener("popstate", applyFromUrl);
-    return () => window.removeEventListener("popstate", applyFromUrl);
+    window.addEventListener("online", flushPendingLeads);
+    return () => {
+      window.removeEventListener("popstate", applyFromUrl);
+      window.removeEventListener("online", flushPendingLeads);
+    };
   }, []);
 
   const modalOpen =
@@ -551,7 +558,13 @@ function MainSite() {
           <ContactModal onClose={() => setModalState(null)} />
         )}
         {modalState === "brief" && (
-          <BriefGeneratorModal onClose={() => setModalState(null)} />
+          <BriefGeneratorModal
+            onClose={() => setModalState(null)}
+            onOpenLead={(ctx, prefill) => {
+              setModalState(null);
+              openLead(ctx, prefill);
+            }}
+          />
         )}
 
         {calcOpen && (
@@ -559,9 +572,9 @@ function MainSite() {
             key={calcTab}
             initialTab={calcTab}
             onClose={closeCalc}
-            onOpenLead={(ctx) => {
+            onOpenLead={(ctx, prefill) => {
               closeCalc();
-              openLead(ctx);
+              openLead(ctx, prefill);
             }}
           />
         )}

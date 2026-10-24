@@ -1,11 +1,54 @@
 /**
  * Vercel Serverless Function — защищённый прокси к YandexGPT API.
- * Хранит ключи авторизации на сервере, исключая их утечку в клиентский бандл.
+ * Хранит ключи авторизации на сервере, исключая их утечку в клиентский бандл,
+ * включает ограничение частоты запросов (Rate Limiting) и санитизацию входных данных.
  */
+
+const RATE_LIMIT_WINDOW_MS = 60 * 1000;
+const MAX_REQUESTS_PER_WINDOW = 10;
+const ipRequests = new Map();
+
+function checkRateLimit(ip) {
+  const now = Date.now();
+  const record = ipRequests.get(ip);
+  if (!record || now - record.start > RATE_LIMIT_WINDOW_MS) {
+    ipRequests.set(ip, { start: now, count: 1 });
+    return true;
+  }
+  if (record.count >= MAX_REQUESTS_PER_WINDOW) {
+    return false;
+  }
+  record.count += 1;
+  return true;
+}
+
+function sanitizeInput(val, maxLen = 2000) {
+  if (typeof val !== "string") return "";
+  return val
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "")
+    .trim()
+    .slice(0, maxLen);
+}
+
 export default async function handler(req, res) {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Method Not Allowed" });
+  }
+
+  const clientIp =
+    (req.headers?.["x-forwarded-for"] || "").split(",")[0].trim() ||
+    req.socket?.remoteAddress ||
+    "unknown";
+
+  if (!checkRateLimit(clientIp)) {
+    return res.status(429).json({
+      error: "Too Many Requests",
+      text: "Слишком много запросов к AI-помощнику. Пожалуйста, подождите минуту.",
+    });
   }
 
   const apiKey = process.env.YANDEX_API_KEY || process.env.VITE_YANDEX_API_KEY || "";
@@ -19,10 +62,16 @@ export default async function handler(req, res) {
     });
   }
 
-  const body = typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body || {};
-  const userQuery = String(body.userQuery || "").trim().slice(0, 2000);
+  let body = {};
+  try {
+    body = typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body || {};
+  } catch {
+    return res.status(400).json({ error: "Invalid JSON body" });
+  }
+
+  const userQuery = sanitizeInput(body.userQuery, 2000);
   const customSystemPrompt = body.customSystemPrompt
-    ? String(body.customSystemPrompt).trim().slice(0, 1000)
+    ? sanitizeInput(body.customSystemPrompt, 1000)
     : null;
 
   if (!userQuery) {

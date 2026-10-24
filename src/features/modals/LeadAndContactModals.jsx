@@ -1,20 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { CheckCircle2, Loader2, Sparkles, X } from "lucide-react";
 import { motion } from "framer-motion";
-import { formatPhoneInput, isValidPhone, postLead } from "../../api/leads";
+import {
+  formatPhoneInput,
+  getLeadDraft,
+  isValidPhone,
+  postLead,
+  saveLeadDraft,
+} from "../../api/leads";
 import { fetchGeminiResponse } from "../../api/gemini";
 
 const PANEL_TRANSITION = { duration: 0.22, ease: [0.22, 1, 0.36, 1] };
 const OVERLAY_TRANSITION = { duration: 0.18, ease: "linear" };
 
 export const ContactModal = ({ onClose, title = "Оставить заявку" }) => {
+  const draft = useMemo(() => getLeadDraft(), []);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [name, setName] = useState(draft.name || "");
+  const [phone, setPhone] = useState(draft.phone ? formatPhoneInput(draft.phone) : "");
   const [hp, setHp] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+
+  useEffect(() => {
+    saveLeadDraft({ name, phone });
+  }, [name, phone]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -87,6 +98,7 @@ export const ContactModal = ({ onClose, title = "Оставить заявку" 
                 onChange={(e) => setName(e.target.value)}
                 type="text"
                 required
+                maxLength={100}
                 placeholder="Ваше имя"
                 className="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 font-normal text-user-msg"
               />
@@ -111,7 +123,7 @@ export const ContactModal = ({ onClose, title = "Оставить заявку" 
                 {loading ? "Отправляем..." : "Жду звонка"}
               </button>
               <p className="text-[10px] text-center text-slate-500">
-                Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности
+                Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности (152-ФЗ)
               </p>
             </form>
           )}
@@ -123,11 +135,12 @@ export const ContactModal = ({ onClose, title = "Оставить заявку" 
 };
 
 export const PartnerModal = ({ onClose }) => {
+  const draft = useMemo(() => getLeadDraft(), []);
   const [form, setForm] = useState({
-    fio: "",
-    phone: "",
-    city: "",
-    role: "designer",
+    fio: draft.fio || draft.name || "",
+    phone: draft.phone ? formatPhoneInput(draft.phone) : "",
+    city: draft.city || "",
+    role: draft.role || "designer",
     activity: "",
   });
   const [hp, setHp] = useState("");
@@ -135,7 +148,19 @@ export const PartnerModal = ({ onClose }) => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const setField = (k, v) => setForm((p) => ({ ...p, [k]: v }));
+  const setField = (k, v) => {
+    setForm((p) => {
+      const next = { ...p, [k]: v };
+      saveLeadDraft({
+        fio: next.fio,
+        name: next.fio || draft.name,
+        phone: next.phone,
+        city: next.city,
+        role: next.role,
+      });
+      return next;
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -244,6 +269,7 @@ export const PartnerModal = ({ onClose }) => {
               <input
                 type="text"
                 required
+                maxLength={120}
                 placeholder="Ваше ФИО"
                 className="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 text-user-msg"
                 value={form.fio}
@@ -252,6 +278,7 @@ export const PartnerModal = ({ onClose }) => {
               <input
                 type="text"
                 required
+                maxLength={100}
                 placeholder="Город"
                 className="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 text-user-msg"
                 value={form.city}
@@ -278,6 +305,9 @@ export const PartnerModal = ({ onClose }) => {
               >
                 {loading ? "Отправляем..." : "Отправить анкету"}
               </button>
+              <p className="text-[10px] text-center text-slate-500">
+                Нажимая кнопку, вы соглашаетесь на обработку персональных данных (152-ФЗ)
+              </p>
             </form>
           )}
         </div>
@@ -287,21 +317,23 @@ export const PartnerModal = ({ onClose }) => {
   );
 };
 
-export const BriefGeneratorModal = ({ onClose }) => {
+export const BriefGeneratorModal = ({ onClose, onOpenLead }) => {
+  const savedBrief = useMemo(() => getLeadDraft()?.brief || {}, []);
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({ type: "", area: "", height: "", people: "" });
-  const [generatedBrief, setGeneratedBrief] = useState("");
+  const [formData, setFormData] = useState({
+    type: savedBrief.type || "",
+    area: savedBrief.area || "",
+    height: savedBrief.height || "",
+    people: savedBrief.people || "",
+  });
+  const [generatedBrief, setGeneratedBrief] = useState(savedBrief.generatedBrief || "");
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const onKeyDown = (e) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.removeEventListener("keydown", onKeyDown);
-    };
-  }, [onClose]);
+    saveLeadDraft({
+      brief: { ...formData, generatedBrief },
+    });
+  }, [formData, generatedBrief]);
 
   const handleGenerate = async () => {
     setIsLoading(true);
@@ -357,6 +389,7 @@ export const BriefGeneratorModal = ({ onClose }) => {
                 <input
                   type="text"
                   value={formData.type}
+                  maxLength={120}
                   className="p-4 bg-slate-50 rounded-xl border-none outline-none focus:ring-2 focus:ring-blue-500 text-user-msg"
                   placeholder="Тип объекта (Кафе, офис...)"
                   onChange={(e) => setFormData({ ...formData, type: e.target.value })}
@@ -398,11 +431,39 @@ export const BriefGeneratorModal = ({ onClose }) => {
               <div className="bg-slate-50 p-6 rounded-2xl whitespace-pre-wrap border border-slate-100 font-mono text-[14px] leading-[20px]">
                 {generatedBrief}
               </div>
-              <div className="flex gap-4">
-                <button type="button" onClick={() => setStep(1)} className="flex-1 py-4 border border-slate-200 rounded-xl font-normal text-slate-600">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  type="button"
+                  onClick={() => setStep(1)}
+                  className="flex-1 py-4 border border-slate-200 rounded-xl font-normal text-slate-600 hover:border-blue-600 hover:text-blue-600 transition-all"
+                >
                   Изменить данные
                 </button>
-                <button type="button" onClick={onClose} className="flex-1 py-4 bg-slate-900 text-white rounded-xl font-normal">
+                {onOpenLead && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onOpenLead("AI Генератор ТЗ (Расчёт инженера)", {
+                        payload: {
+                          objectType: formData.type,
+                          areaM2: formData.area,
+                          heightM: formData.height,
+                          people: formData.people,
+                          brief: generatedBrief,
+                          summary: `${formData.type}, ${formData.area || "—"} м², h=${formData.height || "—"} м, ${formData.people || "—"} чел.`,
+                        },
+                      });
+                    }}
+                    className="flex-1 py-4 bg-blue-600 text-white rounded-xl font-normal hover:bg-blue-700 transition-all"
+                  >
+                    Передать ТЗ инженеру
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="sm:w-32 py-4 bg-slate-900 text-white rounded-xl font-normal hover:bg-slate-800 transition-all"
+                >
                   Готово
                 </button>
               </div>
@@ -416,17 +477,28 @@ export const BriefGeneratorModal = ({ onClose }) => {
 };
 
 export const LeadModal = ({ onClose, leadContext }) => {
+  const draft = useMemo(() => getLeadDraft(), []);
   const ctx = typeof leadContext === "string" ? leadContext : leadContext?.context ?? "";
+  const attachedPayload = typeof leadContext === "object" ? leadContext?.payload : undefined;
+
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [name, setName] = useState(typeof leadContext === "object" ? (leadContext?.name ?? "") : "");
+  const [name, setName] = useState(
+    (typeof leadContext === "object" && leadContext?.name) || draft.name || ""
+  );
   const [phone, setPhone] = useState(
     typeof leadContext === "object" && leadContext?.phone
       ? formatPhoneInput(leadContext.phone)
-      : ""
+      : draft.phone
+        ? formatPhoneInput(draft.phone)
+        : ""
   );
   const [hp, setHp] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+
+  useEffect(() => {
+    saveLeadDraft({ name, phone });
+  }, [name, phone]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -440,7 +512,14 @@ export const LeadModal = ({ onClose, leadContext }) => {
 
     setLoading(true);
     try {
-      await postLead({ type: "lead", context: ctx, name: name.trim(), phone, hp });
+      await postLead({
+        type: "lead",
+        context: ctx,
+        name: name.trim(),
+        phone,
+        payload: attachedPayload,
+        hp,
+      });
       setSubmitted(true);
       setTimeout(onClose, 1600);
     } catch {
@@ -473,6 +552,11 @@ export const LeadModal = ({ onClose, leadContext }) => {
               Раздел:
             </div>
             <h3 className="text-lg font-normal leading-tight text-slate-900">{ctx}</h3>
+            {attachedPayload?.summary && (
+              <p className="text-xs text-slate-500 mt-1.5 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+                Параметры: {attachedPayload.summary}
+              </p>
+            )}
           </div>
           <button
             onClick={onClose}
@@ -508,6 +592,7 @@ export const LeadModal = ({ onClose, leadContext }) => {
               onChange={(e) => setName(e.target.value)}
               type="text"
               required
+              maxLength={100}
               placeholder="Ваше имя"
               className="w-full p-4 bg-slate-50 rounded-xl border border-slate-100 outline-none focus:ring-2 focus:ring-blue-500 font-normal text-user-msg transition-all"
             />
@@ -532,7 +617,7 @@ export const LeadModal = ({ onClose, leadContext }) => {
               {loading ? "Отправляем..." : "Запросить подбор"}
             </button>
             <p className="text-[10px] text-center text-slate-500">
-              Нажимая кнопку, вы подтверждаете отправку данных
+              Нажимая кнопку, вы подтверждаете отправку данных (152-ФЗ)
             </p>
           </form>
         )}

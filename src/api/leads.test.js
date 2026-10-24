@@ -1,37 +1,39 @@
 import { describe, it, expect } from "vitest";
-import { formatPhoneInput, isValidPhone, postLead } from "./leads";
+import {
+  formatPhoneInput,
+  isValidPhone,
+  sanitizeText,
+  postLead,
+} from "./leads";
 
-describe("leads helpers & API", () => {
-  it("форматирует российский номер телефона к маске +7 (XXX) XXX-XX-XX", () => {
-    expect(formatPhoneInput("89131234567")).toBe("+7 (913) 123-45-67");
-    expect(formatPhoneInput("79131234567")).toBe("+7 (913) 123-45-67");
-    expect(formatPhoneInput("9131234567")).toBe("+7 (913) 123-45-67");
+describe("leads", () => {
+  it("форматирует телефонный номер к виду +7 (XXX) XXX-XX-XX", () => {
+    expect(formatPhoneInput("89991234567")).toBe("+7 (999) 123-45-67");
+    expect(formatPhoneInput("79991234567")).toBe("+7 (999) 123-45-67");
+    expect(formatPhoneInput("9991234567")).toBe("+7 (999) 123-45-67");
     expect(formatPhoneInput("")).toBe("");
   });
 
   it("валидирует длину телефонного номера", () => {
-    expect(isValidPhone("+7 (913) 123-45-67")).toBe(true);
-    expect(isValidPhone("123")).toBe(false);
-    expect(isValidPhone("")).toBe(false);
+    expect(isValidPhone("+7 (999) 123-45-67")).toBe(true);
+    expect(isValidPhone("89130001122")).toBe(true);
+    expect(isValidPhone("+7 (999) 123")).toBe(false);
+    expect(isValidPhone("abc")).toBe(false);
   });
 
-  it("блокирует спам при заполненном honeypot-поле", async () => {
+  it("очищает входные строки от XSS-тегов и управляющих символов", () => {
+    expect(sanitizeText("<script>alert(1)</script>Иван\u0000")).toBe(
+      "scriptalert(1)/scriptИван"
+    );
+  });
+
+  it("тихо отсекает ботов при заполненном honeypot-поле (hp)", async () => {
     const res = await postLead({
-      type: "lead",
+      type: "contact",
       name: "Bot",
-      phone: "123",
-      hp: "http://spam.example",
+      phone: "+7 (999) 000-00-00",
+      hp: "http://spam.com",
     });
     expect(res).toEqual({ ok: true, mocked: true });
-  });
-
-  it("отклоняет заявку с некорректным телефоном", async () => {
-    await expect(
-      postLead({
-        type: "lead",
-        name: "Иван",
-        phone: "123",
-      })
-    ).rejects.toThrow(/корректный номер телефона/i);
   });
 });

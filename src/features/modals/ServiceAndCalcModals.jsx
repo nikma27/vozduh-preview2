@@ -1,9 +1,10 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { Calculator, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { SERVICE_INFO } from "../../data/services";
 import { AC_PRESETS, VENT_PRESETS, pickNearestKW, round1 } from "../../data/presets";
+import { getLeadDraft, saveLeadDraft } from "../../api/leads";
 
 const PANEL_TRANSITION = { duration: 0.22, ease: [0.22, 1, 0.36, 1] };
 const OVERLAY_TRANSITION = { duration: 0.18, ease: "linear" };
@@ -81,20 +82,27 @@ export const ServiceInfoModal = ({ serviceKey, onClose, onOpenLead }) => {
 };
 
 export const QuickCalcModal = ({ initialTab = "vent", onClose, onOpenLead }) => {
+  const savedCalc = useMemo(() => getLeadDraft()?.calc || {}, []);
   const [tab, setTab] = useState(initialTab);
 
   // common
-  const [area, setArea] = useState(50);
-  const [height, setHeight] = useState(2.7);
+  const [area, setArea] = useState(savedCalc.area ?? 50);
+  const [height, setHeight] = useState(savedCalc.height ?? 2.7);
 
   // ventilation
-  const [vPreset, setVPreset] = useState("apartment");
-  const [people, setPeople] = useState(2);
+  const [vPreset, setVPreset] = useState(savedCalc.vPreset ?? "apartment");
+  const [people, setPeople] = useState(savedCalc.people ?? 2);
 
   // AC
-  const [aPreset, setAPreset] = useState("res");
-  const [sunny, setSunny] = useState(false);
-  const [computers, setComputers] = useState(0);
+  const [aPreset, setAPreset] = useState(savedCalc.aPreset ?? "res");
+  const [sunny, setSunny] = useState(savedCalc.sunny ?? false);
+  const [computers, setComputers] = useState(savedCalc.computers ?? 0);
+
+  useEffect(() => {
+    saveLeadDraft({
+      calc: { area, height, vPreset, people, aPreset, sunny, computers },
+    });
+  }, [area, height, vPreset, people, aPreset, sunny, computers]);
 
   const vCfg = useMemo(() => VENT_PRESETS.find((p) => p.key === vPreset) || VENT_PRESETS[0], [vPreset]);
   const aCfg = useMemo(() => AC_PRESETS.find((p) => p.key === aPreset) || AC_PRESETS[0], [aPreset]);
@@ -242,7 +250,23 @@ export const QuickCalcModal = ({ initialTab = "vent", onClose, onOpenLead }) => 
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 mt-2">
-                <button type="button" onClick={() => onOpenLead("Быстрый расчёт: Вентиляция")} className="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-normal hover:bg-blue-700 transition-all">
+                <button
+                  type="button"
+                  onClick={() =>
+                    onOpenLead("Быстрый расчёт: Вентиляция", {
+                      payload: {
+                        calcType: "Вентиляция",
+                        preset: vCfg.name,
+                        areaM2: Number(area) || 0,
+                        heightM: Number(height) || 0,
+                        people: Number(people) || 0,
+                        supplyM3h: Math.round(vent.L_total),
+                        summary: `${vCfg.name}, ${area} м², h=${height} м, ${people} чел. → ${Math.round(vent.L_total)} м³/ч`,
+                      },
+                    })
+                  }
+                  className="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-normal hover:bg-blue-700 transition-all"
+                >
                   Получить подбор
                 </button>
                 <button type="button" onClick={onClose} className="flex-1 py-4 border border-slate-200 rounded-2xl font-normal text-slate-600 hover:border-blue-600 hover:text-blue-600 transition-all">
@@ -310,7 +334,26 @@ export const QuickCalcModal = ({ initialTab = "vent", onClose, onOpenLead }) => 
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 mt-2">
-                <button type="button" onClick={() => onOpenLead("Быстрый расчёт: Кондиционер")} className="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-normal hover:bg-blue-700 transition-all">
+                <button
+                  type="button"
+                  onClick={() =>
+                    onOpenLead("Быстрый расчёт: Кондиционер", {
+                      payload: {
+                        calcType: "Кондиционирование",
+                        preset: aCfg.name,
+                        areaM2: Number(area) || 0,
+                        heightM: Number(height) || 0,
+                        people: Number(people) || 0,
+                        sunny: Boolean(sunny),
+                        computers: Number(computers) || 0,
+                        totalKw: round1(ac.total),
+                        recommendedModel: ac.nearest.label,
+                        summary: `${aCfg.name}, ${area} м², h=${height} м → ${round1(ac.total)} кВт (${ac.nearest.label})`,
+                      },
+                    })
+                  }
+                  className="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-normal hover:bg-blue-700 transition-all"
+                >
                   Получить подбор
                 </button>
                 <button type="button" onClick={onClose} className="flex-1 py-4 border border-slate-200 rounded-2xl font-normal text-slate-600 hover:border-blue-600 hover:text-blue-600 transition-all">
