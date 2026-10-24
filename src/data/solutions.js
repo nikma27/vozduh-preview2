@@ -138,20 +138,22 @@ export const complexSolutions = [
       {
         title: "VRF/VRV",
         desc: "Многозональное управление климатом здания с одной точкой подключения.",
+        icon: "/icons/vrf.svg",
         subImage:
           "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&w=800&q=80",
       },
       {
         title: "Кассетные блоки",
         desc: "Равномерная подача 360° — идеальна для Open Space.",
+        icon: "/icons/cassette.svg",
         subImage:
           "https://images.unsplash.com/photo-1510520434124-5bc7e642b61d?auto=format&fit=crop&w=800&q=80",
       },
       {
         title: "Прецизионные",
         desc: "Точное поддержание температуры/влажности для серверных и ЦОД.",
-        subImage:
-          "https://images.unsplash.com/photo-1558494949-ef526b0042a0?auto=format&fit=crop&w=800&q=80",
+        icon: "/icons/precision.svg",
+        subImage: "/photos/control-panel.jpg",
       },
     ],
   },
@@ -168,14 +170,14 @@ export const complexSolutions = [
       {
         title: "Вытяжные зонты",
         desc: "Эффективное удаление жира и жара, лабиринтные фильтры.",
-        subImage:
-          "https://images.unsplash.com/photo-1621871908119-28a5b35c03eb?auto=format&fit=crop&w=800&q=80",
+        icon: "/icons/kitchen-hood.svg",
+        subImage: "/photos/kitchen-hoods.jpg",
       },
       {
         title: "Общеобменная",
         desc: "Подготовка и подача свежего воздуха в залы для гостей.",
-        subImage:
-          "https://images.unsplash.com/photo-1599407357322-92df91866782?auto=format&fit=crop&w=800&q=80",
+        icon: "/icons/air-exchange.svg",
+        subImage: "/photos/duct-industrial.jpg",
       },
     ],
   },
@@ -194,20 +196,21 @@ export const complexSolutions = [
       {
         title: "Модульные чиллеры",
         desc: "Высокая мощность для систем вода–воздух и охлаждения станков.",
-        subImage:
-          "https://images.unsplash.com/photo-1590636735492-36c997321a0f?auto=format&fit=crop&w=800&q=80",
+        icon: "/icons/chiller.svg",
+        subImage: "/photos/engineering-room.jpg",
       },
       {
         title: "Градирни",
         desc: "Охлаждение технической воды для производственных циклов.",
+        icon: "/icons/cooling-tower.svg",
         subImage:
           "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80",
       },
       {
         title: "ККБ",
         desc: "Компрессорно-конденсаторные блоки для интеграции в приточные установки.",
-        subImage:
-          "https://images.unsplash.com/photo-1565193566173-0923d5a633f3?auto=format&fit=crop&w=800&q=80",
+        icon: "/icons/kkb.svg",
+        subImage: "/photos/vent-units.jpg",
       },
     ],
   },
@@ -224,12 +227,14 @@ export const complexSolutions = [
       {
         title: "Аспирация",
         desc: "Удаление пыли, стружки, сварочных аэрозолей и выбросов.",
+        icon: "/icons/aspiration.svg",
         subImage:
           "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80",
       },
       {
         title: "Дымоудаление",
         desc: "Противопожарная безопасность: удаление дыма и подпор воздуха.",
+        icon: "/icons/smoke-exhaust.svg",
         subImage:
           "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=800&q=80",
       },
