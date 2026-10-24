@@ -15,6 +15,10 @@ import {
 } from "./features/modals/LeadAndContactModals";
 import { QuickCalcModal, ServiceInfoModal } from "./features/modals/ServiceAndCalcModals";
 import {
+  CookieConsentBanner,
+  PrivacyPolicyModal,
+} from "./features/modals/PrivacyAndCookieModals";
+import {
   Catalog,
   ContactForm,
   CTAstrip,
@@ -514,10 +518,11 @@ function MainSite() {
       </Reveal>
 
       <Reveal>
-        <Footer />
+        <Footer onOpenPrivacy={() => setModalState("privacy")} />
       </Reveal>
 
       <BackToTop />
+      <CookieConsentBanner onOpenPrivacy={() => setModalState("privacy")} />
 
       <ClimateAssistant openSignal={assistantOpenSignal} onOpenBrief={openBrief} />
 
@@ -565,6 +570,9 @@ function MainSite() {
               openLead(ctx, prefill);
             }}
           />
+        )}
+        {modalState === "privacy" && (
+          <PrivacyPolicyModal onClose={() => setModalState(null)} />
         )}
 
         {calcOpen && (

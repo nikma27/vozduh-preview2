@@ -123,7 +123,15 @@ export const ContactModal = ({ onClose, title = "Оставить заявку" 
                 {loading ? "Отправляем..." : "Жду звонка"}
               </button>
               <p className="text-[10px] text-center text-slate-500">
-                Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности (152-ФЗ)
+                Нажимая кнопку, вы соглашаетесь с{" "}
+                <a
+                  href="/privacy-policy.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:text-blue-600"
+                >
+                  политикой обработки персональных данных (152-ФЗ РФ)
+                </a>
               </p>
             </form>
           )}
@@ -306,7 +314,15 @@ export const PartnerModal = ({ onClose }) => {
                 {loading ? "Отправляем..." : "Отправить анкету"}
               </button>
               <p className="text-[10px] text-center text-slate-500">
-                Нажимая кнопку, вы соглашаетесь на обработку персональных данных (152-ФЗ)
+                Нажимая кнопку, вы соглашаетесь с{" "}
+                <a
+                  href="/privacy-policy.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:text-blue-600"
+                >
+                  политикой обработки персональных данных (152-ФЗ РФ)
+                </a>
               </p>
             </form>
           )}
@@ -617,7 +633,15 @@ export const LeadModal = ({ onClose, leadContext }) => {
               {loading ? "Отправляем..." : "Запросить подбор"}
             </button>
             <p className="text-[10px] text-center text-slate-500">
-              Нажимая кнопку, вы подтверждаете отправку данных (152-ФЗ)
+              Нажимая кнопку, вы соглашаетесь с{" "}
+              <a
+                href="/privacy-policy.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-blue-600"
+              >
+                политикой обработки персональных данных (152-ФЗ РФ)
+              </a>
             </p>
           </form>
         )}

@@ -1,16 +1,19 @@
 {
   "name": "vozduh-preview",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "start": "node server.js",
     "preview": "vite preview",
     "lint": "eslint src",
     "format": "prettier --write \"src/**/*.{js,jsx,css,json,md}\"",
     "test": "vitest run",
     "test:watch": "vitest",
+    "ru:up": "docker compose -f docker-compose.ru.yml up -d --build",
+    "ru:down": "docker compose -f docker-compose.ru.yml down",
     "n8n": "docker compose up -d n8n",
     "n8n:stop": "docker compose stop n8n",
     "n8n:run": "npx n8n"

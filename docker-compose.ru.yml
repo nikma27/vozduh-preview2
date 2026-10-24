@@ -1,0 +1,19 @@
+services:
+  vozduh-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vozduh-nsk-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - LEADS_DATA_DIR=/app/data
+    volumes:
+      # Все заявки посетителей (leads.csv и leads.jsonl) физически сохраняются
+      # на диске российского сервера в папке ./data (соответствие ч. 5 ст. 18 152-ФЗ РФ)
+      - ./data:/app/data

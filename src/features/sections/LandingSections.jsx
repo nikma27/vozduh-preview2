@@ -599,7 +599,15 @@ export const ContactForm = ({ onOpenLead, onOpenContact, onOpenAssistant, onOpen
                     {loading ? "Отправляем..." : "Отправить данные"}
                   </button>
                   <p className="text-[10px] text-center text-slate-500">
-                    Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности (152-ФЗ)
+                    Нажимая кнопку, вы соглашаетесь с{" "}
+                    <a
+                      href="/privacy-policy.html"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline hover:text-blue-400"
+                    >
+                      политикой обработки персональных данных (152-ФЗ РФ)
+                    </a>
                   </p>
                 </>
               )}
@@ -627,7 +635,7 @@ export const CTAstrip = () => (
   </section>
 );
 
-export const Footer = () => (
+export const Footer = ({ onOpenPrivacy }) => (
   <footer className="py-10 md:py-20 lg:py-24 bg-slate-50 border-t border-slate-200">
     <div className="container mx-auto px-6">
       <div className="flex flex-col md:flex-row justify-between border-b border-slate-200 pb-8 md:pb-12 mb-8 md:mb-12 gap-6 md:gap-10">
@@ -654,11 +662,24 @@ export const Footer = () => (
           </div>
           <div>
             <h4 className="text-slate-900 font-normal mb-4 uppercase tracking-widest text-[10px]">
-              Клиентам
+              Клиентам и Правовая информация
             </h4>
             <div className="flex flex-col gap-3 font-normal text-slate-600">
               <a href="#why-us" className="hover:text-blue-600 transition-colors">Услуги и сервис</a>
               <a href="#catalog" className="hover:text-blue-600 transition-colors">Решения</a>
+              {onOpenPrivacy ? (
+                <button
+                  type="button"
+                  onClick={onOpenPrivacy}
+                  className="text-left hover:text-blue-600 transition-colors"
+                >
+                  Политика обработки ПДн (152-ФЗ)
+                </button>
+              ) : (
+                <a href="/privacy-policy.html" className="hover:text-blue-600 transition-colors">
+                  Политика обработки ПДн (152-ФЗ)
+                </a>
+              )}
             </div>
           </div>
         </div>
@@ -676,6 +697,7 @@ export const Footer = () => (
         <div className="lg:text-right space-y-2">
           <p className="font-normal text-slate-600">Руководство:</p>
           <p>Генеральный директор: <strong>Полеха Яков Владимирович</strong></p>
+          <p className="opacity-75">Обработка и хранение данных осуществляются на территории РФ (152-ФЗ)</p>
           <p className="mt-6 opacity-60">© {new Date().getFullYear()} Все права защищены.</p>
         </div>
       </div>

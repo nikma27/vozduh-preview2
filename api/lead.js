@@ -1,11 +1,16 @@
+import fs from "node:fs";
+import path from "node:path";
+
 /**
- * Vercel Serverless Function — защищённый приём и сохранение заявок (/api/lead).
+ * Серверный шлюз приёма и локального сохранения заявок (/api/lead) на территории РФ (152-ФЗ).
  * Обеспечивает:
  * 1. Rate-limiting по IP (защита от спама и DDoS-флуда форм).
  * 2. Санитизацию всех входных полей (защита от XSS / управляющих символов / переполнения).
  * 3. Проверку антиспам-ловушки (honeypot).
- * 4. Скрытие URL внешнего вебхука (n8n / CRM) и токенов Telegram от браузера.
- * 5. Гарантированное резервное логирование заявки на сервере, чтобы ни один лид не потерялся.
+ * 4. Физическое сохранение всех данных посетителей на российском сервере в файлы:
+ *    - data/leads.jsonl (структурированная база JSON Lines)
+ *    - data/leads.csv (таблица для Excel / 1С в кодировке UTF-8 с BOM)
+ * 5. Опциональную отправку в вашу российскую CRM / локальный n8n / Telegram.
  */
 
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 минута
@@ -62,6 +67,77 @@ export function sanitizePayloadObject(obj, depth = 0) {
   return undefined;
 }
 
+/**
+ * Экранирование ячейки для CSV (защита от CSV-Injection в Excel: формулы с =, +, -, @)
+ */
+function escapeCsvCell(val) {
+  let str = val === null || val === undefined ? "" : String(val);
+  if (/^[=+\-@]/.test(str)) {
+    str = "'" + str;
+  }
+  str = str.replace(/"/g, '""').replace(/\r?\n/g, " ");
+  return `"${str}"`;
+}
+
+/**
+ * Сохранение заявки на локальный диск российского сервера (data/leads.jsonl и data/leads.csv)
+ */
+function persistLeadToRussianServerDisk(leadRecord) {
+  try {
+    const dataDir = process.env.LEADS_DATA_DIR || path.resolve(process.cwd(), "data");
+    fs.mkdirSync(dataDir, { recursive: true });
+
+    // 1. Запись в JSONL-базу (полная структура со всеми параметрами калькулятора и ТЗ)
+    const jsonlPath = path.join(dataDir, "leads.jsonl");
+    fs.appendFileSync(jsonlPath, JSON.stringify(leadRecord) + "\n", "utf8");
+
+    // 2. Запись в CSV-таблицу (с UTF-8 BOM для открытия в Excel на русском языке)
+    const csvPath = path.join(dataDir, "leads.csv");
+    if (!fs.existsSync(csvPath)) {
+      const header =
+        "\uFEFF" +
+        [
+          "ID заявки",
+          "Дата и время (UTC)",
+          "Тип",
+          "Раздел / Контекст",
+          "Имя клиента",
+          "Телефон",
+          "Страница",
+          "Согласие 152-ФЗ",
+          "Параметры расчёта / Анкета / ТЗ",
+          "UTM-метки",
+        ]
+          .map(escapeCsvCell)
+          .join(";") +
+        "\n";
+      fs.writeFileSync(csvPath, header, "utf8");
+    }
+
+    const row =
+      [
+        leadRecord.leadId,
+        leadRecord.timestamp,
+        leadRecord.type,
+        leadRecord.context,
+        leadRecord.name,
+        leadRecord.phone,
+        leadRecord.page,
+        leadRecord.consent152fz ? "Да" : "Да (форма)",
+        leadRecord.payload ? JSON.stringify(leadRecord.payload) : "",
+        leadRecord.utm ? JSON.stringify(leadRecord.utm) : "",
+      ]
+        .map(escapeCsvCell)
+        .join(";") + "\n";
+
+    fs.appendFileSync(csvPath, row, "utf8");
+    return true;
+  } catch {
+    // В read-only облачных песочницах запись в файл пропускается, остаётся серверный лог
+    return false;
+  }
+}
+
 export default async function handler(req, res) {
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("Cache-Control", "no-store");
@@ -110,12 +186,15 @@ export default async function handler(req, res) {
     name: sanitizeString(body.name || "Без имени", 150),
     phone: sanitizeString(body.phone, 40),
     page: sanitizeString(body.page || "/", 300),
+    consent152fz: true,
     utm: sanitizePayloadObject(body.utm),
     payload: sanitizePayloadObject(body.payload),
   };
 
-  // Всегда фиксируем структурированную запись в защищённом серверном логе Vercel,
-  // чтобы данные клиента никогда не потерялись даже при временной недоступности внешней CRM/n8n.
+  // 1. Физическая запись на диск российского сервера (data/leads.jsonl и data/leads.csv)
+  const savedToDisk = persistLeadToRussianServerDisk(leadRecord);
+
+  // 2. Структурированная запись в серверный журнал
   console.info("[LEAD_CAPTURED]", JSON.stringify(leadRecord));
 
   const webhookUrl = process.env.LEAD_API_URL || process.env.VITE_LEAD_API || "";
@@ -124,11 +203,12 @@ export default async function handler(req, res) {
 
   const deliveryResults = {
     logged: true,
+    savedToDisk,
     webhook: null,
     telegram: null,
   };
 
-  // 1. Отправка в основной Webhook (n8n / CRM)
+  // 3. Отправка в основной Webhook (российская CRM / локальный n8n)
   if (webhookUrl && !webhookUrl.includes("localhost")) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 8000);
@@ -151,7 +231,7 @@ export default async function handler(req, res) {
     }
   }
 
-  // 2. Опциональная прямая отправка в Telegram-чат руководителя/отдела продаж
+  // 4. Опциональное уведомление в Telegram
   if (tgToken && tgChatId) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 6000);
